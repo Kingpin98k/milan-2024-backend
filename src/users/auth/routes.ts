@@ -8,8 +8,8 @@ const router = Router();
 router.get(
 	"/google/callback",
 	passport.authenticate("google", {
-		successRedirect: process.env.CLIENT_URL,
-		failureRedirect: "/login/failed",
+		successRedirect: process.env.CLIENT_URL + "/signup",
+		failureRedirect: "/authentication/failed",
 	})
 );
 
