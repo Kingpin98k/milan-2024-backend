@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import pg from 'pg';
+import { Pool } from 'pg';
 
 dotenv.config();
 
@@ -10,16 +10,39 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-const { Pool } = pg;
-
 // const pool = new Pool({
 //   // connectionString: process.env.POSTGRES_URL + '?sslmode=require',
 //   connectionString: process.env.POSTGRES_URL,
 //   ssl: false,
 // });
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-});
+
+// const pool = new Pool({
+//   connectionString: process.env.POSTGRES_URL,
+// });
+console.log(process.env.DB_PASSWORD);
+const config = {
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD?.toString(),
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  port: parseInt(String(process.env.DB_PORT)),
+  // ssl: {
+  //   rejectUnauthorized: true, // Use this line if you face self-signed certificate issues
+  // },
+  ssl: false,
+
+  sslmode: 'require',
+};
+
+const pool = new Pool(config);
+
+// const pool = new Pool({
+//   host: 'localhost',
+//   port: 5432,
+//   database: 'monores',
+//   user: 'postgres',
+//   password: 'root',
+// });
 
 const queryText = 'SELECT version()';
 
