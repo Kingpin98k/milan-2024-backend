@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "default",
-    "password": "5UAw4rhQkZNp",
+    "password": "EY7vBAZdNRW0",
     "database": "verceldb",
-    "host": "ep-delicate-dew-08255488-pooler.ap-southeast-1.postgres.vercel-storage.com",
+    "host": "ep-small-mud-a1vzftzj-pooler.ap-southeast-1.postgres.vercel-storage.com",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {

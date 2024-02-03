@@ -6,10 +6,9 @@ import morgan from "morgan";
 import logger, { LogTypes } from "./utils/logger";
 import bodyParser from "body-parser";
 import ErrorHandler from "./utils/errors.handler";
-import { globalErrorHandler } from "./utils/errorController";
 import cookieSession from "cookie-session";
 import passport from "passport";
-import "./utils/passport";
+import "./users/auth/passport";
 
 const app: Application = express();
 
@@ -25,7 +24,7 @@ app.use(
 	cookieSession({
 		name: "session",
 		keys: ["milan-auth"],
-		maxAge: 24 * 60 * 60 * 1000, // 24 hours
+		maxAge: 24 * 60 * 60 * 1000, // 5 seconds
 	})
 );
 
@@ -47,10 +46,6 @@ import authRoutes from "./users/auth/routes";
 app.use("/auth", authRoutes);
 
 //---------------------------------------------------------------
-
-//Error Handler
-app.use(globalErrorHandler);
-
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
 	next(
 		new ErrorHandler({
