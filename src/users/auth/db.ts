@@ -1,5 +1,4 @@
 import db from "../../config/pg.config";
-import logger, { LogTypes } from "../../utils/logger";
 import { IUserAuthResObject, IUserAuthSignupReqObj } from "./interface";
 
 export default class UsersAuthDB {
