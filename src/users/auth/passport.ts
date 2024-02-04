@@ -11,9 +11,14 @@ passport.use(
 			callbackURL: "/auth/google/callback",
 			scope: ["profile", "email"],
 		},
-		(accessToken, refreshToken, profile, cb) => {
-			console.log(profile);
-			cb(null, profile);
+		async (accessToken, refreshToken, profile, cb) => {
+			const defaultUser = {
+				fullName: `${profile.name?.givenName} ${profile.name?.familyName}`,
+				email: profile.emails?.[0].value,
+				profilePic: profile.photos?.[0].value,
+				googleId: profile.id,
+			};
+			cb(null, defaultUser);
 		}
 	)
 );
