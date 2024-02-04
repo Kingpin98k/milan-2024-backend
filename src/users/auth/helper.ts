@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { IUserAuthResObject, IUserAuthSignupReqObj } from "./interface";
 import ErrorHandler from "../../utils/errors.handler";
 import UsersAuthDB from "./db";
+import logger, { LogTypes } from "../../utils/logger";
 
 export default class UsersAuthHelper extends UsersAuthDB {
 	protected getUserByEmailHelper = async (

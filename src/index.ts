@@ -42,8 +42,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Routes
 
 import authRoutes from "./users/auth/routes";
+import moment from "moment";
 
 app.use("/auth", authRoutes);
+
+app.get("/", (req: Request, res: Response) => {
+	const date = moment().format("YYYY-MM-DD HH:mm:ss");
+	res.status(200).send({
+		message: "Server is running",
+		status_code: 200,
+		entry_time: date,
+	});
+});
+app.get("/health", (req: Request, res: Response) => {
+	const date = moment().format("YYYY-MM-DD HH:mm:ss");
+	res.status(200).send({
+		message: "Server is running",
+		status_code: 200,
+		entry_time: date,
+	});
+});
 
 //---------------------------------------------------------------
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
