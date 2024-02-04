@@ -11,7 +11,7 @@ export type EventScope = 'srm' | 'non-srm' | 'both';
 export type IEvent = {
   id: UUID;
   event_code: string;
-  name: string;
+  name: string | null;
   is_group_event: boolean;
   event_scope: EventScope;
   club_name: string;

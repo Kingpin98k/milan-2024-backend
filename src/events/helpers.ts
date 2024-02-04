@@ -8,4 +8,6 @@ export default class EventsHelpers extends EventsDb {
     const events = await this.fetchAllEvents();
     return events;
   };
+
+  public createEventHelper = async (
 }
