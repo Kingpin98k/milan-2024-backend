@@ -10,22 +10,16 @@ export class EventsServices extends EventsHelpers {
   }
 
   public async createEventService(
-    name: string,
-    is_group_event: boolean,
-    event_scope: string,
-    club_name: string,
-    max_group_size: number,
-    event_code: string
+    // name: string,
+    // is_group_event: boolean,
+    // event_scope: string,
+    // club_name: string,
+    // max_group_size: number,
+    // event_code: string
+    eventdata: Partial<IEvent>
   ): Promise<IEvent> {
     logger('createEventServices1', LogTypes.LOGS);
-    const event = await this.createEventHelper(
-      name,
-      is_group_event,
-      event_scope,
-      club_name,
-      max_group_size,
-      event_code
-    );
-    return event;
+    const newevent = await this.createEventHelper(eventdata);
+    return newevent;
   }
 }

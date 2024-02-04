@@ -1,27 +1,14 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-<<<<<<< HEAD
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import logger, { LogTypes } from './utils/logger';
 import bodyParser from 'body-parser';
 import ErrorHandler from './utils/errors.handler';
-import { globalErrorHandler } from './utils/errorController';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
-import './utils/passport';
-=======
-import express, { Application, NextFunction, Request, Response } from "express";
-import cors from "cors";
-import morgan from "morgan";
-import logger, { LogTypes } from "./utils/logger";
-import bodyParser from "body-parser";
-import ErrorHandler from "./utils/errors.handler";
-import cookieSession from "cookie-session";
-import passport from "passport";
-import "./users/auth/passport";
->>>>>>> 671426e54be0c37e3c3a0cb075124110e981f31a
+import './users/auth/passport';
 
 const app: Application = express();
 
@@ -34,19 +21,11 @@ app.use(
 );
 
 app.use(
-<<<<<<< HEAD
   cookieSession({
     name: 'session',
     keys: ['milan-auth'],
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    maxAge: 24 * 60 * 60 * 1000, // 5 seconds
   })
-=======
-	cookieSession({
-		name: "session",
-		keys: ["milan-auth"],
-		maxAge: 24 * 60 * 60 * 1000, // 5 seconds
-	})
->>>>>>> 671426e54be0c37e3c3a0cb075124110e981f31a
 );
 
 app.use(passport.initialize());
@@ -69,13 +48,7 @@ app.use('/events', eventsRoutes);
 logger('Events routes loaded', LogTypes.LOGS);
 app.use('/auth', authRoutes);
 //---------------------------------------------------------------
-<<<<<<< HEAD
-
-//Error Handler
-app.use(globalErrorHandler);
-
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
-  console.log(`Request URL: ${req.url}`);
   next(
     new ErrorHandler({
       status_code: 404,
@@ -83,16 +56,6 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
       message_code: 'ROUTE_NOT_FOUND',
     })
   );
-=======
-app.all("*", (req: Request, res: Response, next: NextFunction) => {
-	next(
-		new ErrorHandler({
-			status_code: 404,
-			message: "Route not found",
-			message_code: "ROUTE_NOT_FOUND",
-		})
-	);
->>>>>>> 671426e54be0c37e3c3a0cb075124110e981f31a
 });
 
 app.listen(process.env.PORT, () => {

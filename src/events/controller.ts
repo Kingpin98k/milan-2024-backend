@@ -45,25 +45,20 @@ export default class EventsController extends EventsServices {
   };
 
   private createEventController = async (req: Request, res: Response): Promise<IResponse> => {
-    const { name, is_group_event, event_scope, club_name, max_group_size, event_code } = req.body;
-    // const eventData: Partial<IEvent> = req.body;
-    const event = await this.createEventService(
-      // eventData.name,
-      // eventData.is_group_event,
-      // eventData.event_scope,
-      // eventData.club_name,
-      // eventData.max_group_size,
-      // eventData.event_code
-      name,
-      is_group_event,
-      event_scope,
-      club_name,
-      max_group_size,
-      event_code
-    );
+    // const { name, is_group_event, event_scope, club_name, max_group_size, event_code } = req.body;
+    const eventData: Partial<IEvent> = req.body;
+    // const event = await this.createEventService(
+    //   name,
+    //   is_group_event,
+    //   event_scope,
+    //   club_name,
+    //   max_group_size,
+    //   event_code
+    // );
+    const newevent = await this.createEventService(eventData);
     return {
       success: true,
-      data: event,
+      data: newevent,
       message_code: 'CREATE_EVENT_SUCCESS',
       message: 'Event created successfully',
     };
