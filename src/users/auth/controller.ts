@@ -12,6 +12,7 @@ import {
 	IUserAuthSignupReqObj,
 } from "./interface";
 import UsersAuthService from "./services";
+import logger, { LogTypes } from "../../utils/logger";
 
 export default class UsersAuthController extends UsersAuthService {
 	public execute = async (req: Request, res: Response): Promise<void> => {
@@ -25,7 +26,17 @@ export default class UsersAuthController extends UsersAuthService {
 			let statusCode = 200;
 			if (routeName === UsersAuthRoutes.REGISTER) {
 				if (method === RequestMethods.POST) {
-					const reqObj: IUserAuthSignupReqObj = { ...req.body, id: v4() };
+					const this_user = req.user as any;
+					const { email, fullName, profilePic } = this_user;
+
+					const reqObj: IUserAuthSignupReqObj = {
+						...req.body,
+						id: v4(),
+						email,
+						name: fullName,
+						profile_pic: profilePic,
+					};
+
 					const authRes: IResponse = await this.signupController(reqObj);
 					response = authRes;
 				}

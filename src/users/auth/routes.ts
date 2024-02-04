@@ -39,7 +39,7 @@ router.get("/logout", (req, res) => {
 	res.redirect(process.env.CLIENT_URL as string);
 });
 
-router.post("/register", execute);
+router.post("/register", protect, execute);
 router.get("/current", protect, execute);
 // router.get("/:id", protect, execute);
 // router.delete("/:id", protect, execute);

@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { errorHandler } from "../../utils/ress.error";
 import { Request, Response, NextFunction } from "express";
 import ErrorHandler from "../../utils/errors.handler";
+import logger, { LogTypes } from "../../utils/logger";
 
 export default class IUserAuthValidation {
 	public static validatePhoneNumber = (phone_number: number) => {
@@ -9,7 +10,7 @@ export default class IUserAuthValidation {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Phone Number is required.",
-				message_code: "EMAIL_OR_PHONE_NUMBER_REQUIRED",
+				message_code: "PHONE_NUMBER_REQUIRED",
 			});
 		}
 		const phone_pattern = /^[0-9]{10}$/;
@@ -21,18 +22,6 @@ export default class IUserAuthValidation {
 				message_code: "INVALID_PHONE_NUMBER_FORMAT",
 			});
 		}
-	};
-
-	private jwtVerifyPromisified = (token: string, secret: string) => {
-		return new Promise((resolve, reject) => {
-			jwt.verify(token, secret, {}, (err, payload) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(payload);
-				}
-			});
-		});
 	};
 
 	public protect = async (req: Request, res: Response, next: NextFunction) => {
