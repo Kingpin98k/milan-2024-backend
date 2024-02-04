@@ -1,27 +1,14 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-<<<<<<< HEAD
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import logger, { LogTypes } from './utils/logger';
 import bodyParser from 'body-parser';
 import ErrorHandler from './utils/errors.handler';
-import { globalErrorHandler } from './utils/errorController';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
-import './utils/passport';
-=======
-import express, { Application, NextFunction, Request, Response } from "express";
-import cors from "cors";
-import morgan from "morgan";
-import logger, { LogTypes } from "./utils/logger";
-import bodyParser from "body-parser";
-import ErrorHandler from "./utils/errors.handler";
-import cookieSession from "cookie-session";
-import passport from "passport";
-import "./users/auth/passport";
->>>>>>> 671426e54be0c37e3c3a0cb075124110e981f31a
+import './users/auth/passport';
 
 const app: Application = express();
 
