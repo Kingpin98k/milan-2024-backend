@@ -1,15 +1,15 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import express, { Application, NextFunction, Request, Response } from "express";
-import cors from "cors";
-import morgan from "morgan";
-import logger, { LogTypes } from "./utils/logger";
-import bodyParser from "body-parser";
-import ErrorHandler from "./utils/errors.handler";
-import cookieSession from "cookie-session";
-import passport from "passport";
-import "./users/auth/passport";
-import moment from "moment";
+import express, { Application, NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import logger, { LogTypes } from './utils/logger';
+import bodyParser from 'body-parser';
+import ErrorHandler from './utils/errors.handler';
+import cookieSession from 'cookie-session';
+import passport from 'passport';
+import './users/auth/passport';
+import moment from 'moment';
 const app: Application = express();
 
 //Passport Config
@@ -21,11 +21,11 @@ app.use(
 );
 
 app.use(
-	cookieSession({
-		name: "session",
-		keys: ["milan-auth"],
-		maxAge: 24 * 60 * 60 * 1000, // 5 seconds
-	})
+  cookieSession({
+    name: 'session',
+    keys: ['milan-auth'],
+    maxAge: 24 * 60 * 60 * 1000, // 5 seconds
+  })
 );
 
 app.use(passport.initialize());
