@@ -9,7 +9,7 @@ import ErrorHandler from './utils/errors.handler';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
 import './users/auth/passport';
-
+import moment from 'moment';
 const app: Application = express();
 
 //Passport Config
@@ -48,14 +48,31 @@ app.use('/events', eventsRoutes);
 logger('Events routes loaded', LogTypes.LOGS);
 app.use('/auth', authRoutes);
 //---------------------------------------------------------------
-app.all('*', (req: Request, res: Response, next: NextFunction) => {
-  next(
-    new ErrorHandler({
-      status_code: 404,
-      message: 'Route not found',
-      message_code: 'ROUTE_NOT_FOUND',
-    })
-  );
+app.get("/", (req: Request, res: Response) => {
+	const date = moment().format("YYYY-MM-DD HH:mm:ss");
+	res.status(200).send({
+		message: "Server is running",
+		status_code: 200,
+		entry_time: date,
+	});
+});
+app.get("/health", (req: Request, res: Response) => {
+	const date = moment().format("YYYY-MM-DD HH:mm:ss");
+	res.status(200).send({
+		message: "Server is running",
+		status_code: 200,
+		entry_time: date,
+	});
+});
+
+app.all("*", (req: Request, res: Response, next: NextFunction) => {
+	next(
+		new ErrorHandler({
+			status_code: 404,
+			message: "Route not found",
+			message_code: "ROUTE_NOT_FOUND",
+		})
+	);
 });
 
 app.listen(process.env.PORT, () => {
