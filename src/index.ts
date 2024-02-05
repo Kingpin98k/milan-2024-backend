@@ -55,6 +55,7 @@ app.use("/events", eventsRoutes);
 app.use("/staff", staffRoutes);
 app.use("/users", userRoutes);
 
+//---------------------------------------------------------------
 app.get("/", (req: Request, res: Response) => {
 	const date = moment().format("YYYY-MM-DD HH:mm:ss");
 	res.status(200).send({
@@ -71,7 +72,7 @@ app.get("/health", (req: Request, res: Response) => {
 		entry_time: date,
 	});
 });
-//---------------------------------------------------------------
+
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
 	next(
 		new ErrorHandler({

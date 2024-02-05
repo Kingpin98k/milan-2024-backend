@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.DataTypes.BIGINT,
         allowNull: false,
       },
-      is_srm_student: {
+      is_srm_ktr: {
         type: Sequelize.DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull: false,

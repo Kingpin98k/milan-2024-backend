@@ -27,7 +27,7 @@ module.exports = {
         type: Sequelize.DataTypes.ENUM('srm', 'non-srm', 'both'),
         allowNull: false,
       },
-      clubname: {
+      club_name: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
