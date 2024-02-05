@@ -3,6 +3,8 @@ dotenv.config();
 import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import morgan from "morgan";
+// import hpp from "hpp";
+import helmet from "helmet";
 import moment from "moment";
 import logger, { LogTypes } from "./utils/logger";
 import bodyParser from "body-parser";
@@ -12,6 +14,10 @@ import passport from "passport";
 import "./users/auth/passport";
 
 const app: Application = express();
+
+//Security
+// app.use(hpp());
+app.use(helmet());
 
 //Passport Config
 app.use(
@@ -41,12 +47,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //---------------------------------------------------------------
 //Routes
-import authRoutes from "./users/auth/routes";
+import userRoutes from "./users/routes";
 import eventsRoutes from "./events/routes";
+import staffRoutes from "./staff/routes";
 
 app.use("/events", eventsRoutes);
-
-app.use("/auth", authRoutes);
+app.use("/staff", staffRoutes);
+app.use("/users", userRoutes);
 
 app.get("/", (req: Request, res: Response) => {
 	const date = moment().format("YYYY-MM-DD HH:mm:ss");
