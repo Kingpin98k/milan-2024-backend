@@ -1,5 +1,6 @@
 import {
 	IStaffLoginRequestObject,
+	IStaffPasswordChangeRequestObject,
 	IStaffRegisterObject,
 	IStaffResObject,
 	StaffScope,
@@ -16,6 +17,18 @@ export default class StaffDB {
 			throw res;
 		} else {
 			return res.rows as unknown as IStaffResObject[];
+		}
+	};
+
+	protected changeStaffPassword = async (
+		reqObj: IStaffPasswordChangeRequestObject
+	): Promise<IStaffResObject> => {
+		const query = `UPDATE staffs SET password = $1 WHERE email = $2 RETURNING *`;
+		const res = await db.query(query, [reqObj.password, reqObj.email]);
+		if (res instanceof Error) {
+			throw res;
+		} else {
+			return res.rows[0] as unknown as IStaffResObject;
 		}
 	};
 

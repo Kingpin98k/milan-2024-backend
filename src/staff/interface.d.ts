@@ -11,6 +11,11 @@ export type IStaffRegisterObject = {
 	role: StaffScope;
 };
 
+export type IStaffPasswordChangeRequestObject = {
+	email: string;
+	password: string;
+};
+
 export type IStaffResObject = {
 	id: string;
 	name: string;

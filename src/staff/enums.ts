@@ -4,4 +4,5 @@ export enum StaffRoutes {
 	VERIFY = "verify",
 	DENY = "deny",
 	DELETE = "delete",
+	FORGOT_PASSWORD = "forgotpassword",
 }

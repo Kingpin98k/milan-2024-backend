@@ -33,6 +33,13 @@ export default class StaffService extends StaffHelper {
 		return response;
 	};
 
+	protected changePasswordService = async (
+		reqObj: IStaffLoginRequestObject
+	): Promise<IStaffResObject> => {
+		const response = await this.changeStaffPasswordHelper(reqObj);
+		return response;
+	};
+
 	protected denyService = async (email: string): Promise<IStaffResObject> => {
 		const response = await this.denyHelper(email);
 		return response;

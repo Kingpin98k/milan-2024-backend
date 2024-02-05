@@ -5,6 +5,7 @@ import { StaffRoutes } from "./enums";
 import StaffService from "./services";
 import {
 	IStaffLoginRequestObject,
+	IStaffPasswordChangeRequestObject,
 	IStaffRegisterObject,
 	StaffScope,
 } from "./interface";
@@ -28,6 +29,12 @@ export default class StaffController extends StaffService {
 				const queryParams = JSON.parse(JSON.stringify(req.query));
 				const type = queryParams.type as StaffScope;
 				response = await this.getStaffsController(type);
+			} else if (
+				method === "POST" &&
+				routeName === StaffRoutes.FORGOT_PASSWORD
+			) {
+				const reqObj: IStaffPasswordChangeRequestObject = req.body;
+				response = await this.changePasswordController(reqObj);
 			} else if (method === "POST" && routeName === StaffRoutes.REGISTER) {
 				const reqObj = { ...req.body, id: v4() };
 				response = await this.registerController(reqObj);
@@ -108,6 +115,18 @@ export default class StaffController extends StaffService {
 			message_code: "DELETE_SUCCESS",
 			message: "User deleted successfully",
 			data: {},
+		};
+	};
+
+	private changePasswordController = async (
+		reqObj: IStaffPasswordChangeRequestObject
+	): Promise<IResponse> => {
+		const user = await this.changePasswordService(reqObj);
+		return {
+			success: true,
+			data: user,
+			message_code: "CHANGE_PASSWORD_SUCCESS",
+			message: "Password changed successfully",
 		};
 	};
 }

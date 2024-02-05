@@ -3,6 +3,7 @@ import StaffDB from "./db";
 import bcrypt from "bcryptjs";
 import {
 	IStaffLoginRequestObject,
+	IStaffPasswordChangeRequestObject,
 	IStaffRegisterObject,
 	IStaffResObject,
 	StaffScope,
@@ -105,6 +106,34 @@ export default class StaffHelper extends StaffDB {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Something went wrong while denying user",
+				message_code: "SOMETHING_WENT_WRONG",
+			});
+		}
+
+		return newUser;
+	};
+
+	protected changeStaffPasswordHelper = async (
+		reqObj: IStaffPasswordChangeRequestObject
+	): Promise<IStaffResObject> => {
+		const user = await this.checkIsExistingStaff(reqObj.email);
+		if (!user) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "User not found",
+				message_code: "USER_NOT_FOUND",
+			});
+		}
+
+		const newUser = await this.changeStaffPassword({
+			...reqObj,
+			password: await bcrypt.hash(reqObj.password, 10),
+		});
+
+		if (!newUser) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Something went wrong while changing password",
 				message_code: "SOMETHING_WENT_WRONG",
 			});
 		}
