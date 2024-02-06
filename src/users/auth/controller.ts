@@ -12,7 +12,6 @@ import {
 	IUserAuthSignupReqObj,
 } from "./interface";
 import UsersAuthService from "./services";
-import logger, { LogTypes } from "../../utils/logger";
 
 export default class UsersAuthController extends UsersAuthService {
 	public execute = async (req: Request, res: Response): Promise<void> => {

@@ -1,31 +1,38 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 dotenv.config();
-import express, { Application, NextFunction, Request, Response } from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import logger, { LogTypes } from './utils/logger';
-import bodyParser from 'body-parser';
-import ErrorHandler from './utils/errors.handler';
-import cookieSession from 'cookie-session';
-import passport from 'passport';
-import './users/auth/passport';
-import moment from 'moment';
+import express, { Application, NextFunction, Request, Response } from "express";
+import cors from "cors";
+import morgan from "morgan";
+// import hpp from "hpp";
+import helmet from "helmet";
+import moment from "moment";
+import logger, { LogTypes } from "./utils/logger";
+import bodyParser from "body-parser";
+import ErrorHandler from "./utils/errors.handler";
+import cookieSession from "cookie-session";
+import passport from "passport";
+import "./users/auth/passport";
+
 const app: Application = express();
+
+//Security
+// app.use(hpp());
+app.use(helmet());
 
 //Passport Config
 app.use(
-  cors({
-    origin: ['http://localhost:5173'],
-    credentials: true,
-  })
+	cors({
+		origin: ["http://localhost:5173"],
+		credentials: true,
+	})
 );
 
 app.use(
-  cookieSession({
-    name: 'session',
-    keys: ['milan-auth'],
-    maxAge: 24 * 60 * 60 * 1000, // 5 seconds
-  })
+	cookieSession({
+		name: "session",
+		keys: ["milan-auth"],
+		maxAge: 24 * 60 * 60 * 1000, // 5 seconds
+	})
 );
 
 app.use(passport.initialize());
@@ -34,19 +41,20 @@ app.use(passport.session());
 //Middlewares
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //---------------------------------------------------------------
 //Routes
+import userRoutes from "./users/routes";
+import eventsRoutes from "./events/routes";
+import staffRoutes from "./staff/routes";
 
-import authRoutes from './users/auth/routes';
-import eventsRoutes from './events/routes';
+app.use("/events", eventsRoutes);
+app.use("/staff", staffRoutes);
+app.use("/users", userRoutes);
 
-app.use('/events', eventsRoutes);
-logger('Events routes loaded', LogTypes.LOGS);
-app.use('/auth', authRoutes);
 //---------------------------------------------------------------
 app.get("/", (req: Request, res: Response) => {
 	const date = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -76,5 +84,8 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(process.env.PORT, () => {
-  logger(`Server is running on port ${process.env.PORT ?? 5000}`, LogTypes.LOGS);
+	logger(
+		`Server is running on port ${process.env.PORT ?? 5000}`,
+		LogTypes.LOGS
+	);
 });
