@@ -4,42 +4,49 @@ import ErrorHandler from '../utils/errors.handler';
 import { IEvent, IResponse } from './interface';
 import { EventsServices } from './services';
 import logger, { LogTypes } from '../utils/logger';
+import { errorHandler } from '../utils/ress.error';
 
 export default class EventsController extends EventsServices {
   public execute = async (req: Request, res: Response): Promise<void> => {
     try {
-      const method = req.method,
-        routeName = req.route.path.split('/')[1];
-      const { table_id, session_id } = req.headers;
+      // const method = req.method,
+      //   routeName = req.route.path.split('/')[1];
+      const method = req.method;
+      const routePath = req.route.path;
+      logger(req, LogTypes.LOGS);
       let response: IResponse = {
           success: false,
-          message_code: 'GET_ALL_ORDERS_ERROR',
+          message_code: 'CONTROLLER_ERROR',
         },
         statusCode = 200;
 
-      if (routeName === 'events') {
+      if (routePath === '/event') {
         if (method === RequestMethods.GET) {
           response = await this.getAllEventsController(req, res);
         } else if (method === RequestMethods.POST) {
           response = await this.createEventController(req, res);
         }
+      } else if (routePath.startsWith('/event/') && req.params.code !== '') {
+        logger('inside code route', LogTypes.LOGS);
+        if (method === RequestMethods.GET) {
+          response = await this.getEventController(req, res);
+        } else if (method === RequestMethods.DELETE) {
+          response = await this.deleteEventController(req, res);
+        }
       }
       res.status(statusCode).send(response);
     } catch (error) {
-      new ErrorHandler({
-        status_code: 500,
-        message: 'Error calling getAllEventsController',
-        message_code: 'GET_ALL_ORDERS_ERROR',
-      });
+      errorHandler(res, error);
     }
   };
 
   private getAllEventsController = async (req: Request, res: Response): Promise<IResponse> => {
     const events = await this.getAllEventsService();
+    logger(events, LogTypes.LOGS);
     return {
       success: true,
       data: events,
-      message_code: 'GET_ALL_ORDERS_SUCCESS',
+      message_code: 'GET_ALL_EVENTS_SUCCESS',
       message: 'Events fetched successfully',
     };
   };
@@ -61,6 +68,29 @@ export default class EventsController extends EventsServices {
       data: newevent,
       message_code: 'CREATE_EVENT_SUCCESS',
       message: 'Event created successfully',
+    };
+  };
+
+  private getEventController = async (req: Request, res: Response): Promise<IResponse> => {
+    logger(req.params.code, LogTypes.LOGS);
+    const event_code = req.params.code;
+    const event = await this.getEventService(event_code);
+    return {
+      success: true,
+      data: event,
+      message_code: 'GET_EVENT_SUCCESS',
+      message: 'Event fetched successfully',
+    };
+  };
+
+  private deleteEventController = async (req: Request, res: Response): Promise<IResponse> => {
+    const event_code = req.params.code;
+    const event = await this.deleteEventService(event_code);
+    return {
+      success: true,
+      data: event,
+      message_code: 'DELETE_EVENT_SUCCESS',
+      message: 'Event deleted successfully',
     };
   };
 }
