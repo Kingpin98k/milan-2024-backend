@@ -1,5 +1,8 @@
+import JWTUtils from "../utils/jwt.utils";
+import logger, { LogTypes } from "../utils/logger";
 import StaffHelper from "./helper";
 import {
+	IStaffAuthResObject,
 	IStaffLoginRequestObject,
 	IStaffRegisterObject,
 	IStaffResObject,
@@ -7,6 +10,11 @@ import {
 } from "./interface";
 
 export default class StaffService extends StaffHelper {
+	jwtHelper: JWTUtils;
+	constructor() {
+		super();
+		this.jwtHelper = new JWTUtils();
+	}
 	protected getStaffsService = async (
 		type: StaffScope
 	): Promise<IStaffResObject[]> => {
@@ -16,15 +24,29 @@ export default class StaffService extends StaffHelper {
 
 	protected registerService = async (
 		reqObj: IStaffRegisterObject
-	): Promise<IStaffResObject> => {
-		const response = await this.registerHelper(reqObj);
+	): Promise<IStaffAuthResObject> => {
+		const user = await this.registerHelper(reqObj);
+		const token = await this.jwtHelper.generateTokens(user);
+		const response: IStaffAuthResObject = {
+			user,
+			token: token.access_token,
+		};
+
 		return response;
 	};
 
 	protected loginService = async (
 		reqObj: IStaffLoginRequestObject
-	): Promise<IStaffResObject> => {
-		const response = await this.loginHelper(reqObj);
+	): Promise<IStaffAuthResObject> => {
+		const user = await this.loginHelper(reqObj);
+
+		const token = await this.jwtHelper.generateTokens(user);
+
+		const response: IStaffAuthResObject = {
+			user,
+			token: token.access_token,
+		};
+
 		return response;
 	};
 

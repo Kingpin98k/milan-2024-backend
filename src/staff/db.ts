@@ -6,6 +6,7 @@ import {
 	StaffScope,
 } from "./interface";
 import db from "../config/pg.config";
+import logger, { LogTypes } from "../utils/logger";
 
 export default class StaffDB {
 	protected getStaffs = async (

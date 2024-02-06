@@ -5,4 +5,5 @@ export enum StaffRoutes {
 	DENY = "deny",
 	DELETE = "delete",
 	FORGOT_PASSWORD = "forgotpassword",
+	LOGOUT = "logout",
 }
