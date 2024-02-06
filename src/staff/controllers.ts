@@ -4,6 +4,7 @@ import { errorHandler } from "../utils/ress.error";
 import { StaffRoutes } from "./enums";
 import StaffService from "./services";
 import {
+	IStaffAuthResObject,
 	IStaffLoginRequestObject,
 	IStaffPasswordChangeRequestObject,
 	IStaffRegisterObject,
@@ -38,9 +39,21 @@ export default class StaffController extends StaffService {
 			} else if (method === "POST" && routeName === StaffRoutes.REGISTER) {
 				const reqObj = { ...req.body, id: v4() };
 				response = await this.registerController(reqObj);
+				res.cookie("token", response.data.token, {
+					httpOnly: true,
+					secure: true,
+					sameSite: "none",
+					expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+				});
 			} else if (method === "POST" && routeName === StaffRoutes.LOGIN) {
-				const reqObj: IStaffLoginRequestObject = req.body;
+				const reqObj = req.body;
 				response = await this.loginController(reqObj);
+				res.cookie("token", response.data.token, {
+					httpOnly: true,
+					secure: true,
+					sameSite: "none",
+					expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+				});
 			} else if (method === "POST" && routeName === StaffRoutes.VERIFY) {
 				const { email } = req.body;
 				response = await this.verifyController(email);
@@ -51,6 +64,14 @@ export default class StaffController extends StaffService {
 				const id = req.params.staffId;
 				statusCode = 204;
 				response = await this.deleteController(id);
+			} else if (method === "GET" && routeName === StaffRoutes.LOGOUT) {
+				res.clearCookie("token");
+				response = {
+					success: true,
+					data: {},
+					message_code: "LOGOUT_SUCCESS",
+					message: "User logged out successfully",
+				};
 			}
 			res.status(statusCode).send(response);
 		} catch (error) {
@@ -71,10 +92,10 @@ export default class StaffController extends StaffService {
 	private registerController = async (
 		reqObj: IStaffRegisterObject
 	): Promise<IResponse> => {
-		const user = await this.registerService(reqObj);
+		const data: IStaffAuthResObject = await this.registerService(reqObj);
 		return {
 			success: true,
-			data: user,
+			data: data,
 			message_code: "REGISTER_SUCCESS",
 			message: "User registered successfully",
 		};
@@ -82,10 +103,10 @@ export default class StaffController extends StaffService {
 	private loginController = async (
 		reqObj: IStaffLoginRequestObject
 	): Promise<IResponse> => {
-		const user = await this.loginService(reqObj);
+		const data = await this.loginService(reqObj);
 		return {
 			success: true,
-			data: user,
+			data: data,
 			message_code: "LOGIN_SUCCESS",
 			message: "User logged in successfully",
 		};

@@ -31,6 +31,11 @@ export type IStaffResObject = {
 	is_deleted: boolean;
 };
 
+export type IStaffAuthResObject = {
+	user: IStaffResObject;
+	token?: string;
+};
+
 export type IStaffLoginRequestObject = {
 	email: string;
 	password: string;
