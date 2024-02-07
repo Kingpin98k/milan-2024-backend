@@ -1,8 +1,10 @@
 import EventsDb from './db';
-import { IEvent } from './interface';
+import db from '../config/pg.config';
+import { IEvent, IEventUser } from './interface';
 import logger, { LogTypes } from '../utils/logger';
 import { v4 } from 'uuid';
 import ErrorHandler from './../utils/errors.handler';
+import { transform } from 'typescript';
 
 export default class EventsHelpers extends EventsDb {
   public getAllEventsHelper = async (): Promise<IEvent[]> => {
@@ -20,9 +22,18 @@ export default class EventsHelpers extends EventsDb {
 
   public createEventHelper = async (eventData: Partial<IEvent>): Promise<IEvent> => {
     logger('createEventHelpers1', LogTypes.LOGS);
+    const existingevent = await this.fetchEventByCode(eventData.event_code || '');
+    if (existingevent) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'Event with this code already exists',
+        message_code: 'DUPLICATE_EVENT_CODE',
+      });
+    }
     eventData.created_at = new Date();
     eventData.updated_at = null;
     eventData.id = v4();
+    eventData.reg_count = 0;
     const newevent = await this.createEvent(eventData);
     if (!newevent) {
       throw new ErrorHandler({
@@ -36,7 +47,7 @@ export default class EventsHelpers extends EventsDb {
 
   public getEventHelper = async (event_code: string): Promise<IEvent> => {
     logger('getEventHelpers1', LogTypes.LOGS);
-    const event = await this.fetchEvent(event_code);
+    const event = await this.fetchEventByCode(event_code);
     if (!event) {
       throw new ErrorHandler({
         status_code: 404,
@@ -54,9 +65,73 @@ export default class EventsHelpers extends EventsDb {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_DELETED',
       });
     }
     return event;
+  };
+
+  public registerHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
+    logger('registerHelpers1', LogTypes.LOGS);
+    userData.id = v4();
+    userData.created_at = new Date();
+    userData.updated_at = null;
+    const existinguser = await this.getUserByDetails(userData);
+    if (existinguser) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'User already registered',
+        message_code: 'USER_ALREADY_REGISTERED',
+      });
+    }
+    const user = await db.transaction(async () => {
+      const updated_at = new Date();
+      const event = await this.increaseCount(userData, updated_at);
+      if (!event) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'Event not found',
+          message_code: 'REGISTRATION_FAILED',
+        });
+      }
+      userData.event_id = event.id;
+      const user = await this.createUser(userData);
+      if (!user) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'user creation failed',
+          message_code: 'REGISTRATION_FAILED',
+        });
+      }
+      return user;
+    });
+
+    return user;
+  };
+
+  public unregisterHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
+    logger('unregisterHelpers1', LogTypes.LOGS);
+    const user = await db.transaction(async () => {
+      const updated_at = new Date();
+      const event = await this.decreaseCount(userData, updated_at);
+      if (!event) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'Event not found',
+          message_code: 'UNREGISTRATION_FAILED',
+        });
+      }
+      userData.event_id = event.id;
+      const user = await this.deleteUser(userData);
+      if (!user) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'Event not found',
+          message_code: 'UNREGISTRATION_FAILED',
+        });
+      }
+      return user;
+    });
+    return user;
   };
 }
