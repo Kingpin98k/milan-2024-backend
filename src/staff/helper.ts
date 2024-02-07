@@ -8,6 +8,7 @@ import {
 	IStaffResObject,
 	StaffScope,
 } from "./interface";
+import logger, { LogTypes } from "../utils/logger";
 
 export default class StaffHelper extends StaffDB {
 	protected registerHelper = async (
@@ -37,6 +38,13 @@ export default class StaffHelper extends StaffDB {
 	protected loginHelper = async (
 		reqObj: IStaffLoginRequestObject
 	): Promise<IStaffResObject> => {
+		if (!reqObj.email || !reqObj.password) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Both Email and password are required",
+				message_code: "EMAIL_PASSWORD_REQUIRED",
+			});
+		}
 		const user = await this.checkIsExistingStaff(reqObj.email);
 		if (!user) {
 			throw new ErrorHandler({
