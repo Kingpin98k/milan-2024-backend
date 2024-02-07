@@ -10,6 +10,7 @@ import logger, { LogTypes } from "./utils/logger";
 import bodyParser from "body-parser";
 import ErrorHandler from "./utils/errors.handler";
 import cookieSession from "cookie-session";
+import cookieParser from "cookie-parser";
 import passport from "passport";
 import "./users/auth/passport";
 
@@ -39,6 +40,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Middlewares
+app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(morgan("dev"));
