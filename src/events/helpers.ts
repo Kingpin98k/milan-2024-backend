@@ -91,7 +91,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'Event not found',
-          message_code: 'REGISTRATION_FAILED',
+          message_code: 'REGISTRATION_FAILED_EVENT_NF',
         });
       }
       userData.event_id = event.id;
@@ -100,7 +100,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'user creation failed',
-          message_code: 'REGISTRATION_FAILED',
+          message_code: 'REGISTRATION_FAILED_USER_NC',
         });
       }
       return user;
@@ -118,7 +118,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'Event not found',
-          message_code: 'UNREGISTRATION_FAILED',
+          message_code: 'UNREGISTRATION_FAILED_EVENT_NF',
         });
       }
       userData.event_id = event.id;
@@ -126,12 +126,52 @@ export default class EventsHelpers extends EventsDb {
       if (!user) {
         throw new ErrorHandler({
           status_code: 404,
-          message: 'Event not found',
-          message_code: 'UNREGISTRATION_FAILED',
+          message: 'user not found',
+          message_code: 'UNREGISTRATION_FAILED_USER_NF',
         });
       }
       return user;
     });
     return user;
+  };
+
+  public getEventByClubHelper = async (club_name: string): Promise<IEvent[]> => {
+    logger('getEventByClubHelpers1', LogTypes.LOGS);
+    const events = await this.fetchEventByClub(club_name);
+    if (!events) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Events not found',
+        message_code: 'EVENTS_NOT_FOUND',
+      });
+    }
+    if (!events.length) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'No events found for this club',
+        message_code: 'CLUB_HAS_NO_EVENTS',
+      });
+    }
+    return events;
+  };
+
+  public getAllUsersByCodeHelper = async (event_code: string): Promise<IEventUser[]> => {
+    logger('getAllUsersByCodeHelpers1', LogTypes.LOGS);
+    const users = await this.fetchAllUsersByCode(event_code);
+    if (!users) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Users not found',
+        message_code: 'USERS_NOT_FOUND',
+      });
+    }
+    if (!users.length) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'No users found for this event',
+        message_code: 'Event_HAS_NO_USERS',
+      });
+    }
+    return users;
   };
 }
