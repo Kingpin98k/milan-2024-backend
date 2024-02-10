@@ -51,7 +51,7 @@ import userRoutes from './users/routes';
 import eventsRoutes from './events/routes';
 import staffRoutes from './staff/routes';
 
-app.use('/events', eventsRoutes);
+app.use('/api/events', eventsRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/users', userRoutes);
 
