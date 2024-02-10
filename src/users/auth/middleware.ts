@@ -40,8 +40,3 @@ export default class IUserAuthValidation {
 	};
 }
 
-// 1.soft delete
-// 2.is ktr-student
-// 3.regex
-// 4.Error Discord
-// 5.gender
