@@ -44,7 +44,7 @@ export default class EventsDb {
     ];
     const res = await db.query(query, values);
     if (res instanceof Error) {
-      logger(res, LogTypes.LOGS);
+      // logger(res, LogTypes.LOGS);
       throw res;
     }
     logger(res.rows[0], LogTypes.LOGS);
@@ -177,5 +177,16 @@ export default class EventsDb {
       throw res;
     }
     return res.rows[0] as unknown as IEventUser;
+  };
+
+  deleteAllUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
+    logger('deleteAllUsersByCode1', LogTypes.LOGS);
+    const query = 'DELETE FROM event_users WHERE event_code = $1 RETURNING *;';
+    const values = [event_code];
+    const res = await db.query(query, values);
+    if (res instanceof Error) {
+      throw res;
+    }
+    return res.rows as unknown as IEventUser[];
   };
 }
