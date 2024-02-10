@@ -2,9 +2,38 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import ErrorHandler from "../utils/errors.handler";
 import { errorHandler } from "../utils/ress.error";
-import logger, { LogTypes } from "../utils/logger";
 
 export default class IStaffValidation {
+	public static validateEmailAndPhone = (
+		email: string,
+		phone_number: number
+	) => {
+		if (!email || !phone_number) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Both Email and PhoneNumber Number is required.",
+				message_code: "EMAIL_OR_PHONE_NUMBER_REQUIRED",
+			});
+		}
+		const email_patern = /^[a-z]{2}[0-9]{4}@srmist.edu.in$/;
+		const phone_pattern = /^[0-9]{10}$/;
+
+		if (!phone_pattern.test(phone_number.toString())) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Invalid Phone Number format.",
+				message_code: "INVALID_PHONE_NUMBER_FORMAT",
+			});
+		}
+
+		if (!email_patern.test(email)) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Invalid Email format. Only SRM emails are allowed !",
+				message_code: "INVALID_EMAIL_FORMAT",
+			});
+		}
+	};
 	private jwtVerifyPromisified = (token: string, secret: string) => {
 		return new Promise((resolve, reject) => {
 			jwt.verify(token, secret, {}, (err, payload) => {
@@ -17,7 +46,11 @@ export default class IStaffValidation {
 		});
 	};
 
-	protectStaff = async (req: Request, res: Response, next: NextFunction) => {
+	public protectStaff = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
 		try {
 			let token;
 			if (
@@ -64,5 +97,21 @@ export default class IStaffValidation {
 		} catch (error) {
 			errorHandler(res, error);
 		}
+	};
+
+	public adminAccess = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		const user = req.body?.current_user;
+		if (!user || user.role !== "admin") {
+			throw new ErrorHandler({
+				status_code: 403,
+				message: "You are not authorized to perform this action",
+				message_code: "NOT_AUTHORIZED",
+			});
+		}
+		next();
 	};
 }

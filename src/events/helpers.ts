@@ -60,14 +60,33 @@ export default class EventsHelpers extends EventsDb {
 
   public deleteEventHelper = async (event_code: string): Promise<IEvent> => {
     logger('deleteEventHelpers1', LogTypes.LOGS);
-    const event = await this.deleteEvent(event_code);
-    if (!event) {
-      throw new ErrorHandler({
-        status_code: 404,
-        message: 'Event not found',
-        message_code: 'EVENT_NOT_DELETED',
-      });
-    }
+    const event = await db.transaction(async () => {
+      const event1 = await this.fetchEventByCode(event_code);
+      if (!event1) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'Event not found',
+          message_code: 'EVENT_NOT_FOUND',
+        });
+      }
+      const users = await this.deleteAllUsersByCode(event_code);
+      if (!users) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'user deletion failed',
+          message_code: 'USER_DELETION_FAILED',
+        });
+      }
+      const event = await this.deleteEvent(event_code);
+      if (!event) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'Event not deleted',
+          message_code: 'EVENT_NOT_DELETED',
+        });
+      }
+      return event;
+    });
     return event;
   };
 
