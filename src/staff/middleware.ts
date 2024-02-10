@@ -36,7 +36,6 @@ export default class IStaffValidation {
 			}
 
 
-			console.log("token",token);
 
 			let JWT_SECRET = process.env.JWT_SECRET;
 			if (!JWT_SECRET) {
