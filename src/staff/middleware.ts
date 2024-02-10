@@ -47,7 +47,11 @@ export default class IStaffValidation {
 		});
 	};
 
-	protectStaff = async (req: Request, res: Response, next: NextFunction) => {
+	public protectStaff = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
 		try {
 			let token;
 			if (
@@ -91,5 +95,21 @@ export default class IStaffValidation {
 		} catch (error) {
 			errorHandler(res, error);
 		}
+	};
+
+	public adminAccess = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		const user = req.body?.current_user;
+		if (!user || user.role !== "admin") {
+			throw new ErrorHandler({
+				status_code: 403,
+				message: "You are not authorized to perform this action",
+				message_code: "NOT_AUTHORIZED",
+			});
+		}
+		next();
 	};
 }

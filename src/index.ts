@@ -52,9 +52,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 import userRoutes from "./users/routes";
 import eventsRoutes from "./events/routes";
 import staffRoutes from "./staff/routes";
+import teamsRoutes from "./teams/routes";
 
 app.use("/api/events", eventsRoutes);
 app.use("/api/staff", staffRoutes);
+app.use("/api/teams", teamsRoutes);
 app.use("/users", userRoutes);
 
 //---------------------------------------------------------------

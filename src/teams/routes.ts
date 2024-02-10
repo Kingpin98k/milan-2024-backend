@@ -1,9 +1,12 @@
 import { Router } from "express";
+import TeamsController from "./controller";
 
 const router = Router();
 
-router.post("/create");
-router.post("/join");
+const { execute } = new TeamsController();
+
+router.post("/create", execute);
+router.post("/join", execute);
 router.patch("/updateName");
 router.delete("/delete-team/:teamCode");
 router.post("/leave");

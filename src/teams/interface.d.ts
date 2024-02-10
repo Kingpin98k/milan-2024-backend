@@ -1,6 +1,7 @@
 export type ITeamCreateReqObject = {
 	id: string;
 	team_name: string;
+	user_id: string;
 	event_code: string;
 	team_code: string;
 	event_id: string;
