@@ -173,4 +173,18 @@ export default class TeamsDB {
 			}
 		}
 	};
+
+	protected updateTeamName = async (team_code: string, team_name: string) => {
+		const query = `UPDATE teams SET team_name = $1 WHERE team_code = $2 RETURNING *`;
+		const result = await db.query(query, [team_name, team_code]);
+		if (result instanceof Error) throw result;
+		return result.rows[0];
+	};
+
+	protected checkIfCaptain = async (team_code: string, user_id: string) => {
+		const query = ` FROM team_members WHERE team_code = $1 AND user_id = $2 AND is_captain = true`;
+		const result = await db.query(query, [team_code, user_id]);
+		if (result instanceof Error) throw result;
+		return result.rows[0];
+	};
 }
