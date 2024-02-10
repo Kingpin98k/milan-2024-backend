@@ -5,7 +5,6 @@ import {
 	ITeamUpdateNameReqObject,
 } from "./interface";
 import db from "../config/pg.config";
-import logger, { LogTypes } from "../utils/logger";
 import ErrorHandler from "../utils/errors.handler";
 
 export default class TeamsDB {
@@ -14,7 +13,6 @@ export default class TeamsDB {
 	): Promise<ITeamResObject> => {
 		const query = db.format("INSERT INTO teams ? RETURNING *", reqObj);
 		const result = await db.query(query);
-		logger(result, LogTypes.LOGS);
 		if (result instanceof Error) throw result;
 		return result.rows[0] as unknown as ITeamResObject;
 	};
@@ -60,13 +58,6 @@ export default class TeamsDB {
 		return result.rows[0] as any;
 	};
 
-	protected changeTeamName = async (reqObj: ITeamUpdateNameReqObject) => {
-		const query = `UPDATE teams SET team_name = $1 WHERE team_code = $2 RETURNING *`;
-		const result = await db.query(query, [reqObj.team_name, reqObj.team_code]);
-		if (result instanceof Error) throw result;
-		return result.rows[0];
-	};
-
 	protected deleteTeam = async (team_code: string) => {
 		const query = `DELETE FROM teams WHERE team_code = $1`;
 		const result = await db.query(query, [team_code]);
@@ -77,13 +68,46 @@ export default class TeamsDB {
 		const query = `DELETE FROM team_members WHERE team_code = $1`;
 		const result = await db.query(query, [team_code]);
 		if (result instanceof Error) throw result;
-		return result.rows[0];
 	};
 
 	protected leaveTeam = async (team_code: string, user_id: string) => {
-		const query = `DELETE FROM team_members WHERE team_code = $1 AND user_id = $2`;
-		const result = await db.query(query, [team_code, user_id]);
-		if (result instanceof Error) throw result;
+		const query = `
+		DO $$
+		BEGIN
+				IF NOT EXISTS (
+						SELECT 1 FROM teams WHERE team_code = '${team_code}'
+				) THEN
+						RAISE EXCEPTION 'TEAM_DOES_NOT_EXIST';
+				END IF;
+		
+				IF EXISTS (
+						SELECT 1 FROM team_members WHERE team_code = '${team_code}' AND user_id = '${user_id}' AND is_captain = TRUE
+				) THEN
+						RAISE EXCEPTION 'CAPTAIN_CANT_LEAVE_TEAM';
+				END IF;
+		
+				DELETE FROM team_members WHERE team_code = '${team_code}' AND user_id = '${user_id}';
+		END $$;
+		
+		`;
+		const result = await db.query(query);
+		if (result instanceof Error) {
+			if (result.message === "TEAM_DOES_NOT_EXIST") {
+				throw new ErrorHandler({
+					message: "Team does not exist",
+					status_code: 400,
+					message_code: "TEAM_DOES_NOT_EXIST",
+				});
+			} else if (result.message === "CAPTAIN_CANT_LEAVE_TEAM") {
+				throw new ErrorHandler({
+					message: "Team captain cannot leave the team",
+					status_code: 400,
+					message_code: "CAPTAIN_CANT_LEAVE_TEAM",
+				});
+			} else {
+				throw result;
+			}
+		}
 	};
 
 	protected checkUserAndEventExistance = async (
@@ -182,9 +206,103 @@ export default class TeamsDB {
 	};
 
 	protected checkIfCaptain = async (team_code: string, user_id: string) => {
-		const query = ` FROM team_members WHERE team_code = $1 AND user_id = $2 AND is_captain = true`;
-		const result = await db.query(query, [team_code, user_id]);
+		const query = `		DO $$
+		BEGIN
+			IF NOT EXISTS (
+					SELECT 1 FROM teams WHERE team_code = '${team_code}'
+			) THEN
+					RAISE EXCEPTION 'TEAM_DOES_NOT_EXIST';
+			END IF;
+			IF NOT EXISTS (
+					SELECT 1 FROM team_members WHERE team_code = '${team_code}' AND user_id = '${user_id}' AND is_captain = TRUE
+			) THEN
+					RAISE EXCEPTION 'USER_IS_NOT_CAPTAIN';
+			END IF;
+		END $$;`;
+
+		const result = await db.query(query);
+
+		if (result instanceof Error) {
+			if (result.message === "TEAM_DOES_NOT_EXIST") {
+				throw new ErrorHandler({
+					message: "Team does not exist",
+					status_code: 400,
+					message_code: "TEAM_DOES_NOT_EXIST",
+				});
+			} else if (result.message === "USER_IS_NOT_CAPTAIN") {
+				throw new ErrorHandler({
+					message: "Only Team Cpatains have this permission !",
+					status_code: 400,
+					message_code: "USER_IS_NOT_CAPTAIN",
+				});
+			} else {
+				throw result;
+			}
+		}
+	};
+
+	protected checkIfCanChangeName = async (
+		team_code: string,
+		user_id: string,
+		team_name: string
+	): Promise<void> => {
+		const query = `        
+		DO $$
+		BEGIN
+			IF NOT EXISTS (
+					SELECT 1 FROM teams WHERE team_code = '${team_code}'
+			) THEN
+					RAISE EXCEPTION 'TEAM_DOES_NOT_EXIST';
+			END IF;
+			IF NOT EXISTS (
+					SELECT 1 FROM team_members WHERE team_code = '${team_code}' AND user_id = '${user_id}' AND is_captain = TRUE
+			) THEN
+					RAISE EXCEPTION 'USER_IS_NOT_CAPTAIN';
+			END IF;
+			IF EXISTS (
+				SELECT 1 FROM teams WHERE team_name = '${team_name}'
+			)
+			THEN
+				RAISE EXCEPTION 'SELECT_ANOTHER_NAME';
+			END IF;
+		END $$;
+`;
+		const result = await db.query(query);
+
+		if (result instanceof Error) {
+			if (result.message === "TEAM_DOES_NOT_EXIST") {
+				throw new ErrorHandler({
+					message: "Team does not exist",
+					status_code: 400,
+					message_code: "TEAM_DOES_NOT_EXIST",
+				});
+			} else if (result.message === "USER_IS_NOT_CAPTAIN") {
+				throw new ErrorHandler({
+					message: "Only Cpatains have the permission to change team name !",
+					status_code: 400,
+					message_code: "USER_IS_NOT_CAPTAIN",
+				});
+			} else if (result.message === "SELECT_ANOTHER_NAME") {
+				throw new ErrorHandler({
+					message: "Selected name already exists !",
+					status_code: 400,
+					message_code: "TEAM_NAME_EXISTS",
+				});
+			} else {
+				throw result;
+			}
+		}
+	};
+	protected deleteTeamMember = async (team_code: string, member_id: string) => {
+		const query = `DELETE FROM team_members WHERE team_code = '${team_code}' AND user_id = '${member_id}';`;
+		const result = await db.query(query);
 		if (result instanceof Error) throw result;
-		return result.rows[0];
+	};
+
+	protected getAllUserTeams = async (user_id: string) => {
+		const query = `SELECT * FROM team_members WHERE user_id = $1`;
+		const result = await db.query(query, [user_id]);
+		if (result instanceof Error) throw result;
+		return result.rows;
 	};
 }

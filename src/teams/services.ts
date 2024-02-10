@@ -2,8 +2,8 @@ import logger, { LogTypes } from "../utils/logger";
 import TeamsHelper from "./helper";
 import {
 	ITeamCreateReqObject,
+	ITeamDeleteMemberReqObject,
 	ITeamDeleteReqObject,
-	ITeamDeleteUserReqObject,
 	ITeamJoinReqObject,
 	ITeamLeaveReqObject,
 	ITeamResObject,
@@ -30,26 +30,32 @@ export default class TeamsServices extends TeamsHelper {
 	protected updateTeamNameService = async (
 		reqObj: ITeamUpdateNameReqObject
 	): Promise<ITeamResObject> => {
-		return {
-			id: "123",
-			team_name: "team_name",
-			event_code: "event_code",
-			team_code: "team_code",
-			event_id: "event_id",
-			created_at: new Date(),
-			updated_at: new Date(),
-		};
+		const result = await this.updateTeamNameHelper(reqObj);
+
+		return result;
 	};
 
 	protected deleteTeamService = async (
 		reqObj: ITeamDeleteReqObject
-	): Promise<void> => {};
+	): Promise<void> => {
+		await this.deleteTeamHelper(reqObj);
+	};
 
 	protected leaveTeamService = async (
 		reqObj: ITeamLeaveReqObject
-	): Promise<void> => {};
+	): Promise<void> => {
+		await this.leaveTeamHelper(reqObj);
+	};
 
-	protected deleteUserService = async (
-		reqObj: ITeamDeleteUserReqObject
-	): Promise<void> => {};
+	protected deleteTeamMemberService = async (
+		reqObj: ITeamDeleteMemberReqObject
+	): Promise<void> => {
+		await this.deleteTeamMemberHelper(reqObj);
+	};
+
+	protected getAllUserTeamsService = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllUserTeamsHelper(reqObj);
+
+		return result;
+	};
 }

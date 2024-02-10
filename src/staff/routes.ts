@@ -8,6 +8,7 @@ const router = Router();
 const { execute } = new StaffController();
 const { protectStaff, adminAccess } = new IStaffValidation();
 
+router.get("/current", protectStaff, execute);
 router.get("/", protectStaff, adminAccess, execute);
 router.post("/register", execute);
 router.post("/forgotpassword", protectStaff, execute);

@@ -73,4 +73,9 @@ export default class StaffService extends StaffHelper {
 	protected deleteService = async (id: string): Promise<void> => {
 		await this.deleteHelper(id);
 	};
+
+	protected getStaffService = async (id: string): Promise<IStaffResObject> => {
+		const response = await this.getStaffHelper(id);
+		return response;
+	};
 }

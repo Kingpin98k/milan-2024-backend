@@ -18,7 +18,6 @@ export default class StaffController extends StaffService {
 		try {
 			const method = req.method;
 			const routeName = req.route.path.split("/")[1];
-			console.log("routeName", routeName);
 			let response: IResponse = {
 				success: false,
 				data: {},
@@ -30,6 +29,10 @@ export default class StaffController extends StaffService {
 				const queryParams = JSON.parse(JSON.stringify(req.query));
 				const type = queryParams.type as StaffScope;
 				response = await this.getStaffsController(type);
+			}
+			if (method === "GET" && routeName === StaffRoutes.GET_CURRENT_STAFF) {
+				const id = req.body.current_user.id;
+				response = await this.getStaffController(id);
 			} else if (
 				method === "POST" &&
 				routeName === StaffRoutes.FORGOT_PASSWORD
@@ -148,6 +151,16 @@ export default class StaffController extends StaffService {
 			data: user,
 			message_code: "CHANGE_PASSWORD_SUCCESS",
 			message: "Password changed successfully",
+		};
+	};
+
+	private getStaffController = async (id: string): Promise<IResponse> => {
+		const user = await this.getStaffService(id);
+		return {
+			success: true,
+			data: user,
+			message_code: "GET_STAFF_SUCCESS",
+			message: "User fetched successfully",
 		};
 	};
 }

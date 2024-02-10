@@ -177,4 +177,18 @@ export default class StaffHelper extends StaffDB {
 		await this.deleteStaff(user.id);
 		return;
 	};
+
+	protected getStaffHelper = async (id: string): Promise<IStaffResObject> => {
+		const user = await this.getStaff(id);
+
+		if (!user) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "User not found",
+				message_code: "USER_NOT_FOUND",
+			});
+		}
+
+		return user;
+	};
 }
