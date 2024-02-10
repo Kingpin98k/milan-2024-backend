@@ -10,7 +10,6 @@ import {
 	IStaffRegisterObject,
 	StaffScope,
 } from "./interface";
-import logger, { LogTypes } from "../utils/logger";
 import { IResponse } from "../events/interface";
 
 export default class StaffController extends StaffService {
@@ -58,11 +57,9 @@ export default class StaffController extends StaffService {
 					expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
 				});
 			} else if (method === "POST" && routeName === StaffRoutes.VERIFY) {
-				const { email } = req.body;
-				response = await this.verifyController(email);
+				response = await this.verifyController(req.body.user_id);
 			} else if (method === "POST" && routeName === StaffRoutes.DENY) {
-				const email = req.body.email;
-				response = await this.denyController(email);
+				response = await this.denyController(req.body.user_id);
 			} else if (method === "DELETE") {
 				const id = req.params.staffId;
 				statusCode = 204;
@@ -114,8 +111,8 @@ export default class StaffController extends StaffService {
 			message: "User logged in successfully",
 		};
 	};
-	private verifyController = async (email: string): Promise<IResponse> => {
-		const user = await this.verifyService(email);
+	private verifyController = async (id: string): Promise<IResponse> => {
+		const user = await this.verifyService(id);
 		return {
 			success: true,
 			data: user,
@@ -123,8 +120,8 @@ export default class StaffController extends StaffService {
 			message: "User verified successfully",
 		};
 	};
-	private denyController = async (email: string): Promise<IResponse> => {
-		const user = await this.denyService(email);
+	private denyController = async (id: string): Promise<IResponse> => {
+		const user = await this.denyService(id);
 		return {
 			success: true,
 			data: user,

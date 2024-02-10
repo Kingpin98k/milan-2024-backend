@@ -73,8 +73,8 @@ export default class StaffHelper extends StaffDB {
 		return user;
 	};
 
-	protected verifyHelper = async (email: string): Promise<IStaffResObject> => {
-		const user = await this.checkIsExistingStaff(email);
+	protected verifyHelper = async (id: string): Promise<IStaffResObject> => {
+		const user = await this.checkIsExistingStaffById(id);
 
 		if (!user) {
 			throw new ErrorHandler({
@@ -97,8 +97,8 @@ export default class StaffHelper extends StaffDB {
 		return newUser;
 	};
 
-	protected denyHelper = async (email: string): Promise<IStaffResObject> => {
-		const user = await this.checkIsExistingStaff(email);
+	protected denyHelper = async (id: string): Promise<IStaffResObject> => {
+		const user = await this.checkIsExistingStaffById(id);
 
 		if (!user) {
 			throw new ErrorHandler({
