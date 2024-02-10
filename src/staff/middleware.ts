@@ -58,8 +58,8 @@ export default class IStaffValidation {
 				req.headers.authorization.startsWith("Bearer")
 			) {
 				token = req.headers.authorization.split(" ")[1];
-			} else if (req.cookies.token) {
-				token = req.cookies.token;
+			} else if (req.cookies?.token) {
+				token = req.cookies?.token;
 			} else {
 				throw new ErrorHandler({
 					status_code: 401,
@@ -67,6 +67,10 @@ export default class IStaffValidation {
 					message_code: "NOT_LOGGED_IN",
 				});
 			}
+
+
+			console.log("token",token);
+
 			let JWT_SECRET = process.env.JWT_SECRET;
 			if (!JWT_SECRET) {
 				throw new ErrorHandler({
