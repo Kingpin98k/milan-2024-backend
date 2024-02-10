@@ -42,10 +42,9 @@ export default class EventsDb {
 			eventData.created_at,
 			eventData.updated_at,
 		];
-		logger(values, LogTypes.LOGS);
 		const res = await db.query(query, values);
 		if (res instanceof Error) {
-			logger(res, LogTypes.LOGS);
+			// logger(res, LogTypes.LOGS);
 			throw res;
 		}
 		logger(res.rows[0], LogTypes.LOGS);
@@ -61,6 +60,29 @@ export default class EventsDb {
 			throw res;
 		}
 		return res.rows[0] as unknown as IEvent;
+	};
+
+	fetchEventByClub = async (club_name: string): Promise<IEvent[]> => {
+		logger("fetchEventByClub1", LogTypes.LOGS);
+		const query = "SELECT * FROM events WHERE club_name = $1;";
+		const values = [club_name];
+		const res = await db.query(query, values);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows.map((row: any) => ({
+			id: row.id,
+			event_code: row.event_code,
+			name: row.name,
+			is_group_event: row.is_group_event,
+			event_scope: row.event_scope,
+			club_name: row.club_name,
+			max_group_size: row.max_group_size,
+			reg_count: row.reg_count,
+			mode: row.mode,
+			created_at: row.created_at,
+			updated_at: row.updated_at,
+		})) as IEvent[];
 	};
 
 	deleteEvent = async (event_code: string): Promise<IEvent> => {
@@ -94,13 +116,32 @@ export default class EventsDb {
 		updated_at: Date
 	): Promise<IEvent> => {
 		logger("DecrementCount1", LogTypes.LOGS);
-		const query = `UPDATE events SET reg_count = reg_count - 1, updated_at = CURRENT_TIMESTAMP WHERE event_code = $2 RETURNING *;`;
+		const query = `UPDATE events SET reg_count = reg_count - 1, updated_at = $1 WHERE event_code = $2 RETURNING *;`;
 		const values = [updated_at, eventData.event_code];
 		const res = await db.query(query, values);
 		if (res instanceof Error) {
 			throw res;
 		}
 		return res.rows[0] as unknown as IEvent;
+	};
+
+	fetchAllUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
+		logger("fetchAllUsersByCode1", LogTypes.LOGS);
+		const query = "SELECT * FROM event_users WHERE event_code = $1;";
+		const values = [event_code];
+		const res = await db.query(query, values);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows.map((row: any) => ({
+			id: row.id,
+			user_id: row.user_id,
+			event_id: row.event_id,
+			event_code: row.event_code,
+			user_name: row.user_name,
+			created_at: row.created_at,
+			updated_at: row.updated_at,
+		})) as IEventUser[];
 	};
 
 	getUserByDetails = async (
@@ -145,5 +186,16 @@ export default class EventsDb {
 			throw res;
 		}
 		return res.rows[0] as unknown as IEventUser;
+	};
+
+	deleteAllUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
+		logger("deleteAllUsersByCode1", LogTypes.LOGS);
+		const query = "DELETE FROM event_users WHERE event_code = $1 RETURNING *;";
+		const values = [event_code];
+		const res = await db.query(query, values);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows as unknown as IEventUser[];
 	};
 }

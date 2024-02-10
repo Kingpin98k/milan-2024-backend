@@ -10,6 +10,14 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.DataTypes.UUIDV4,
       },
+      user_id: {
+        type: Sequelize.DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+      },
       payment_id: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: true,
