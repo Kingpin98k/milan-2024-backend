@@ -6,4 +6,5 @@ export enum StaffRoutes {
 	DELETE = "delete",
 	FORGOT_PASSWORD = "forgotpassword",
 	LOGOUT = "logout",
+	GET_STAFFS = "",
 }

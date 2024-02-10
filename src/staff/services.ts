@@ -8,6 +8,7 @@ import {
 	IStaffResObject,
 	StaffScope,
 } from "./interface";
+import IStaffValidation from "./middleware";
 
 export default class StaffService extends StaffHelper {
 	jwtHelper: JWTUtils;
@@ -25,6 +26,8 @@ export default class StaffService extends StaffHelper {
 	protected registerService = async (
 		reqObj: IStaffRegisterObject
 	): Promise<IStaffAuthResObject> => {
+		IStaffValidation.validateEmailAndPhone(reqObj.email, reqObj.phone_number);
+
 		const user = await this.registerHelper(reqObj);
 		const token = await this.jwtHelper.generateTokens(user);
 		const response: IStaffAuthResObject = {

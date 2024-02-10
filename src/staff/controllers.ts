@@ -26,7 +26,7 @@ export default class StaffController extends StaffService {
 				message: "Unknown error occurred",
 			};
 			let statusCode = 200;
-			if (method === "GET") {
+			if (method === "GET" && routeName === StaffRoutes.GET_STAFFS) {
 				const queryParams = JSON.parse(JSON.stringify(req.query));
 				const type = queryParams.type as StaffScope;
 				response = await this.getStaffsController(type);

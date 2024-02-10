@@ -73,14 +73,8 @@ export default class UsersAuthDB {
 		id: string,
 		reqObj: IUserAuthSignupReqObj
 	): Promise<IUserAuthResObject> => {
-		const {
-			name,
-			email,
-			reg_number,
-			is_srm_student,
-			phone_number,
-			updated_at,
-		} = reqObj;
+		const { name, email, reg_number, is_srm_ktr, phone_number, updated_at } =
+			reqObj;
 
 		const query = `
     UPDATE users
@@ -89,7 +83,7 @@ export default class UsersAuthDB {
       email = $2,
       password = $3,
       reg_number = $4,
-      is_ktr_student = $5,
+      is_srm_ktr = $5,
       phone_number = $6,
       updated_at = $7,
       is_deleted = false
@@ -100,7 +94,7 @@ export default class UsersAuthDB {
 			name,
 			email,
 			reg_number,
-			is_srm_student,
+			is_srm_ktr,
 			phone_number,
 			updated_at,
 			id,
@@ -135,11 +129,5 @@ export default class UsersAuthDB {
 		const query = `UPDATE users SET is_deleted = true WHERE id = $1`;
 
 		await db.query(query, [user_id]);
-	};
-}
-
-export class ExtendedUserServiceDb extends UsersAuthDB {
-	getUser_Email = async (email: string): Promise<IUserAuthResObject> => {
-		return await this.getUserByEmail(email);
 	};
 }
