@@ -55,8 +55,8 @@ export default {
     } catch (err) {
       await client.query('ROLLBACK');
       throw new ErrorHandler({
-        message: 'ANY',
-        message_code: 'any',
+        message: err ? err.toString() : 'Transaction failed',
+        message_code: 'TRANSACTION_FAILED',
         status_code: 400,
       });
     } finally {
