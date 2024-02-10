@@ -10,14 +10,14 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.DataTypes.UUIDV4,
       },
+      name: {
+        type: Sequelize.DataTypes.TEXT,
+        allowNull: false,
+      },
       event_code: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
         unique: true,
-      },
-      name: {
-        type: Sequelize.DataTypes.TEXT,
-        allowNull: false,
       },
       is_group_event: {
         type: Sequelize.DataTypes.BOOLEAN,
@@ -35,6 +35,14 @@ module.exports = {
         type: Sequelize.DataTypes.INTEGER,
         defaultValue: 0,
       },
+      reg_count: {
+        type: Sequelize.DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      mode: {
+        type: Sequelize.DataTypes.TEXT,
+        allowNull: false,
+      },
       created_at: {
         type: Sequelize.DataTypes.DATE,
         allowNull: false,
@@ -48,6 +56,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Events');
+    await queryInterface.dropTable('events');
   },
 };

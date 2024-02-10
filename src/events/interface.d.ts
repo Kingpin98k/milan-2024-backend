@@ -7,6 +7,7 @@ export type IResponse<T = any> = {
 
 export type UUID = string;
 export type EventScope = 'srm' | 'non-srm' | 'both';
+export type Mode = 'online' | 'offline';
 
 export type IEvent = {
   id: UUID;
@@ -16,6 +17,18 @@ export type IEvent = {
   event_scope: EventScope;
   club_name: string;
   max_group_size: number;
+  reg_count: number;
+  mode: Mode;
+  created_at: Date;
+  updated_at: Date | null;
+};
+
+export type IEventUser = {
+  id: UUID;
+  user_id: UUID;
+  event_id: UUID;
+  event_code: string;
+  user_name: string;
   created_at: Date;
   updated_at: Date | null;
 };

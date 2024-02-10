@@ -36,7 +36,7 @@ module.exports = {
         allowNull: false,
       },
       role: {
-        type: Sequelize.DataTypes.ENUM('admin', 'convener', 'scanner'),
+        type: Sequelize.DataTypes.ENUM('admin', 'convenor', 'scanner'),
         allowNull: false,
         required: true,
       },
@@ -53,6 +53,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Staff');
+    await queryInterface.dropTable('staffs');
   },
 };

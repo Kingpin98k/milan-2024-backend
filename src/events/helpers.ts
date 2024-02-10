@@ -1,24 +1,177 @@
 import EventsDb from './db';
-import { IEvent } from './interface';
+import db from '../config/pg.config';
+import { IEvent, IEventUser } from './interface';
 import logger, { LogTypes } from '../utils/logger';
 import { v4 } from 'uuid';
+import ErrorHandler from './../utils/errors.handler';
+import { transform } from 'typescript';
 
 export default class EventsHelpers extends EventsDb {
   public getAllEventsHelper = async (): Promise<IEvent[]> => {
     logger('getAllEventsHelpers1', LogTypes.LOGS);
     const events = await this.fetchAllEvents();
+    if (!events) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Events not found',
+        message_code: 'EVENTS_NOT_FOUND',
+      });
+    }
     return events;
   };
 
   public createEventHelper = async (eventData: Partial<IEvent>): Promise<IEvent> => {
     logger('createEventHelpers1', LogTypes.LOGS);
+    const existingevent = await this.fetchEventByCode(eventData.event_code || '');
+    if (existingevent) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'Event with this code already exists',
+        message_code: 'DUPLICATE_EVENT_CODE',
+      });
+    }
     eventData.created_at = new Date();
     eventData.updated_at = null;
     eventData.id = v4();
-    logger(eventData.name, LogTypes.LOGS);
-    logger(eventData, LogTypes.LOGS);
+    eventData.reg_count = 0;
     const newevent = await this.createEvent(eventData);
-    logger(newevent, LogTypes.LOGS);
+    if (!newevent) {
+      throw new ErrorHandler({
+        status_code: 500,
+        message: 'Event not created',
+        message_code: 'EVENT_NOT_CREATED',
+      });
+    }
     return newevent;
+  };
+
+  public getEventHelper = async (event_code: string): Promise<IEvent> => {
+    logger('getEventHelpers1', LogTypes.LOGS);
+    const event = await this.fetchEventByCode(event_code);
+    if (!event) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Event not found',
+        message_code: 'EVENT_NOT_FOUND',
+      });
+    }
+    return event;
+  };
+
+  public deleteEventHelper = async (event_code: string): Promise<IEvent> => {
+    logger('deleteEventHelpers1', LogTypes.LOGS);
+    const event = await this.deleteEvent(event_code);
+    if (!event) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Event not found',
+        message_code: 'EVENT_NOT_DELETED',
+      });
+    }
+    return event;
+  };
+
+  public registerHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
+    logger('registerHelpers1', LogTypes.LOGS);
+    userData.id = v4();
+    userData.created_at = new Date();
+    userData.updated_at = null;
+    const existinguser = await this.getUserByDetails(userData);
+    if (existinguser) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'User already registered',
+        message_code: 'USER_ALREADY_REGISTERED',
+      });
+    }
+    const user = await db.transaction(async () => {
+      const updated_at = new Date();
+      const event = await this.increaseCount(userData, updated_at);
+      if (!event) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'Event not found',
+          message_code: 'REGISTRATION_FAILED_EVENT_NF',
+        });
+      }
+      userData.event_id = event.id;
+      const user = await this.createUser(userData);
+      if (!user) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'user creation failed',
+          message_code: 'REGISTRATION_FAILED_USER_NC',
+        });
+      }
+      return user;
+    });
+
+    return user;
+  };
+
+  public unregisterHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
+    logger('unregisterHelpers1', LogTypes.LOGS);
+    const user = await db.transaction(async () => {
+      const updated_at = new Date();
+      const event = await this.decreaseCount(userData, updated_at);
+      if (!event) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'Event not found',
+          message_code: 'UNREGISTRATION_FAILED_EVENT_NF',
+        });
+      }
+      userData.event_id = event.id;
+      const user = await this.deleteUser(userData);
+      if (!user) {
+        throw new ErrorHandler({
+          status_code: 404,
+          message: 'user not found',
+          message_code: 'UNREGISTRATION_FAILED_USER_NF',
+        });
+      }
+      return user;
+    });
+    return user;
+  };
+
+  public getEventByClubHelper = async (club_name: string): Promise<IEvent[]> => {
+    logger('getEventByClubHelpers1', LogTypes.LOGS);
+    const events = await this.fetchEventByClub(club_name);
+    if (!events) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Events not found',
+        message_code: 'EVENTS_NOT_FOUND',
+      });
+    }
+    if (!events.length) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'No events found for this club',
+        message_code: 'CLUB_HAS_NO_EVENTS',
+      });
+    }
+    return events;
+  };
+
+  public getAllUsersByCodeHelper = async (event_code: string): Promise<IEventUser[]> => {
+    logger('getAllUsersByCodeHelpers1', LogTypes.LOGS);
+    const users = await this.fetchAllUsersByCode(event_code);
+    if (!users) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Users not found',
+        message_code: 'USERS_NOT_FOUND',
+      });
+    }
+    if (!users.length) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'No users found for this event',
+        message_code: 'Event_HAS_NO_USERS',
+      });
+    }
+    return users;
   };
 }
