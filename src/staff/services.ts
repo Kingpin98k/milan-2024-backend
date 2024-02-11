@@ -53,8 +53,8 @@ export default class StaffService extends StaffHelper {
 		return response;
 	};
 
-	protected verifyService = async (email: string): Promise<IStaffResObject> => {
-		const response = await this.verifyHelper(email);
+	protected verifyService = async (id: string): Promise<IStaffResObject> => {
+		const response = await this.verifyHelper(id);
 		return response;
 	};
 
@@ -65,12 +65,17 @@ export default class StaffService extends StaffHelper {
 		return response;
 	};
 
-	protected denyService = async (email: string): Promise<IStaffResObject> => {
-		const response = await this.denyHelper(email);
+	protected denyService = async (id: string): Promise<IStaffResObject> => {
+		const response = await this.denyHelper(id);
 		return response;
 	};
 
 	protected deleteService = async (id: string): Promise<void> => {
 		await this.deleteHelper(id);
+	};
+
+	protected getStaffService = async (id: string): Promise<IStaffResObject> => {
+		const response = await this.getStaffHelper(id);
+		return response;
 	};
 }
