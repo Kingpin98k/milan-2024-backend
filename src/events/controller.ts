@@ -12,13 +12,13 @@ export default class EventsController extends EventsServices {
     try {
       const method = req.method;
       // logger(req.route.path.split('/')[0], LogTypes.LOGS);
-      logger(req, LogTypes.LOGS);
+      // logger(req, LogTypes.LOGS);
 
       const routeName = req.route.path.split('/')[1];
       const route = req.url.split('/')[1];
-      logger(route, LogTypes.LOGS);
-      logger('🍀🍀🍀🍀🍀🍀', LogTypes.LOGS);
-      logger(routeName, LogTypes.LOGS);
+      // logger(route, LogTypes.LOGS);
+      // logger('🍀🍀🍀🍀🍀🍀', LogTypes.LOGS);
+      // logger(routeName, LogTypes.LOGS);
       // const routePath = req.route.path;
       // logger(routePath, LogTypes.LOGS);
       let response: IResponse = {
@@ -27,17 +27,17 @@ export default class EventsController extends EventsServices {
         },
         statusCode = 200;
 
-      if (method === RequestMethods.GET && route === EventRoutes.EVENT) {
+      if (method === RequestMethods.GET && route === "") {
         response = await this.getAllEventsController(req, res);
       } else if (method === RequestMethods.POST && route === EventRoutes.EVENT) {
         response = await this.createEventController(req, res);
       } else if (method === RequestMethods.GET && routeName === EventRoutes.EVENT_CODE) {
         response = await this.getEventController(req, res);
       } else if (method === RequestMethods.DELETE && route === EventRoutes.UNREGISTER) {
-        statusCode = 204;
+        statusCode = 200;
         response = await this.unregisterController(req, res);
       } else if (method === RequestMethods.DELETE && routeName === EventRoutes.EVENT_CODE) {
-        statusCode = 204;
+        statusCode = 200;
         response = await this.deleteEventController(req, res);
       } else if (method === RequestMethods.POST && route === EventRoutes.REGISTER) {
         response = await this.registerController(req, res);
@@ -61,7 +61,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getAllEventsController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('getAllEventsController1', LogTypes.LOGS);
+    // logger('getAllEventsController1', LogTypes.LOGS);
     const events = await this.getAllEventsService();
     // logger(events, LogTypes.LOGS);
     return {
@@ -73,7 +73,7 @@ export default class EventsController extends EventsServices {
   };
 
   private createEventController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('createEventController1', LogTypes.LOGS);
+    // logger('createEventController1', LogTypes.LOGS);
     // const { name, is_group_event, event_scope, club_name, max_group_size, event_code } = req.body;
     const eventData: Partial<IEvent> = req.body;
     // const event = await this.createEventService(
@@ -94,7 +94,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getEventController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('getEventController1', LogTypes.LOGS);
+    // logger('getEventController1', LogTypes.LOGS);
     // logger(req.params.code, LogTypes.LOGS);
     const event_code = req.params.code;
     const event = await this.getEventService(event_code);
@@ -107,20 +107,20 @@ export default class EventsController extends EventsServices {
   };
 
   private deleteEventController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('deleteEventController1', LogTypes.LOGS);
+    // logger('deleteEventController1', LogTypes.LOGS);
     const event_code = req.params.code;
     const event = await this.deleteEventService(event_code);
-    const data = 'no content';
+    // const data = 'no content';
     return {
       success: true,
-      data,
+      // data,
       message_code: 'DELETE_EVENT_SUCCESS',
       message: 'Event deleted successfully',
     };
   };
 
   private registerController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('registerController1', LogTypes.LOGS);
+    // logger('registerController1', LogTypes.LOGS);
     const userData: Partial<IEventUser> = req.body;
     const event = await this.registerService(userData);
     return {
@@ -132,7 +132,7 @@ export default class EventsController extends EventsServices {
   };
 
   private unregisterController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('unregisterController1', LogTypes.LOGS);
+    // logger('unregisterController1', LogTypes.LOGS);
     const userData: Partial<IEventUser> = req.body;
     const event = await this.unregisterService(userData);
     return {
@@ -144,7 +144,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getEventByClubController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('getEventByClubController1', LogTypes.LOGS);
+    // logger('getEventByClubController1', LogTypes.LOGS);
     const club_name = req.params.club as string;
     if (!club_name) {
       throw new ErrorHandler({
@@ -163,7 +163,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getAllUsersByCodeController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('getAllUsersByCodeController1', LogTypes.LOGS);
+    // logger('getAllUsersByCodeController1', LogTypes.LOGS);
     const event_code = req.params.code;
     if (!event_code) {
       throw new ErrorHandler({
@@ -181,7 +181,7 @@ export default class EventsController extends EventsServices {
     };
   };
   private getCountByCodeController = async (req: Request, res: Response): Promise<IResponse> => {
-    logger('getCountByCodeController1', LogTypes.LOGS);
+    // logger('getCountByCodeController1', LogTypes.LOGS);
     const event_code = req.params.code;
     const event = await this.getEventService(event_code);
     const count = event.reg_count;

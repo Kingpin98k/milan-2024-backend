@@ -5,7 +5,7 @@ import ErrorHandler from "../utils/errors.handler";
 
 export class EventsServices extends EventsHelpers {
 	public async getAllEventsService(): Promise<IEvent[]> {
-		logger("getAllEventsServices1", LogTypes.LOGS);
+		// logger("getAllEventsServices1", LogTypes.LOGS);
 		const events = await this.getAllEventsHelper();
 		if (!events) {
 			throw new ErrorHandler({
@@ -26,7 +26,7 @@ export class EventsServices extends EventsHelpers {
 		// event_code: string
 		eventdata: Partial<IEvent>
 	): Promise<IEvent> {
-		logger("createEventServices1", LogTypes.LOGS);
+		// logger("createEventServices1", LogTypes.LOGS);
 		if (eventdata.event_code === "") {
 			throw new ErrorHandler({
 				status_code: 400,
@@ -46,7 +46,7 @@ export class EventsServices extends EventsHelpers {
 	}
 
 	public async getEventService(event_code: string): Promise<IEvent> {
-		logger("getEventServices1", LogTypes.LOGS);
+		// logger("getEventServices1", LogTypes.LOGS);
 		const event = await this.getEventHelper(event_code);
 		if (!event) {
 			throw new ErrorHandler({
@@ -59,7 +59,7 @@ export class EventsServices extends EventsHelpers {
 	}
 
 	public async deleteEventService(event_code: string): Promise<IEvent> {
-		logger("deleteEventServices1", LogTypes.LOGS);
+		// logger("deleteEventServices1", LogTypes.LOGS);
 		const event = await this.deleteEventHelper(event_code);
 		if (!event) {
 			throw new ErrorHandler({
@@ -74,7 +74,7 @@ export class EventsServices extends EventsHelpers {
 	public async registerService(
 		userData: Partial<IEventUser>
 	): Promise<IEventUser> {
-		logger("registerService1", LogTypes.LOGS);
+		// logger("registerService1", LogTypes.LOGS);
 		const user = await this.registerHelper(userData);
 		if (!user) {
 			throw new ErrorHandler({
@@ -89,7 +89,7 @@ export class EventsServices extends EventsHelpers {
 	public async unregisterService(
 		userData: Partial<IEventUser>
 	): Promise<IEventUser> {
-		logger("unregisterService1", LogTypes.LOGS);
+		// logger("unregisterService1", LogTypes.LOGS);
 		const user = await this.unregisterHelper(userData);
 		if (!user) {
 			throw new ErrorHandler({

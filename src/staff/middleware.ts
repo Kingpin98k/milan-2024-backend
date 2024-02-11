@@ -68,10 +68,6 @@ export default class IStaffValidation {
 				});
 			}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 00267aa0e12d4ec0ed8b311398390cbc91e8b057
 			let JWT_SECRET = process.env.JWT_SECRET;
 			if (!JWT_SECRET) {
 				throw new ErrorHandler({
