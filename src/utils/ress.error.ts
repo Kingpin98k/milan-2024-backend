@@ -42,6 +42,6 @@ export const errorHandler = (res: Response, error: any) => {
 	return res.status(500).send({
 		success: false,
 		message: "Hold Tight! Our Engineers Are on the Case",
-		error: error,
+		error: error.message,
 	});
 };
