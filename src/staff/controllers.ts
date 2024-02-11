@@ -62,7 +62,6 @@ export default class StaffController extends StaffService {
 				response = await this.denyController(req.body.user_id);
 			} else if (method === "DELETE") {
 				const id = req.params.staffId;
-				statusCode = 204;
 				response = await this.deleteController(id);
 			} else if (method === "GET" && routeName === StaffRoutes.LOGOUT) {
 				res.clearCookie("token");
