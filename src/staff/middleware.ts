@@ -69,7 +69,6 @@ export default class IStaffValidation {
 			}
 
 
-
 			let JWT_SECRET = process.env.JWT_SECRET;
 			if (!JWT_SECRET) {
 				throw new ErrorHandler({
