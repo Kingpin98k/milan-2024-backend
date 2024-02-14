@@ -8,7 +8,7 @@ import { transform } from 'typescript';
 
 export default class EventsHelpers extends EventsDb {
   public getAllEventsHelper = async (): Promise<IEvent[]> => {
-    // logger('getAllEventsHelpers1', LogTypes.LOGS);
+    logger('getAllEventsHelpers1', LogTypes.LOGS);
     const events = await this.fetchAllEvents();
     if (!events) {
       throw new ErrorHandler({
@@ -21,7 +21,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public createEventHelper = async (eventData: Partial<IEvent>): Promise<IEvent> => {
-    // logger('createEventHelpers1', LogTypes.LOGS);
+    logger('createEventHelpers1', LogTypes.LOGS);
     const existingevent = await this.fetchEventByCode(eventData.event_code || '');
     if (existingevent) {
       throw new ErrorHandler({
@@ -46,7 +46,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public getEventHelper = async (event_code: string): Promise<IEvent> => {
-    // logger('getEventHelpers1', LogTypes.LOGS);
+    logger('getEventHelpers1', LogTypes.LOGS);
     const event = await this.fetchEventByCode(event_code);
     if (!event) {
       throw new ErrorHandler({
@@ -59,7 +59,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public deleteEventHelper = async (event_code: string): Promise<IEvent> => {
-    // logger('deleteEventHelpers1', LogTypes.LOGS);
+    logger('deleteEventHelpers1', LogTypes.LOGS);
     const event = await db.transaction(async () => {
       const event1 = await this.fetchEventByCode(event_code);
       if (!event1) {
@@ -91,10 +91,25 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public registerHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
-    // logger('registerHelpers1', LogTypes.LOGS);
+    logger('registerHelpers1', LogTypes.LOGS);
     userData.id = v4();
     userData.created_at = new Date();
     userData.updated_at = null;
+    const user_existing_in_user_table = await this.fetchUserFromUsersTable(userData.user_id);
+    if (!user_existing_in_user_table) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'User not found in users table',
+        message_code: 'USER_NOT_FOUND_IN_USERS',
+      });
+    }
+    if (!user_existing_in_user_table.is_ticket_issued) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'Ticket not issued for this user',
+        message_code: 'TICKET_NOT_ISSUED',
+      });
+    }
     const existinguser = await this.getUserByDetails(userData);
     if (existinguser) {
       throw new ErrorHandler({
@@ -113,6 +128,20 @@ export default class EventsHelpers extends EventsDb {
           message_code: 'REGISTRATION_FAILED_EVENT_NF',
         });
       }
+      if (event.is_active === false) {
+        throw new ErrorHandler({
+          status_code: 400,
+          message: 'Event is not active',
+          message_code: 'EVENT_NOT_ACTIVE',
+        });
+      }
+      if (event.reg_count >= event.max_cap) {
+        throw new ErrorHandler({
+          status_code: 400,
+          message: 'Event is full',
+          message_code: 'EVENT_CAP_FULL',
+        });
+      }
       userData.event_id = event.id;
       const user = await this.createUser(userData);
       if (!user) {
@@ -124,12 +153,27 @@ export default class EventsHelpers extends EventsDb {
       }
       return user;
     });
-
     return user;
   };
 
   public unregisterHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
-    // logger('unregisterHelpers1', LogTypes.LOGS);
+    logger('unregisterHelpers1', LogTypes.LOGS);
+    // const user_existing_in_user_table = await this.fetchUserFromUsersTable(userData.user_id);
+    // if (!user_existing_in_user_table) {
+    //   throw new ErrorHandler({
+    //     status_code: 404,
+    //     message: 'User not found in users table',
+    //     message_code: 'USER_NOT_FOUND_IN_USERS',
+    //   });
+    // }
+    const existinguser = await this.getUserByDetails(userData);
+    if (!existinguser) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'User not registered',
+        message_code: 'USER_NOT_REGISTERED',
+      });
+    }
     const user = await db.transaction(async () => {
       const updated_at = new Date();
       const event = await this.decreaseCount(userData, updated_at);
@@ -155,7 +199,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public getEventByClubHelper = async (club_name: string): Promise<IEvent[]> => {
-    // logger('getEventByClubHelpers1', LogTypes.LOGS);
+    logger('getEventByClubHelpers1', LogTypes.LOGS);
     const events = await this.fetchEventByClub(club_name);
     if (!events) {
       throw new ErrorHandler({
@@ -175,7 +219,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public getAllUsersByCodeHelper = async (event_code: string): Promise<IEventUser[]> => {
-    // logger('getAllUsersByCodeHelpers1', LogTypes.LOGS);
+    logger('getAllUsersByCodeHelpers1', LogTypes.LOGS);
     const users = await this.fetchAllUsersByCode(event_code);
     if (!users) {
       throw new ErrorHandler({
@@ -192,5 +236,65 @@ export default class EventsHelpers extends EventsDb {
       });
     }
     return users;
+  };
+
+  public updateMaxCapHelper = async (event_code: string, new_cap: number): Promise<IEvent> => {
+    logger('updateMaxCapHelpers1', LogTypes.LOGS);
+    const event = await this.fetchEventByCode(event_code);
+    if (!event) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Event not found',
+        message_code: 'EVENT_NOT_FOUND',
+      });
+    }
+    event.max_cap = new_cap;
+    const updated_at = new Date();
+    event.updated_at = updated_at;
+    const updatedevent = await this.updateMaxCap(event);
+    if (!updatedevent) {
+      throw new ErrorHandler({
+        status_code: 500,
+        message: 'Event not updated',
+        message_code: 'EVENT_NOT_UPDATED',
+      });
+    }
+    return updatedevent;
+  };
+
+  public activateEventHelper = async (event_code: string, op: string): Promise<IEvent> => {
+    logger('activateEventHelpers1', LogTypes.LOGS);
+    const event = await this.fetchEventByCode(event_code);
+    if (!event) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Event not found',
+        message_code: 'EVENT_NOT_FOUND',
+      });
+    }
+    if (op === 'activate') {
+      event.is_active = true;
+    } else if (op === 'deactivate') {
+      event.is_active = false;
+    }
+    const updated_at = new Date();
+    event.updated_at = updated_at;
+    const updatedevent = await this.updateActive(event);
+    if (!updatedevent) {
+      if (op === 'activate') {
+        throw new ErrorHandler({
+          status_code: 500,
+          message: 'Event not activated',
+          message_code: 'EVENT_NOT_ACTIVATED',
+        });
+      } else {
+        throw new ErrorHandler({
+          status_code: 500,
+          message: 'Event not deactivated',
+          message_code: 'EVENT_NOT_DEACTIVATED',
+        });
+      }
+    }
+    return updatedevent;
   };
 }

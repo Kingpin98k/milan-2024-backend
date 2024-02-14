@@ -3,8 +3,6 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.sequelize.query(`ALTER TYPE "enum_staffs_role" ADD VALUE 'convenor'`);
-
     await queryInterface.createTable('staffs', {
       id: {
         type: Sequelize.DataTypes.UUID,
@@ -38,7 +36,7 @@ module.exports = {
         allowNull: false,
       },
       role: {
-        type: Sequelize.DataTypes.ENUM('admin', 'convenor', 'scanner'),
+        type: Sequelize.DataTypes.TEXT,
         allowNull: false,
         required: true,
       },

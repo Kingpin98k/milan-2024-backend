@@ -7,4 +7,6 @@ export enum EventRoutes {
   GET_EVENT_BY_CLUB = 'geteventbyclub',
   GET_ALL_USERS_BY_CODE = 'getallusersbycode',
   GET_COUNT_BY_CODE = 'getcountbycode',
+  UPDATE_MAX_CAP = 'updateMaxCap',
+  ACTIVATE_EVENT = 'activate-event',
 }
