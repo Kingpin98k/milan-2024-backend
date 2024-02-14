@@ -10,6 +10,7 @@ import logger, { LogTypes } from './utils/logger';
 import bodyParser from 'body-parser';
 import ErrorHandler from './utils/errors.handler';
 import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import './users/auth/passport';
 
@@ -39,6 +40,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Middlewares
+app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(morgan('dev'));
@@ -50,9 +52,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 import userRoutes from './users/routes';
 import eventsRoutes from './events/routes';
 import staffRoutes from './staff/routes';
+import teamsRoutes from './teams/routes';
 
 app.use('/api/events', eventsRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/teams', teamsRoutes);
 app.use('/users', userRoutes);
 
 //---------------------------------------------------------------

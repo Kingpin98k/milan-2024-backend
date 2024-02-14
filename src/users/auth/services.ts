@@ -71,4 +71,20 @@ export default class UsersAuthService extends UsersAuthHelper {
 
 		return user;
 	};
+
+	public getUserByIdService = async (
+		id: string
+	): Promise<IUserAuthResObject> => {
+		const user = await this.getUser(id);
+
+		if (!user) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "User not found",
+				message_code: "USER_NOT_FOUND",
+			});
+		}
+
+		return user;
+	};
 }
