@@ -34,7 +34,7 @@ export default class StaffDB {
 	protected changeStaffPassword = async (
 		reqObj: IStaffPasswordChangeRequestObject
 	): Promise<IStaffResObject> => {
-		const query = `UPDATE staffs SET password = $1 WHERE email = $2 RETURNING *`;
+		const query = `UPDATE staffs SET password = $1 , is_verified = false WHERE email = $2 RETURNING *`;
 		const res = await db.query(query, [reqObj.password, reqObj.email]);
 		if (res instanceof Error) {
 			throw res;

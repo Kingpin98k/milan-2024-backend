@@ -10,7 +10,7 @@ console.log('Executing events/routes.ts');
 const { execute } = new EventsController();
 const { protect } = new IUserAuthValidation();
 
-router.get('/event', execute);
+router.get('/', execute);
 router.get('/:code', execute);
 router.post('/register', execute);
 router.post('/unregister', execute);
