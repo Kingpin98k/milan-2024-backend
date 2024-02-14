@@ -57,7 +57,7 @@ import teamsRoutes from "./teams/routes";
 app.use("/api/events", eventsRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/teams", teamsRoutes);
-app.use("/users", userRoutes);
+app.use("/api/users", userRoutes);
 
 //---------------------------------------------------------------
 app.get("/", (req: Request, res: Response) => {
