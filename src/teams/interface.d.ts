@@ -38,10 +38,12 @@ export type ITeamJoinReqObject = {
 export type ITeamUpdateNameReqObject = {
 	team_code: string;
 	team_name: string;
+	user_id: string;
 };
 
 export type ITeamDeleteReqObject = {
 	team_code: string;
+	user_id: string;
 };
 
 export type ITeamLeaveReqObject = {
@@ -49,6 +51,8 @@ export type ITeamLeaveReqObject = {
 	user_id: string;
 };
 
-export type ITeamDeleteUserReqObject = {
-	user_id: string;
+export type ITeamDeleteMemberReqObject = {
+	captain_id: string;
+	member_id: string;
+	team_code: string;
 };

@@ -8,6 +8,7 @@ import {
 	ITeamJoinReqObject,
 	ITeamMemberAddReqObject,
 	ITeamResObject,
+	ITeamUpdateNameReqObject,
 } from "./interface";
 import logger, { LogTypes } from "../utils/logger";
 
@@ -133,6 +134,72 @@ export default class TeamsHelper extends TeamsDB {
 			});
 		}
 
+		return result;
+	};
+
+	protected updateTeamNameHelper = async (
+		reqObj: ITeamUpdateNameReqObject
+	): Promise<any> => {
+		await this.checkIfCanChangeName(
+			reqObj.team_code,
+			reqObj.user_id,
+			reqObj.team_name
+		);
+
+		const result = await this.updateTeamName(
+			reqObj.team_code,
+			reqObj.team_name
+		);
+
+		if (!result) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error updating team name",
+				message_code: "ERROR_UPDATING_TEAM_NAME",
+			});
+		}
+
+		return result;
+	};
+
+	protected deleteTeamHelper = async (reqObj: any): Promise<void> => {
+		await this.checkIfCaptain(reqObj.team_code, reqObj.user_id);
+
+		await db.transaction(async () => {
+			await this.deleteTeamMembers(reqObj.team_code);
+			await this.deleteTeam(reqObj.team_code);
+		});
+	};
+
+	protected leaveTeamHelper = async (reqObj: any): Promise<void> => {
+		await db.transaction(async () => {
+			await this.leaveTeam(reqObj.team_code, reqObj.user_id);
+		});
+	};
+
+	protected deleteTeamMemberHelper = async (reqObj: any): Promise<void> => {
+		await this.checkIfCaptain(reqObj.team_code, reqObj.captain_id);
+
+		if (reqObj.captain_id === reqObj.member_id) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Team captain cannot leave the team",
+				message_code: "TEAM_CAPTAIN_CANNOT_LEAVE",
+			});
+		}
+		await this.deleteTeamMember(reqObj.team_code, reqObj.member_id);
+	};
+
+	protected getAllUserTeamsHelper = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllUserTeams(reqObj.user_id);
+
+		if (!result) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error fetching user teams",
+				message_code: "ERROR_FETCHING_USER_TEAMS",
+			});
+		}
 		return result;
 	};
 }

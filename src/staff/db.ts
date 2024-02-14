@@ -21,10 +21,20 @@ export default class StaffDB {
 		}
 	};
 
+	protected getStaff = async (id: string): Promise<IStaffResObject> => {
+		const query = `SELECT name, email, role FROM staffs WHERE id = $1`;
+		const res = await db.query(query, [id]);
+		if (res instanceof Error) {
+			throw res;
+		} else {
+			return res.rows[0] as unknown as IStaffResObject;
+		}
+	};
+
 	protected changeStaffPassword = async (
 		reqObj: IStaffPasswordChangeRequestObject
 	): Promise<IStaffResObject> => {
-		const query = `UPDATE staffs SET password = $1 WHERE email = $2 RETURNING *`;
+		const query = `UPDATE staffs SET password = $1 , is_verified = false WHERE email = $2 RETURNING *`;
 		const res = await db.query(query, [reqObj.password, reqObj.email]);
 		if (res instanceof Error) {
 			throw res;

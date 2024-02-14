@@ -8,7 +8,7 @@ import { transform } from 'typescript';
 
 export default class EventsHelpers extends EventsDb {
   public getAllEventsHelper = async (): Promise<IEvent[]> => {
-    logger('getAllEventsHelpers1', LogTypes.LOGS);
+    // logger('getAllEventsHelpers1', LogTypes.LOGS);
     const events = await this.fetchAllEvents();
     if (!events) {
       throw new ErrorHandler({
@@ -21,7 +21,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public createEventHelper = async (eventData: Partial<IEvent>): Promise<IEvent> => {
-    logger('createEventHelpers1', LogTypes.LOGS);
+    // logger('createEventHelpers1', LogTypes.LOGS);
     const existingevent = await this.fetchEventByCode(eventData.event_code || '');
     if (existingevent) {
       throw new ErrorHandler({
@@ -46,7 +46,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public getEventHelper = async (event_code: string): Promise<IEvent> => {
-    logger('getEventHelpers1', LogTypes.LOGS);
+    // logger('getEventHelpers1', LogTypes.LOGS);
     const event = await this.fetchEventByCode(event_code);
     if (!event) {
       throw new ErrorHandler({
@@ -59,7 +59,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public deleteEventHelper = async (event_code: string): Promise<IEvent> => {
-    logger('deleteEventHelpers1', LogTypes.LOGS);
+    // logger('deleteEventHelpers1', LogTypes.LOGS);
     const event = await db.transaction(async () => {
       const event1 = await this.fetchEventByCode(event_code);
       if (!event1) {
@@ -91,7 +91,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public registerHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
-    logger('registerHelpers1', LogTypes.LOGS);
+    // logger('registerHelpers1', LogTypes.LOGS);
     userData.id = v4();
     userData.created_at = new Date();
     userData.updated_at = null;
@@ -129,7 +129,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public unregisterHelper = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
-    logger('unregisterHelpers1', LogTypes.LOGS);
+    // logger('unregisterHelpers1', LogTypes.LOGS);
     const user = await db.transaction(async () => {
       const updated_at = new Date();
       const event = await this.decreaseCount(userData, updated_at);
@@ -155,7 +155,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public getEventByClubHelper = async (club_name: string): Promise<IEvent[]> => {
-    logger('getEventByClubHelpers1', LogTypes.LOGS);
+    // logger('getEventByClubHelpers1', LogTypes.LOGS);
     const events = await this.fetchEventByClub(club_name);
     if (!events) {
       throw new ErrorHandler({
@@ -175,7 +175,7 @@ export default class EventsHelpers extends EventsDb {
   };
 
   public getAllUsersByCodeHelper = async (event_code: string): Promise<IEventUser[]> => {
-    logger('getAllUsersByCodeHelpers1', LogTypes.LOGS);
+    // logger('getAllUsersByCodeHelpers1', LogTypes.LOGS);
     const users = await this.fetchAllUsersByCode(event_code);
     if (!users) {
       throw new ErrorHandler({

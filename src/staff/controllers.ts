@@ -10,13 +10,11 @@ import {
   IStaffRegisterObject,
   StaffScope,
 } from './interface';
-import logger, { LogTypes } from '../utils/logger';
 import { IResponse } from '../events/interface';
 
 export default class StaffController extends StaffService {
   public execute = async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log('request body:', req.body);
       const method = req.method;
       const routeName = req.route.path.split('/')[1];
       console.log('routeName', routeName);

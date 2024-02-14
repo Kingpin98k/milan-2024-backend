@@ -7,4 +7,5 @@ export enum StaffRoutes {
 	FORGOT_PASSWORD = "forgotpassword",
 	LOGOUT = "logout",
 	GET_STAFFS = "",
+	GET_CURRENT_STAFF = "current",
 }
