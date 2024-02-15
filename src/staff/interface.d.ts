@@ -1,4 +1,4 @@
-export type StaffScope = "admin" | "convenor" | "scanner";
+export type StaffScope = "admin" | "convenor" | "scanner" | "viewer";
 
 export type IStaffRegisterObject = {
 	name: string;
