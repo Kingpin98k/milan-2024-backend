@@ -12,7 +12,7 @@ export default class EventsController extends EventsServices {
     try {
       const method = req.method;
       // logger(req.route.path.split('/')[0], LogTypes.LOGS);
-      // logger(req, LogTypes.LOGS);
+      logger(req, LogTypes.LOGS);
 
       const routeName = req.route.path.split('/')[1];
       const route = req.url.split('/')[1];
@@ -27,7 +27,7 @@ export default class EventsController extends EventsServices {
         },
         statusCode = 200;
 
-      if (method === RequestMethods.GET && route === "") {
+      if (method === RequestMethods.GET && route === '') {
         response = await this.getAllEventsController(req, res);
       } else if (method === RequestMethods.POST && route === EventRoutes.EVENT) {
         response = await this.createEventController(req, res);
@@ -47,6 +47,10 @@ export default class EventsController extends EventsServices {
         response = await this.getAllUsersByCodeController(req, res);
       } else if (method === RequestMethods.GET && routeName === EventRoutes.GET_COUNT_BY_CODE) {
         response = await this.getCountByCodeController(req, res);
+      } else if (method === RequestMethods.PATCH && routeName === EventRoutes.UPDATE_MAX_CAP) {
+        response = await this.updateMaxCapController(req, res);
+      } else if (method === RequestMethods.PATCH && routeName === EventRoutes.ACTIVATE_EVENT) {
+        response = await this.activateEventController(req, res);
       } else {
         throw new ErrorHandler({
           status_code: 400,
@@ -61,7 +65,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getAllEventsController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('getAllEventsController1', LogTypes.LOGS);
+    logger('getAllEventsController1', LogTypes.LOGS);
     const events = await this.getAllEventsService();
     // logger(events, LogTypes.LOGS);
     return {
@@ -73,17 +77,8 @@ export default class EventsController extends EventsServices {
   };
 
   private createEventController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('createEventController1', LogTypes.LOGS);
-    // const { name, is_group_event, event_scope, club_name, max_group_size, event_code } = req.body;
+    logger('createEventController1', LogTypes.LOGS);
     const eventData: Partial<IEvent> = req.body;
-    // const event = await this.createEventService(
-    //   name,
-    //   is_group_event,
-    //   event_scope,
-    //   club_name,
-    //   max_group_size,
-    //   event_code
-    // );
     const newevent = await this.createEventService(eventData);
     return {
       success: true,
@@ -94,8 +89,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getEventController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('getEventController1', LogTypes.LOGS);
-    // logger(req.params.code, LogTypes.LOGS);
+    logger('getEventController1', LogTypes.LOGS);
     const event_code = req.params.code;
     const event = await this.getEventService(event_code);
     return {
@@ -107,7 +101,7 @@ export default class EventsController extends EventsServices {
   };
 
   private deleteEventController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('deleteEventController1', LogTypes.LOGS);
+    logger('deleteEventController1', LogTypes.LOGS);
     const event_code = req.params.code;
     const event = await this.deleteEventService(event_code);
     // const data = 'no content';
@@ -120,7 +114,7 @@ export default class EventsController extends EventsServices {
   };
 
   private registerController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('registerController1', LogTypes.LOGS);
+    logger('registerController1', LogTypes.LOGS);
     const userData: Partial<IEventUser> = req.body;
     const event = await this.registerService(userData);
     return {
@@ -132,7 +126,7 @@ export default class EventsController extends EventsServices {
   };
 
   private unregisterController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('unregisterController1', LogTypes.LOGS);
+    logger('unregisterController1', LogTypes.LOGS);
     const userData: Partial<IEventUser> = req.body;
     const event = await this.unregisterService(userData);
     return {
@@ -144,7 +138,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getEventByClubController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('getEventByClubController1', LogTypes.LOGS);
+    logger('getEventByClubController1', LogTypes.LOGS);
     const club_name = req.params.club as string;
     if (!club_name) {
       throw new ErrorHandler({
@@ -163,7 +157,7 @@ export default class EventsController extends EventsServices {
   };
 
   private getAllUsersByCodeController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('getAllUsersByCodeController1', LogTypes.LOGS);
+    logger('getAllUsersByCodeController1', LogTypes.LOGS);
     const event_code = req.params.code;
     if (!event_code) {
       throw new ErrorHandler({
@@ -181,7 +175,7 @@ export default class EventsController extends EventsServices {
     };
   };
   private getCountByCodeController = async (req: Request, res: Response): Promise<IResponse> => {
-    // logger('getCountByCodeController1', LogTypes.LOGS);
+    logger('getCountByCodeController1', LogTypes.LOGS);
     const event_code = req.params.code;
     const event = await this.getEventService(event_code);
     const count = event.reg_count;
@@ -190,6 +184,30 @@ export default class EventsController extends EventsServices {
       data: count,
       message_code: 'GET_COUNT_BY_CODE_SUCCESS',
       message: 'Count fetched successfully',
+    };
+  };
+  private updateMaxCapController = async (req: Request, res: Response): Promise<IResponse> => {
+    logger('updateMaxCapController1', LogTypes.LOGS);
+    const event_code = req.params.code;
+    const new_cap = parseInt(req.params.new_cap);
+    const event = await this.updateMaxCapService(event_code, new_cap);
+    return {
+      success: true,
+      data: event,
+      message_code: 'UPDATE_MAX_CAP_SUCCESS',
+      message: 'Max cap updated successfully',
+    };
+  };
+  private activateEventController = async (req: Request, res: Response): Promise<IResponse> => {
+    logger('activateEventController1', LogTypes.LOGS);
+    const event_code = req.params.code;
+    const op = req.params.op;
+    const event = await this.activateEventService(event_code, op);
+    return {
+      success: true,
+      data: event,
+      message_code: 'ACTIVATE_EVENT_SUCCESS',
+      message: 'Event activated successfully',
     };
   };
 }

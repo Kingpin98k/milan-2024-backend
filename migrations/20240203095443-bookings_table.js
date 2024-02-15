@@ -27,12 +27,12 @@ module.exports = {
         allowNull: true,
       },
       payment_status: {
-        type: Sequelize.DataTypes.ENUM('success', 'failed', 'pending'),
+        type: Sequelize.DataTypes.TEXT,
         allowNull: false,
         defaultValue: 'pending',
       },
       ticket_status: {
-        type: Sequelize.DataTypes.ENUM('success', 'failed', 'pending'),
+        type: Sequelize.DataTypes.TEXT,
         allowNull: false,
         defaultValue: 'pending',
       },

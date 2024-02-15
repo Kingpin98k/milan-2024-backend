@@ -19,6 +19,8 @@ export type IEvent = {
   max_group_size: number;
   reg_count: number;
   mode: Mode;
+  max_cap: number;
+  is_active: boolean;
   created_at: Date;
   updated_at: Date | null;
 };
@@ -31,4 +33,19 @@ export type IEventUser = {
   user_name: string;
   created_at: Date;
   updated_at: Date | null;
+};
+
+export type IUser = {
+  id: UUID;
+  name: string;
+  email: string;
+  phone_number: string;
+  is_srm_ktr: boolean;
+  profile_pic: string;
+  college_name: string;
+  reg_number: string;
+  is_ticket_issued: boolean;
+  created_at: Date;
+  updated_at: Date | null;
+  is_deleted: boolean;
 };

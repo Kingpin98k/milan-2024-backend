@@ -14,6 +14,11 @@ module.exports = {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
+      user_count: {
+        type: Sequelize.DataTypes.INTEGER,
+        defaultValue: 1,
+        allowNull: false,
+      },
       team_code: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,

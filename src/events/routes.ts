@@ -13,12 +13,14 @@ const { protect } = new IUserAuthValidation();
 router.get('/', execute);
 router.get('/:code', execute);
 router.post('/register', execute);
-router.post('/unregister', execute);
+router.delete('/unregister', execute);
 router.delete('/:code', execute);
 router.post('/event', execute);
 router.get('/geteventbyclub/:club', execute);
 router.get('/getallusersbycode/:code', execute);
 router.get('/getcountbycode/:code', execute);
+router.patch('/updateMaxCap/:code/:new_cap', execute);
+router.patch('/activate-event/:code/:op', execute);
 
 // router.get('/event', protect, execute);
 // router.get('/event/:code', protect, execute);
