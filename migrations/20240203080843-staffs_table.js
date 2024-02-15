@@ -36,7 +36,7 @@ module.exports = {
         allowNull: false,
       },
       role: {
-        type: Sequelize.DataTypes.ENUM('admin', 'convenor', 'scanner'),
+        type: Sequelize.DataTypes.TEXT,
         allowNull: false,
         required: true,
       },

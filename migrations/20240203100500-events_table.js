@@ -3,6 +3,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // await queryInterface.sequelize.query(`ALTER TYPE "enum_events_mode" ADD VALUE 'offline'`);
+
     await queryInterface.createTable('events', {
       id: {
         type: Sequelize.DataTypes.UUID,
@@ -24,7 +26,7 @@ module.exports = {
         allowNull: false,
       },
       event_scope: {
-        type: Sequelize.DataTypes.ENUM('srm', 'non-srm', 'both'),
+        type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
       club_name: {
@@ -41,6 +43,16 @@ module.exports = {
       },
       mode: {
         type: Sequelize.DataTypes.TEXT,
+        allowNull: false,
+      },
+      max_cap: {
+        type: Sequelize.DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+      },
+      is_active: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: true,
         allowNull: false,
       },
       created_at: {
