@@ -103,13 +103,13 @@ export default class EventsHelpers extends EventsDb {
         message_code: 'USER_NOT_FOUND_IN_USERS',
       });
     }
-    if (!user_existing_in_user_table.is_ticket_issued) {
-      throw new ErrorHandler({
-        status_code: 400,
-        message: 'Ticket not issued for this user',
-        message_code: 'TICKET_NOT_ISSUED',
-      });
-    }
+    // if (!user_existing_in_user_table.is_ticket_issued) {
+    //   throw new ErrorHandler({
+    //     status_code: 400,
+    //     message: 'Ticket not issued for this user',
+    //     message_code: 'TICKET_NOT_ISSUED',
+    //   });
+    // }
     const existinguser = await this.getUserByDetails(userData);
     if (existinguser) {
       throw new ErrorHandler({
@@ -135,7 +135,7 @@ export default class EventsHelpers extends EventsDb {
           message_code: 'EVENT_NOT_ACTIVE',
         });
       }
-      if (event.reg_count >= event.max_cap) {
+      if (event.reg_count >= event.max_cap + 1) {
         throw new ErrorHandler({
           status_code: 400,
           message: 'Event is full',

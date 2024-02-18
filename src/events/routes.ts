@@ -16,11 +16,11 @@ router.post('/register', execute);
 router.delete('/unregister', execute);
 router.delete('/:code', execute);
 router.post('/event', execute);
-router.get('/geteventbyclub/:club', execute);
-router.get('/getallusersbycode/:code', execute);
-router.get('/getcountbycode/:code', execute);
+router.get('/getEventByClub/:club', execute);
+router.get('/getAllUsersByCode/:code', execute);
+router.get('/getCountByCode/:code', execute);
 router.patch('/updateMaxCap/:code/:new_cap', execute);
-router.patch('/activate-event/:code/:op', execute);
+router.patch('/activateEvent/:code/:op', execute);
 
 // router.get('/event', protect, execute);
 // router.get('/event/:code', protect, execute);

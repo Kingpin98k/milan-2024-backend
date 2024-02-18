@@ -228,4 +228,15 @@ export default class EventsDb {
     }
     return res.rows[0] as unknown as IEvent;
   };
+
+  deleteTeam = async (team_code: string): Promise<any> => {
+    logger('deleteTeam1', LogTypes.LOGS);
+    const query = 'DELETE FROM teams WHERE team_code = $1 RETURNING *;';
+    const values = [team_code];
+    const res = await db.query(query, values);
+    if (res instanceof Error) {
+      throw res;
+    }
+    return res.rows[0];
+  };
 }
