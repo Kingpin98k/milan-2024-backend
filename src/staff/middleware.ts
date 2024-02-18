@@ -104,7 +104,22 @@ export default class IStaffValidation {
 	) => {
 		const user = req.body?.current_user;
 		if (!user || user.role !== "admin") {
-			throw new ErrorHandler({
+			return new ErrorHandler({
+				status_code: 403,
+				message: "You are not authorized to perform this action",
+				message_code: "NOT_AUTHORIZED",
+			});
+		}
+		next();
+	};
+	public viewerAndAdminAccess = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		const user = req.body?.current_user;
+		if (!user || user.role !== "viewer" || user.role !== "admin") {
+			return new ErrorHandler({
 				status_code: 403,
 				message: "You are not authorized to perform this action",
 				message_code: "NOT_AUTHORIZED",

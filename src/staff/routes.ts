@@ -6,10 +6,10 @@ import IStaffValidation from "./middleware";
 const router = Router();
 
 const { execute } = new StaffController();
-const { protectStaff, adminAccess } = new IStaffValidation();
+const { protectStaff, adminAccess ,viewerAndAdminAccess} = new IStaffValidation();
 
 router.get("/current", protectStaff, execute);
-router.get("/", protectStaff, adminAccess, execute);
+router.get("/", protectStaff, execute);
 router.post("/register", execute);
 router.post("/forgotpassword", protectStaff, execute);
 router.post("/login", execute);
