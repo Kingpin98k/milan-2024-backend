@@ -49,7 +49,7 @@ export default {
 		const client = await pool.connect();
 		try {
 			await client.query("BEGIN");
-			const result = await fn(); // Await the result of fn()
+			const result = await fn(client); // Await the result of fn()
 			await client.query("COMMIT");
 			return result; // Return the result of fn()
 		} catch (err) {
