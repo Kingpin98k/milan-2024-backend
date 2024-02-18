@@ -90,38 +90,38 @@ export class EventsServices extends EventsHelpers {
   }
 
   public async getEventByClubService(club_name: string): Promise<IEvent[]> {
-    // const events = await this.getEventByClubHelper(club_name);
-    // if (!events) {
-    //   throw new ErrorHandler({
-    //     status_code: 404,
-    //     message: 'Events not found',
-    //     message_code: 'EVENTS_NOT_FOUND',
-    //   });
-    // }
-    // return events;
-    throw new ErrorHandler({
-      status_code: 404,
-      message: 'Not made yet',
-      message_code: 'NOT MADE',
-    });
+    const events = await this.getEventByClubHelper(club_name);
+    if (!events) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Events not found',
+        message_code: 'EVENTS_NOT_FOUND',
+      });
+    }
+    return events;
+    // throw new ErrorHandler({
+    //   status_code: 404,
+    //   message: 'Not made yet',
+    //   message_code: 'NOT MADE',
+    // });
   }
 
   public async getAllUsersByCodeService(event_code: string): Promise<IEventUser[]> {
-    // logger('getAllUsersByCodeService1', LogTypes.LOGS);
-    // const users = await this.getAllUsersByCodeHelper(event_code);
-    // if (!users) {
-    //   throw new ErrorHandler({
-    //     status_code: 404,
-    //     message: 'Users not found',
-    //     message_code: 'USERS_NOT_FOUND',
-    //   });
-    // }
-    // return users;
-    throw new ErrorHandler({
-      status_code: 404,
-      message: 'Not made yet',
-      message_code: 'NOT MADE',
-    });
+    logger('getAllUsersByCodeService1', LogTypes.LOGS);
+    const users = await this.getAllUsersByCodeHelper(event_code);
+    if (!users) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'Users not found',
+        message_code: 'USERS_NOT_FOUND',
+      });
+    }
+    return users;
+    // throw new ErrorHandler({
+    //   status_code: 404,
+    //   message: 'Not made yet',
+    //   message_code: 'NOT MADE',
+    // });
   }
 
   public async updateMaxCapService(event_code: string, new_cap: number): Promise<IEvent> {

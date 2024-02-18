@@ -25,10 +25,12 @@ router.patch('/activate-event/:code/:op', execute);
 // router.get('/event', protect, execute);
 // router.get('/event/:code', protect, execute);
 // router.post('/register', protect, execute);
-// router.post('/unregister',protect, execute);
+// router.delete('/unregister',protect, execute);
 // router.delete('/:code', protect, execute);
 // router.post('/event', protect, execute);
 // router.get('/geteventbyclub', protect, execute);
 // router.get('/getalluserbycode/:code', protect, execute);
+// router.patch('/updateMaxCap/:code/:new_cap', protect, execute);
+// router.patch('/activate-event/:code/:op', protect, execute);
 
 export default router;
