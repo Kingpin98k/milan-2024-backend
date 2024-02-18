@@ -2,6 +2,7 @@ import db from './../config/pg.config';
 import { IEvent, IEventUser, IUser } from './interface';
 import logger, { LogTypes } from '../utils/logger';
 import ErrorHandler from '../utils/errors.handler';
+import { Client } from 'pg';
 
 export default class EventsDb {
   fetchAllEvents = async (): Promise<IEvent[]> => {
@@ -28,7 +29,7 @@ export default class EventsDb {
     })) as IEvent[];
   };
 
-  createEvent = async (eventData: Partial<IEvent>): Promise<IEvent> => {
+  createEvent = async (eventData: Partial<IEvent>, client?: Client): Promise<IEvent> => {
     logger('createEvent1', LogTypes.LOGS);
     const query = `INSERT INTO events (id, event_code, name, is_group_event, event_scope, club_name, max_group_size, reg_count, mode, max_cap, is_active, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;`;
     const values = [
@@ -46,7 +47,12 @@ export default class EventsDb {
       eventData.created_at,
       eventData.updated_at,
     ];
-    const res = await db.query(query, values);
+    let res;
+    if (client) {
+      res = await client.query(query, values);
+    } else {
+      res = await db.query(query, values);
+    }
     if (res instanceof Error) {
       // logger(res, LogTypes.LOGS);
       throw res;
@@ -102,11 +108,16 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
-  increaseCount = async (eventData: Partial<IEventUser>, updated_at: Date): Promise<IEvent> => {
+  increaseCount = async (eventData: Partial<IEventUser>, updated_at: Date, client?: Client): Promise<IEvent> => {
     logger('IncrementCount1', LogTypes.LOGS);
     const query = `UPDATE events SET reg_count = reg_count + 1, updated_at = $1 WHERE event_code = $2 RETURNING *;`;
     const values = [updated_at, eventData.event_code];
-    const res = await db.query(query, values);
+    let res;
+    if (client) {
+      res = await client.query(query, values);
+    } else {
+      res = await db.query(query, values);
+    }
     // logger(res, LogTypes.LOGS);
     if (res instanceof Error) {
       throw res;
@@ -166,7 +177,7 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEventUser;
   };
 
-  createUser = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
+  createUser = async (userData: Partial<IEventUser>, client: Client): Promise<IEventUser> => {
     logger('createUser1', LogTypes.LOGS);
     const query = `INSERT INTO event_users (id, user_id, event_id, event_code, user_name, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`;
     const values = [
@@ -178,7 +189,12 @@ export default class EventsDb {
       userData.created_at,
       userData.updated_at,
     ];
-    const res = await db.query(query, values);
+    let res;
+    if (client) {
+      res = await client.query(query, values);
+    } else {
+      res = await db.query(query, values);
+    }
     if (res instanceof Error) {
       throw res;
     }

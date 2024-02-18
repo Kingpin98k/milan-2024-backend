@@ -5,6 +5,7 @@ import logger, { LogTypes } from '../utils/logger';
 import { v4 } from 'uuid';
 import ErrorHandler from './../utils/errors.handler';
 import { transform } from 'typescript';
+import { Client } from 'pg';
 
 export default class EventsHelpers extends EventsDb {
   public getAllEventsHelper = async (): Promise<IEvent[]> => {
@@ -104,11 +105,11 @@ export default class EventsHelpers extends EventsDb {
       });
     }
     // if (!user_existing_in_user_table.is_ticket_issued) {
-    //   throw new ErrorHandler({
-    //     status_code: 400,
-    //     message: 'Ticket not issued for this user',
-    //     message_code: 'TICKET_NOT_ISSUED',
-    //   });
+    // 	throw new ErrorHandler({
+    // 		status_code: 400,
+    // 		message: "Ticket not issued for this user",
+    // 		message_code: "TICKET_NOT_ISSUED",
+    // 	});
     // }
     const existinguser = await this.getUserByDetails(userData);
     if (existinguser) {
@@ -118,9 +119,9 @@ export default class EventsHelpers extends EventsDb {
         message_code: 'USER_ALREADY_REGISTERED',
       });
     }
-    const user = await db.transaction(async () => {
+    const user = await db.transaction(async (client: Client) => {
       const updated_at = new Date();
-      const event = await this.increaseCount(userData, updated_at);
+      const event = await this.increaseCount(userData, updated_at, client);
       if (!event) {
         throw new ErrorHandler({
           status_code: 404,
@@ -135,7 +136,7 @@ export default class EventsHelpers extends EventsDb {
           message_code: 'EVENT_NOT_ACTIVE',
         });
       }
-      if (event.reg_count >= event.max_cap + 1) {
+      if (event.reg_count > event.max_cap) {
         throw new ErrorHandler({
           status_code: 400,
           message: 'Event is full',
@@ -143,7 +144,7 @@ export default class EventsHelpers extends EventsDb {
         });
       }
       userData.event_id = event.id;
-      const user = await this.createUser(userData);
+      const user = await this.createUser(userData, client);
       if (!user) {
         throw new ErrorHandler({
           status_code: 404,

@@ -6,21 +6,37 @@ import {
 } from "./interface";
 import db from "../config/pg.config";
 import ErrorHandler from "../utils/errors.handler";
+import { Client } from "pg";
 
 export default class TeamsDB {
 	protected createTeam = async (
-		reqObj: ITeamCreateReqObject
+		reqObj: ITeamCreateReqObject,
+		client?: Client
 	): Promise<ITeamResObject> => {
 		const query = db.format("INSERT INTO teams ? RETURNING *", reqObj);
-		const result = await db.query(query);
+		let result;
+		if (client) {
+			result = await client.query(query);
+		} else {
+			result = await db.query(query);
+		}
 		if (result instanceof Error) throw result;
 		return result.rows[0] as unknown as ITeamResObject;
 	};
 
-	protected joinTeam = async (reqObj: any, is_captain: boolean = false) => {
+	protected joinTeam = async (
+		reqObj: any,
+		is_captain: boolean = false,
+		client?: Client
+	) => {
 		reqObj.is_captain = is_captain;
 		const query = db.format("INSERT INTO team_members ? RETURNING *", reqObj);
-		const result = await db.query(query);
+		let result;
+		if (client) {
+			result = await client.query(query);
+		} else {
+			result = await db.query(query);
+		}
 		if (result instanceof Error) throw result;
 		return result.rows[0];
 	};

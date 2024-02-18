@@ -48,15 +48,12 @@ export default {
   async transaction(fn: Function) {
     const client = await pool.connect();
     try {
-      await client.query('BEGIN; SET TRANSACTION ISOLATION LEVEL SERIALIZABLE');
-      // await client.query('BEGIN');
-      const result = await fn(); // Await the result of fn()
+      await client.query('BEGIN');
+      const result = await fn(client); // Await the result of fn()
       await client.query('COMMIT');
       return result; // Return the result of fn()
     } catch (err) {
-      logger('error in transaction', LogTypes.LOGS);
       await client.query('ROLLBACK');
-      // logger(err, LogTypes.LOGS);
       throw err;
     } finally {
       client.release();
