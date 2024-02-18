@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import ErrorHandler from "../utils/errors.handler";
 import { errorHandler } from "../utils/ress.error";
+import logger, { LogTypes } from "../utils/logger";
 
 export default class IStaffValidation {
 	public static validateEmailAndPhone = (
@@ -102,29 +103,37 @@ export default class IStaffValidation {
 		res: Response,
 		next: NextFunction
 	) => {
-		const user = req.body?.current_user;
-		if (!user || user.role !== "admin") {
-			return new ErrorHandler({
-				status_code: 403,
-				message: "You are not authorized to perform this action",
-				message_code: "NOT_AUTHORIZED",
-			});
+		try {
+			const user = req.body?.current_user;
+			if (!user && user.role !== "admin") {
+				throw new ErrorHandler({
+					status_code: 403,
+					message: "You are not authorized to perform this action",
+					message_code: "NOT_AUTHORIZED",
+				});
+			}
+			next();
+		} catch (error) {
+			errorHandler(res, error);
 		}
-		next();
 	};
 	public viewerAndAdminAccess = async (
 		req: Request,
 		res: Response,
 		next: NextFunction
 	) => {
-		const user = req.body?.current_user;
-		if (!user || user.role !== "viewer" || user.role !== "admin") {
-			return new ErrorHandler({
-				status_code: 403,
-				message: "You are not authorized to perform this action",
-				message_code: "NOT_AUTHORIZED",
-			});
+		try {
+			const user = req.body?.current_user;
+			if (!user && user.role !== "admin" && user.role !== "viewer") {
+				throw new ErrorHandler({
+					status_code: 403,
+					message: "You are not authorized to perform this action",
+					message_code: "NOT_AUTHORIZED",
+				});
+			}
+			next();
+		} catch (error) {
+			errorHandler(res, error);
 		}
-		next();
 	};
 }
