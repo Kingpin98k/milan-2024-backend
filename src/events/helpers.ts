@@ -40,7 +40,7 @@ export default class EventsHelpers extends EventsDb {
       throw new ErrorHandler({
         status_code: 500,
         message: 'Event not created',
-        message_code: 'EVENT_NOT_CREATED',
+        message_code: 'EVENT_NOT_CREATED_CEH',
       });
     }
     return newevent;
@@ -53,7 +53,7 @@ export default class EventsHelpers extends EventsDb {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_FOUND_GEH',
       });
     }
     return event;
@@ -67,7 +67,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'Event not found',
-          message_code: 'EVENT_NOT_FOUND',
+          message_code: 'EVENT_NOT_FOUND_DEH',
         });
       }
       const users = await this.deleteAllUsersByCode(event_code);
@@ -104,13 +104,13 @@ export default class EventsHelpers extends EventsDb {
         message_code: 'USER_NOT_FOUND_IN_USERS',
       });
     }
-    // if (!user_existing_in_user_table.is_ticket_issued) {
-    // 	throw new ErrorHandler({
-    // 		status_code: 400,
-    // 		message: "Ticket not issued for this user",
-    // 		message_code: "TICKET_NOT_ISSUED",
-    // 	});
-    // }
+    if (!user_existing_in_user_table.is_ticket_issued) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'Ticket not issued for this user',
+        message_code: 'TICKET_NOT_ISSUED',
+      });
+    }
     const existinguser = await this.getUserByDetails(userData);
     if (existinguser) {
       throw new ErrorHandler({
@@ -126,7 +126,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'Event not found',
-          message_code: 'REGISTRATION_FAILED_EVENT_NF',
+          message_code: 'INC_REG_COUNT_FAILED',
         });
       }
       if (event.is_active === false) {
@@ -149,7 +149,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'user creation failed',
-          message_code: 'REGISTRATION_FAILED_USER_NC',
+          message_code: 'REGISTER_FAILED',
         });
       }
       return user;
@@ -182,7 +182,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'Event not found',
-          message_code: 'UNREGISTRATION_FAILED_EVENT_NF',
+          message_code: 'DEC_REG_COUNT_FAILED',
         });
       }
       userData.event_id = event.id;
@@ -191,7 +191,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'user not found',
-          message_code: 'UNREGISTRATION_FAILED_USER_NF',
+          message_code: 'DELETE_USER_FAILED',
         });
       }
       return user;
@@ -206,7 +206,7 @@ export default class EventsHelpers extends EventsDb {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Events not found',
-        message_code: 'EVENTS_NOT_FOUND',
+        message_code: 'EVENTS_NOT_FOUND_GEBCH',
       });
     }
     if (!events.length) {
@@ -233,7 +233,7 @@ export default class EventsHelpers extends EventsDb {
       throw new ErrorHandler({
         status_code: 404,
         message: 'No users found for this event',
-        message_code: 'Event_HAS_NO_USERS',
+        message_code: 'EVENT_HAS_NO_USERS',
       });
     }
     return users;
@@ -246,7 +246,14 @@ export default class EventsHelpers extends EventsDb {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_FOUND_UMCH',
+      });
+    }
+    if (event.reg_count > new_cap) {
+      throw new ErrorHandler({
+        status_code: 400,
+        message: 'New cap is less than current registrations',
+        message_code: 'NEW_CAP_LESS_THAN_REG_COUNT',
       });
     }
     event.max_cap = new_cap;
@@ -270,7 +277,7 @@ export default class EventsHelpers extends EventsDb {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_FOUND_AEH',
       });
     }
     if (op === 'activate') {
@@ -286,13 +293,13 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 500,
           message: 'Event not activated',
-          message_code: 'EVENT_NOT_ACTIVATED',
+          message_code: 'EVENT_ACTIVATION_FAILED',
         });
       } else {
         throw new ErrorHandler({
           status_code: 500,
           message: 'Event not deactivated',
-          message_code: 'EVENT_NOT_DEACTIVATED',
+          message_code: 'EVENT_DEACTIVATION_FAILED',
         });
       }
     }
