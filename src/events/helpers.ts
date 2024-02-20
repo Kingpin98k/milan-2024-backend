@@ -108,8 +108,8 @@ export default class EventsHelpers extends EventsDb {
 		if (!user_existing_in_user_table) {
 			throw new ErrorHandler({
 				status_code: 404,
-				message: "User not found in users table",
-				message_code: "USER_NOT_FOUND_IN_USERS",
+				message: "User not found ",
+				message_code: "USER_NOT_FOUND",
 			});
 		}
 		// if (!user_existing_in_user_table.is_ticket_issued) {
