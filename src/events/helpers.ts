@@ -100,17 +100,17 @@ export default class EventsHelpers extends EventsDb {
     if (!user_existing_in_user_table) {
       throw new ErrorHandler({
         status_code: 404,
-        message: 'User not found in users table',
-        message_code: 'USER_NOT_FOUND_IN_USERS',
+        message: 'User not found ',
+        message_code: 'USER_NOT_FOUND',
       });
     }
-    if (!user_existing_in_user_table.is_ticket_issued) {
-      throw new ErrorHandler({
-        status_code: 400,
-        message: 'Ticket not issued for this user',
-        message_code: 'TICKET_NOT_ISSUED',
-      });
-    }
+    // if (!user_existing_in_user_table.is_ticket_issued) {
+    // 	throw new ErrorHandler({
+    // 		status_code: 400,
+    // 		message: "Ticket not issued for this user",
+    // 		message_code: "TICKET_NOT_ISSUED",
+    // 	});
+    // }
     const existinguser = await this.getUserByDetails(userData);
     if (existinguser) {
       throw new ErrorHandler({
@@ -126,7 +126,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'Event not found',
-          message_code: 'INC_REG_COUNT_FAILED',
+          message_code: 'REGISTRATION_FAILED_EVENT_NF',
         });
       }
       if (event.is_active === false) {
@@ -149,7 +149,7 @@ export default class EventsHelpers extends EventsDb {
         throw new ErrorHandler({
           status_code: 404,
           message: 'user creation failed',
-          message_code: 'REGISTER_FAILED',
+          message_code: 'REGISTRATION_FAILED_USER_NC',
         });
       }
       return user;
