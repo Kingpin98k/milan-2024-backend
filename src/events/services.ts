@@ -11,7 +11,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Events not found',
-        message_code: 'EVENTS_NOT_FOUND',
+        message_code: 'EVENTS_NOT_FOUND_GAES',
       });
     }
     return events;
@@ -44,7 +44,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_FOUND_GES',
       });
     }
     return event;
@@ -57,7 +57,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_FOUND_DES',
       });
     }
     return event;
@@ -95,7 +95,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Events not found',
-        message_code: 'EVENTS_NOT_FOUND',
+        message_code: 'EVENTS_NOT_FOUND_GEBCS',
       });
     }
     return events;
@@ -113,7 +113,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Users not found',
-        message_code: 'USERS_NOT_FOUND',
+        message_code: 'USERS_NOT_FOUND_GAUBCS',
       });
     }
     return users;

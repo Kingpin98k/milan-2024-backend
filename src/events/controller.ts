@@ -144,7 +144,7 @@ export default class EventsController extends EventsServices {
       throw new ErrorHandler({
         status_code: 400,
         message: 'Club name is required',
-        message_code: 'CLUB_NAME_REQUIRED',
+        message_code: 'CLUB_NAME_MISSING',
       });
     }
     const events = await this.getEventByClubService(club_name);
@@ -163,7 +163,7 @@ export default class EventsController extends EventsServices {
       throw new ErrorHandler({
         status_code: 404,
         message: 'event code is required',
-        message_code: 'EVENT_CODE_REQUIRED',
+        message_code: 'EVENT_CODE_MISSING',
       });
     }
     const users = await this.getAllUsersByCodeService(event_code);
