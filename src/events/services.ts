@@ -75,6 +75,21 @@ export class EventsServices extends EventsHelpers {
     }
     return user;
   }
+  public async getEventCodeByUserService(user_id:string): Promise<any> {
+    const user_existing_in_user_table = await this.fetchUserFromUsersTable(user_id);
+    if (!user_existing_in_user_table) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'User not found ',
+        message_code: 'USER_NOT_FOUND',
+      });
+    }
+    const data = await this.fetchEventByUser(user_id);
+    const response={
+       "event_code":data
+    }
+    return response;
+  }
 
   public async unregisterService(userData: Partial<IEventUser>): Promise<IEventUser> {
     logger('unregisterService1', LogTypes.LOGS);
@@ -158,3 +173,5 @@ export class EventsServices extends EventsHelpers {
     return event;
   }
 }
+
+

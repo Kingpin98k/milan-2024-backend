@@ -72,6 +72,21 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
+ fetchEventByUser = async (user_id: string): Promise<IEvent[]> => {
+   const query = `SELECT event_code
+   FROM event_users
+   WHERE user_id = $1;
+    `
+    const values = [user_id];
+    const res = await db.query(query, values);
+    if (res instanceof Error) {
+      throw res;
+    }
+    
+   return res.rows.map((row: any) => (row.event_code)) as IEvent[];
+
+ }
+
   fetchEventByClub = async (club_name: string): Promise<IEvent[]> => {
     logger('fetchEventByClub1', LogTypes.LOGS);
     const query = 'SELECT * FROM events WHERE club_name = $1;';

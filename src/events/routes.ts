@@ -21,6 +21,7 @@ router.get('/getAllUsersByCode/:code', execute);
 router.get('/getCountByCode/:code', execute);
 router.patch('/updateMaxCap/:code/:new_cap', execute);
 router.patch('/activateEvent/:code/:op', execute);
+router.get('/getEvent/:user_id', execute);
 
 // router.get('/event', protect, execute);
 // router.get('/event/:code', protect, execute);
