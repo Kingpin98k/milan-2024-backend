@@ -11,7 +11,7 @@ const { protect } = new IUserAuthValidation();
 router.get(
 	"/google/callback",
 	passport.authenticate("google", {
-		successRedirect: process.env.CLIENT_URL as string,
+		successRedirect: `${process.env.CLIENT_URL}/auth` as string,
 		failureRedirect: "/login/failed",
 	})
 );
