@@ -65,8 +65,8 @@ export default class EventsHelpers extends EventsDb {
 
 	public deleteEventHelper = async (event_code: string): Promise<IEvent> => {
 		logger("deleteEventHelpers1", LogTypes.LOGS);
-		const event = await db.transaction(async () => {
-			const event1 = await this.fetchEventByCode(event_code);
+		const event = await db.transaction(async (client: Client) => {
+			const event1 = await this.fetchEventByCode(event_code, client);
 			if (!event1) {
 				throw new ErrorHandler({
 					status_code: 404,
@@ -74,7 +74,7 @@ export default class EventsHelpers extends EventsDb {
 					message_code: "EVENT_NOT_FOUND",
 				});
 			}
-			const users = await this.deleteAllUsersByCode(event_code);
+			const users = await this.deleteAllUsersByCode(event_code, client);
 			if (!users) {
 				throw new ErrorHandler({
 					status_code: 404,
@@ -82,7 +82,7 @@ export default class EventsHelpers extends EventsDb {
 					message_code: "USER_DELETION_FAILED",
 				});
 			}
-			const event = await this.deleteEvent(event_code);
+			const event = await this.deleteEvent(event_code, client);
 			if (!event) {
 				throw new ErrorHandler({
 					status_code: 404,
@@ -185,7 +185,7 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "USER_NOT_REGISTERED",
 			});
 		}
-		const user = await db.transaction(async () => {
+		const user = await db.transaction(async (client: Client) => {
 			const updated_at = new Date();
 			const event = await this.decreaseCount(userData, updated_at);
 			if (!event) {
@@ -196,7 +196,7 @@ export default class EventsHelpers extends EventsDb {
 				});
 			}
 			userData.event_id = event.id;
-			const user = await this.deleteUser(userData);
+			const user = await this.deleteUser(userData, client);
 			if (!user) {
 				throw new ErrorHandler({
 					status_code: 404,

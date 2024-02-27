@@ -11,21 +11,15 @@ const { protect } = new IUserAuthValidation();
 router.get(
 	"/google/callback",
 	passport.authenticate("google", {
-		successRedirect: process.env.CLIENT_URL as string,
-		failureRedirect: "/login/failed",
+		successRedirect: `${process.env.CLIENT_URL}` as string,
+		failureRedirect: `${process.env.CLIENT_URL}/loginFailed` as string,
 	})
 );
+
 router.get(
 	"/google",
 	passport.authenticate("google", { scope: ["profile", "email"] })
 );
-
-router.get("/login/failed", (req, res) => {
-	res.status(401).json({
-		success: false,
-		message: "user failed to authenticate.",
-	});
-});
 
 router.get("/logout", (req, res) => {
 	req.logout((err) => {
