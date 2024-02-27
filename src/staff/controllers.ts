@@ -18,6 +18,7 @@ export default class StaffController extends StaffService {
       const method = req.method;
       const routeName = req.route.path.split('/')[1];
       console.log('routeName', routeName);
+      console.log(req.body);
       let response: IResponse = {
         success: false,
         data: {},

@@ -29,6 +29,8 @@ export default class EventsController extends EventsServices {
 
       if (method === RequestMethods.GET && route === '') {
         response = await this.getAllEventsController(req, res);
+      } else if (method === RequestMethods.GET && route === EventRoutes.GET_EVENT_CODE_BY_USER) {
+        response = await this.getEventCodeByUserController(req, res);
       } else if (method === RequestMethods.POST && route === EventRoutes.EVENT) {
         response = await this.createEventController(req, res);
       } else if (method === RequestMethods.GET && routeName === EventRoutes.EVENT_CODE) {
@@ -64,6 +66,18 @@ export default class EventsController extends EventsServices {
     }
   };
 
+  private getEventCodeByUserController = async (req: Request, res: Response): Promise<IResponse> => {
+    logger('getEventCodeByUserController', LogTypes.LOGS);
+    const user_id = req.params.user_id as string;
+    const events = await this.getEventCodeByUserService(user_id);
+    // logger(events, LogTypes.LOGS);
+    return {
+      success: true,
+      data: events,
+      message_code: 'FETCH_EVENT_CODE_SUCCESS',
+      message: 'Events fetched successfully',
+    };
+  };
   private getAllEventsController = async (req: Request, res: Response): Promise<IResponse> => {
     logger('getAllEventsController1', LogTypes.LOGS);
     const events = await this.getAllEventsService();
@@ -144,7 +158,7 @@ export default class EventsController extends EventsServices {
       throw new ErrorHandler({
         status_code: 400,
         message: 'Club name is required',
-        message_code: 'CLUB_NAME_REQUIRED',
+        message_code: 'CLUB_NAME_MISSING',
       });
     }
     const events = await this.getEventByClubService(club_name);
@@ -163,7 +177,7 @@ export default class EventsController extends EventsServices {
       throw new ErrorHandler({
         status_code: 404,
         message: 'event code is required',
-        message_code: 'EVENT_CODE_REQUIRED',
+        message_code: 'EVENT_CODE_MISSING',
       });
     }
     const users = await this.getAllUsersByCodeService(event_code);

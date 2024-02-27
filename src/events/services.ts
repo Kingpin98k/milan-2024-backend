@@ -11,7 +11,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Events not found',
-        message_code: 'EVENTS_NOT_FOUND',
+        message_code: 'EVENTS_NOT_FOUND_GAES',
       });
     }
     return events;
@@ -44,7 +44,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_FOUND_GES',
       });
     }
     return event;
@@ -57,7 +57,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Event not found',
-        message_code: 'EVENT_NOT_FOUND',
+        message_code: 'EVENT_NOT_FOUND_DES',
       });
     }
     return event;
@@ -74,6 +74,21 @@ export class EventsServices extends EventsHelpers {
       });
     }
     return user;
+  }
+  public async getEventCodeByUserService(user_id:string): Promise<any> {
+    const user_existing_in_user_table = await this.fetchUserFromUsersTable(user_id);
+    if (!user_existing_in_user_table) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: 'User not found ',
+        message_code: 'USER_NOT_FOUND',
+      });
+    }
+    const data = await this.fetchEventByUser(user_id);
+    const response={
+       "event_code":data
+    }
+    return response;
   }
 
   public async unregisterService(userData: Partial<IEventUser>): Promise<IEventUser> {
@@ -95,7 +110,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Events not found',
-        message_code: 'EVENTS_NOT_FOUND',
+        message_code: 'EVENTS_NOT_FOUND_GEBCS',
       });
     }
     return events;
@@ -113,7 +128,7 @@ export class EventsServices extends EventsHelpers {
       throw new ErrorHandler({
         status_code: 404,
         message: 'Users not found',
-        message_code: 'USERS_NOT_FOUND',
+        message_code: 'USERS_NOT_FOUND_GAUBCS',
       });
     }
     return users;
@@ -158,3 +173,5 @@ export class EventsServices extends EventsHelpers {
     return event;
   }
 }
+
+
