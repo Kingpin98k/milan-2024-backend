@@ -21,8 +21,7 @@ export default class BookingsHelper extends BookingsDB {
         status_code: 400,
         message: "User not found, Send them to tech team!!",
         message_code: "USER_NOT_FOUND_IN_CREATE_BOOKING",
-        is_loggable: true,
-        user: reqObj.user_id,
+      
       });
     }
 
@@ -89,8 +88,7 @@ export default class BookingsHelper extends BookingsDB {
         status_code: 400,
         message: "User not found, Send them to tech team!!",
         message_code: "USER_NOT_FOUND",
-        is_loggable: true,
-        user: reqObj.user_id,
+    
       });
     }
 
@@ -124,8 +122,7 @@ export default class BookingsHelper extends BookingsDB {
         status_code: 400,
         message: "Booking not found, Send them to tech team!!",
         message_code: "BOOKING_NOT_FOUND",
-        is_loggable: true,
-        user: reqObj.user_id,
+     
       });
     }
     return updatedBooking;
