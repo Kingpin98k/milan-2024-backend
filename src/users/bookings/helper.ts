@@ -8,7 +8,6 @@ import BookingsDB from "./db";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 
 import dotenv from "dotenv";
-import ExtendedUserServiceDb from "../auth/db";
 import { disc_info_logger } from "../../utils/disc_logger";
 dotenv.config();
 const sqsClient = new SQSClient({
@@ -22,8 +21,6 @@ export default class BookingsHelper extends BookingsDB {
 				status_code: 400,
 				message: "User not found, Send them to tech team!!",
 				message_code: "USER_NOT_FOUND_IN_CREATE_BOOKING",
-				is_loggable: true,
-				user: reqObj.user_id,
 			});
 		}
 
@@ -90,8 +87,6 @@ export default class BookingsHelper extends BookingsDB {
 				status_code: 400,
 				message: "User not found, Send them to tech team!!",
 				message_code: "USER_NOT_FOUND",
-				is_loggable: true,
-				user: reqObj.user_id,
 			});
 		}
 
@@ -125,38 +120,8 @@ export default class BookingsHelper extends BookingsDB {
 				status_code: 400,
 				message: "Booking not found, Send them to tech team!!",
 				message_code: "BOOKING_NOT_FOUND",
-				is_loggable: true,
-				user: reqObj.user_id,
 			});
 		}
 		return updatedBooking;
-	};
-
-	protected getBookingByEmailHelper = async (
-		email: string
-	): Promise<IBookingGetResObj> => {
-		const authObj = new ExtendedUserServiceDb();
-
-		const user = await authObj.getUserByEmail(email);
-
-		if (!user) {
-			throw new ErrorHandler({
-				status_code: 400,
-				message: "User not found",
-				message_code: "USER_NOT_FOUND",
-			});
-		}
-
-		const booking = await this.getUserBooking(user.id);
-
-		if (!booking) {
-			throw new ErrorHandler({
-				status_code: 400,
-				message: "Booking not found",
-				message_code: "BOOKING_NOT_FOUND",
-			});
-		}
-
-		return booking;
 	};
 }

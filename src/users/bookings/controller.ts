@@ -75,21 +75,6 @@ export default class BookingsController extends BookingsService {
 					const updateResponse = await this.updateTicketIssued(reqObj);
 					response = updateResponse;
 				}
-			} else if (req.path === bookingRoutes.FETCHBOOKING) {
-				if (method === RequestMethods.GET) {
-					const email = req.body.email as string;
-					if (!email) {
-						throw new ErrorHandler({
-							status_code: 400,
-							message: "Email is required",
-							message_code: "EMAIL_REQUIRED",
-						});
-					}
-					const bookingResponse: IResponse = await this.getBookingController(
-						email
-					);
-					response = bookingResponse;
-				}
 			} else if (req.path === bookingRoutes.RESENDEMAIL) {
 				if (method === RequestMethods.POST) {
 					const { email, ticket_id, user_id, payment_id } = req.body;
@@ -135,16 +120,6 @@ export default class BookingsController extends BookingsService {
 			message: "Total Live Count Fetched",
 			data: data,
 			message_code: "TOTAL_LIVE_COUNT_FETCHED",
-		};
-	};
-
-	private getBookingController = async (email: string): Promise<IResponse> => {
-		const data: IBookingGetResObj = await this.getBookingService(email);
-		return {
-			success: true,
-			message: "Booking Fetched Successfully!",
-			data: data,
-			message_code: "BOOKING_FETCHED_SUCCESSFULLY",
 		};
 	};
 
