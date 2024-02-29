@@ -10,6 +10,7 @@ import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import dotenv from "dotenv";
 import { disc_info_logger } from "../../utils/disc_logger";
 dotenv.config();
+
 const sqsClient = new SQSClient({
   region: process.env.AWS_REGION,
 });
@@ -25,7 +26,6 @@ export default class BookingsHelper extends BookingsDB {
         user: reqObj.user_id,
       });
     }
-
     const messageData = {
       id: reqObj.id,
       ticket_type: reqObj.ticket_type,
@@ -39,7 +39,7 @@ export default class BookingsHelper extends BookingsDB {
       updated_at: reqObj.updated_at,
       created_at: reqObj.created_at,
     };
-    if (!process.env.SQS_QUEUE_URL)
+    if (!process.env.SQS_BOOKING_URL)
       throw new ErrorHandler({
         status_code: 400,
         message: "SQS_QUEUE_URL not found",
@@ -47,8 +47,8 @@ export default class BookingsHelper extends BookingsDB {
       });
 
     const queueUrl =
-      process.env.SQS_QUEUE_URL ||
-      "https://sqs.ap-south-1.amazonaws.com/322653267300/booking-post.fifo";
+      process.env.SQS_BOOKING_URL ||
+      "https://sqs.ap-south-1.amazonaws.com/322653267300/post-booking.fifo";
     const messageGroupId: string = "booking-post";
     const sendMessageCommand = new SendMessageCommand({
       QueueUrl: queueUrl,
