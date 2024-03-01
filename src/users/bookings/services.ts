@@ -87,7 +87,7 @@ export default class BookingsService extends BookingsHelper {
       TicketId: ticket_id,
     };
 
-    if (!process.env.SQS_QUEUE_URL)
+    if (!process.env.SQS_EMAIL_QUEUE_URL)
       throw new ErrorHandler({
         status_code: 400,
         message: "SQS_EMAIL_QUEUE_URL not found",
@@ -96,7 +96,7 @@ export default class BookingsService extends BookingsHelper {
 
     const queueUrl =
       process.env.SQS_EMAIL_QUEUE_URL ||
-      "https://sqs.ap-south-1.amazonaws.com/322653267300/EmailQueue";
+      "https://sqs.ap-south-1.amazonaws.com/322653267300/email";
 
     const sendMessageCommand = new SendMessageCommand({
       QueueUrl: queueUrl,

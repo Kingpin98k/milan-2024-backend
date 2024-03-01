@@ -2,7 +2,8 @@ import { Router, response } from "express";
 import UsersAuthController from "./controller";
 import IUserAuthValidation from "./middleware";
 import passport from "passport";
-
+import dotenv from "dotenv";
+dotenv.config();
 const router: Router = Router();
 
 const { execute } = new UsersAuthController();
@@ -11,7 +12,7 @@ const { protect } = new IUserAuthValidation();
 router.get(
 	"/google/callback",
 	passport.authenticate("google", {
-		successRedirect: process.env.CLIENT_URL as string,
+		successRedirect: `${process.env.CLIENT_URL}/auth` as string,
 		failureRedirect: "/login/failed",
 	})
 );
@@ -36,7 +37,11 @@ router.get("/logout", (req, res) => {
 			});
 		}
 	});
-	res.redirect(process.env.CLIENT_URL as string);
+	res.status(200).json({
+		success: true,
+		message: "User logged out",
+		message_code: "LOGGED_OUT",
+	});
 });
 
 router.post("/register", protect, execute);
