@@ -9,4 +9,5 @@ export enum EventRoutes {
   GET_COUNT_BY_CODE = 'getCountByCode',
   UPDATE_MAX_CAP = 'updateMaxCap',
   ACTIVATE_EVENT = 'activateEvent',
+  GET_EVENT_CODE_BY_USER = 'getEvent',
 }

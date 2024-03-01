@@ -23,7 +23,9 @@ app.use(helmet());
 //Passport Config
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173',
+    'http://localhost:5174',
+  ],
     credentials: true,
   })
 );
@@ -58,7 +60,6 @@ app.use('/api/events', eventsRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/teams', teamsRoutes);
 app.use('/users', userRoutes);
-app.use('/api/events', eventsRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/teams', teamsRoutes);
 app.use('/api/users', userRoutes);

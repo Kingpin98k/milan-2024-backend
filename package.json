@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/dsa-srm/Milan-2024-backend#readme",
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.521.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.6",
     "@types/cookie-session": "^2.0.48",
