@@ -43,7 +43,7 @@ export default class EventsController extends EventsServices {
         response = await this.registerController(req, res);
       } else if (method === RequestMethods.GET && routeName === EventRoutes.GET_EVENT_BY_CLUB) {
         response = await this.getEventByClubController(req, res);
-      } else if (method === RequestMethods.GET && routeName === EventRoutes.GET_ALL_USERS_BY_CODE) {
+      } else if (method === RequestMethods.GET && routeName === EventRoutes.GET_EVENT_USERS_BY_CODE) {
         response = await this.getAllUsersByCodeController(req, res);
       } else if (method === RequestMethods.GET && routeName === EventRoutes.GET_COUNT_BY_CODE) {
         response = await this.getCountByCodeController(req, res);

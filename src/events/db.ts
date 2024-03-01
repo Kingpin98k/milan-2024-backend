@@ -212,8 +212,8 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEventUser;
   };
 
-  deleteAllUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
-    logger('deleteAllUsersByCode1', LogTypes.LOGS);
+  deleteEventUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
+    logger('deleteEventUsersByCode1', LogTypes.LOGS);
     const query = 'DELETE FROM event_users WHERE event_code = $1 RETURNING *;';
     const values = [event_code];
     const res = await db.query(query, values);

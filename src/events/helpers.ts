@@ -70,7 +70,7 @@ export default class EventsHelpers extends EventsDb {
           message_code: 'EVENT_NOT_FOUND_DEH',
         });
       }
-      const users = await this.deleteAllUsersByCode(event_code);
+      const users = await this.deleteEventUsersByCode(event_code);
       if (!users) {
         throw new ErrorHandler({
           status_code: 404,

@@ -17,7 +17,7 @@ router.delete('/unregister', execute);
 router.delete('/:code', execute);
 router.post('/event', execute);
 router.get('/getEventByClub/:club', execute);
-router.get('/getAllUsersByCode/:code', execute);
+router.get('/getEventUsersByCode/:code', execute);
 router.get('/getCountByCode/:code', execute);
 router.patch('/updateMaxCap/:code/:new_cap', execute);
 router.patch('/activateEvent/:code/:op', execute);
