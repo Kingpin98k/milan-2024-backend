@@ -17,6 +17,6 @@ router.post("/login", execute);
 router.post("/verify", protectStaff, execute);
 router.post("/deny", protectStaff, execute);
 router.delete("/:staffId", protectStaff, param("staffId").escape(), execute);
-router.get("/logout", protectStaff, execute);
+router.get("/logout", execute);
 
 export default router;

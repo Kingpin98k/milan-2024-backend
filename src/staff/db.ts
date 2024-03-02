@@ -22,7 +22,7 @@ export default class StaffDB {
 	};
 
 	protected getStaff = async (id: string): Promise<IStaffResObject> => {
-		const query = `SELECT name, email, role FROM staffs WHERE id = $1`;
+		const query = `SELECT * FROM staffs WHERE id = $1`;
 		const res = await db.query(query, [id]);
 		if (res instanceof Error) {
 			throw res;

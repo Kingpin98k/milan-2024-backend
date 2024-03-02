@@ -74,9 +74,9 @@ export default class StaffHelper extends StaffDB {
 	};
 
 	protected verifyHelper = async (id: string): Promise<IStaffResObject> => {
-		console.log(id);
+		// console.log(id);
 		const user = await this.checkIsExistingStaffById(id);
-		console.log(user);
+		// console.log(user);
 		if (!user) {
 			throw new ErrorHandler({
 				status_code: 404,
