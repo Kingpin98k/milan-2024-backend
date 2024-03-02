@@ -63,6 +63,7 @@ export default class StaffController extends StaffService {
         response = await this.deleteController(id);
       } else if (method === 'GET' && routeName === StaffRoutes.LOGOUT) {
         res.clearCookie('token');
+        
         response = {
           success: true,
           data: {},

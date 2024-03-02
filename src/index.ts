@@ -23,7 +23,9 @@ app.use(
   cors({
     origin: ['http://localhost:5173',
     'http://localhost:5174',
-    'https://srmmilan.org'
+    'https://srmmilan.org',
+    'https://dev9501.d1rexfnjrhb8nq.amplifyapp.com',
+    'https://ankit-dev.dbtuyvk3p4wbw.amplifyapp.com'
   ],
     credentials: true,
   })
