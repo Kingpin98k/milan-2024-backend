@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import ErrorHandler from "../utils/errors.handler";
 import { errorHandler } from "../utils/ress.error";
-import logger, { LogTypes } from "../utils/logger";
+// import logger, { LogTypes } from "../utils/logger";
 
 export default class IStaffValidation {
 	public static validateEmailAndPhone = (
@@ -60,6 +60,7 @@ export default class IStaffValidation {
 			) {
 				token = req.headers.authorization.split(" ")[1];
 			} else if (req.cookies?.token) {
+				// logger(req.cookies?.token, LogTypes.LOGS);
 				token = req.cookies?.token;
 			} else {
 				throw new ErrorHandler({
