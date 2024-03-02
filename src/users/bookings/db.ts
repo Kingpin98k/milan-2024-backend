@@ -136,8 +136,4 @@ export default class BookingsDB {
 		return res.rows[0] as unknown as any;
 	};
 }
-<<<<<<< HEAD
 // Assuming you have a BookingsService class with methods for handling bookings
-=======
-// Assuming you have a BookingsService class with methods for handling bookings
->>>>>>> 997651440e987682f785be6bf6397db86129375f
