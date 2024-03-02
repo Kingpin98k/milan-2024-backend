@@ -2,7 +2,8 @@ import { Router, response } from "express";
 import UsersAuthController from "./controller";
 import IUserAuthValidation from "./middleware";
 import passport from "passport";
-
+import dotenv from "dotenv";
+dotenv.config();
 const router: Router = Router();
 
 const { execute } = new UsersAuthController();

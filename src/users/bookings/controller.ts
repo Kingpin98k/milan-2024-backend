@@ -25,6 +25,7 @@ export default class BookingsController extends BookingsService {
 
 			if (req.path === bookingRoutes.POSTBOOKING) {
 				if (method === RequestMethods.GET) {
+					// console.log("req.query", req.query);
 					const ticketType = req.query.ticketType as string;
 					const userId = req.query.userId as string;
 					const paymentId = req.query.paymentId as string;

@@ -11,5 +11,18 @@
         "rejectUnauthorized": false
       }
     }
+  },
+  "production": {
+    "username": "postgres",
+    "password": "milan2024",
+    "database": "ebdb",
+    "host": "awseb-e-m2puxydbtp-stack-awsebrdsdatabase-i9nnqw4v2kon.ckci7ohurjfc.ap-south-1.rds.amazonaws.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   }
 }

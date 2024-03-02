@@ -1,27 +1,27 @@
-import ErrorHandler from '../utils/errors.handler';
-import { NextFunction, Request, Response, Router } from 'express';
-import EventsController from './controller';
-import IUserAuthValidation from '../users/auth/middleware';
+import ErrorHandler from "../utils/errors.handler";
+import { NextFunction, Request, Response, Router } from "express";
+import EventsController from "./controller";
+import IUserAuthValidation from "../users/auth/middleware";
 
 const router = Router();
 
-console.log('Executing events/routes.ts');
+// console.log('Executing events/routes.ts');
 
 const { execute } = new EventsController();
 const { protect } = new IUserAuthValidation();
 
-router.get('/', execute);
-router.get('/:code', execute);
-router.post('/register', execute);
-router.delete('/unregister', execute);
-router.delete('/:code', execute);
-router.post('/event', execute);
-router.get('/getEventByClub/:club', execute);
-router.get('/getAllUsersByCode/:code', execute);
-router.get('/getCountByCode/:code', execute);
-router.patch('/updateMaxCap/:code/:new_cap', execute);
-router.patch('/activateEvent/:code/:op', execute);
-router.get('/getEvent/:user_id', execute);
+router.get("/", execute);
+router.get("/:code", execute);
+router.post("/register", execute);
+router.delete("/unregister", execute);
+router.delete("/:code", execute);
+router.post("/event", execute);
+router.get("/getEventByClub/:club", execute);
+router.get("/getAllUsersByCode/:code", execute);
+router.get("/getCountByCode/:code", execute);
+router.patch("/updateMaxCap/:code/:new_cap", execute);
+router.patch("/activateEvent/:code/:op", execute);
+router.get("/getEvent/:user_id", execute);
 
 // router.get('/event', protect, execute);
 // router.get('/event/:code', protect, execute);
