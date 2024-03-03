@@ -16,11 +16,7 @@ export default class IStaffValidation {
 				message_code: "EMAIL_OR_PHONE_NUMBER_REQUIRED",
 			});
 		}
-<<<<<<< HEAD
 		const email_pattern = /^[a-zA-Z0-9._%+-]+@srmist\.edu\.in$/;
-=======
-		const email_patern = /^[a-zA-Z0-9._%+-]+@srmist\.edu\.in$/;
->>>>>>> e4b43e6e0f7e2a72cfdb829f382e817059ec3a24
 		const phone_pattern = /^[0-9]{10}$/;
 
 		if (!phone_pattern.test(phone_number.toString())) {

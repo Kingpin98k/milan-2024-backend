@@ -11,6 +11,7 @@ import {
 	StaffScope,
 } from "./interface";
 import { IResponse } from "../events/interface";
+import logger, { LogTypes } from "../utils/logger";
 
 export default class StaffController extends StaffService {
 	public execute = async (req: Request, res: Response): Promise<void> => {
@@ -37,11 +38,38 @@ export default class StaffController extends StaffService {
 				const id = req.body.current_user.id;
 				response = await this.getStaffByIdController(id);
 			} else if (
+				method === "GET" &&
+				routeName === StaffRoutes.GET_OFFLINE_TICKETS_ISSUED
+			) {
+				response = await this.getOfflineTicketsIssuedController();
+			} else if (
+				method === "GET" &&
+				routeName === StaffRoutes.GET_TOTAL_REGISTRATIONS
+			) {
+				response = await this.getTotalRegistrationsController();
+			} else if (
+				method === "GET" &&
+				routeName === StaffRoutes.GET_TOTAL_TICKETS_SOLD
+			) {
+				response = await this.getTotalTicketsSoldController();
+			} else if (
 				method === "POST" &&
 				routeName === StaffRoutes.FORGOT_PASSWORD
 			) {
 				const reqObj: IStaffPasswordChangeRequestObject = req.body;
 				response = await this.changePasswordController(reqObj);
+			} else if (
+				method === "POST" &&
+				routeName === StaffRoutes.GET_USER_ID_BY_EMAIL
+			) {
+				const email = req.body.email;
+				response = await this.getUserIdByEmailController(email);
+			} else if (
+				method === "POST" &&
+				routeName === StaffRoutes.GET_BOOKING_BY_EMAIL
+			) {
+				const email = req.body.email;
+				response = await this.getBookingByEmailController(email);
 			} else if (method === "POST" && routeName === StaffRoutes.REGISTER) {
 				const reqObj = { ...req.body, id: v4() };
 				response = await this.registerController(reqObj);
@@ -66,10 +94,12 @@ export default class StaffController extends StaffService {
 			} else if (method === "POST" && routeName === StaffRoutes.DENY) {
 				const id = req.body.user_id;
 				response = await this.denyController(id);
-			} else if (method === "DELETE") {
-				const id = req.params.staffId;
-				statusCode = 200;
+			} else if (method === "DELETE" && routeName === StaffRoutes.DELETE) {
+				const id = req.params?.staffId;
 				response = await this.deleteController(id);
+			} else if (method === "DELETE" && routeName === StaffRoutes.DELETE_USER) {
+				const id = req.params?.userId;
+				response = await this.deleteUserController(id);
 			} else if (method === "GET" && routeName === StaffRoutes.LOGOUT) {
 				res.cookie("token", "", {
 					expires: new Date(Date.now()),
@@ -169,6 +199,70 @@ export default class StaffController extends StaffService {
 			data: user,
 			message_code: "GET_STAFF_SUCCESS",
 			message: "Staff fetched successfully",
+		};
+	};
+
+	private getUserIdByEmailController = async (
+		email: string
+	): Promise<IResponse> => {
+		const user = await this.getUserIdByEmailService(email);
+		return {
+			success: true,
+			data: user,
+			message_code: "GET_USER_ID_BY_EMAIL_SUCCESS",
+			message: "User fetched successfully",
+		};
+	};
+
+	private getBookingByEmailController = async (
+		email: string
+	): Promise<IResponse> => {
+		const user = await this.getBookingByEmailService(email);
+		return {
+			success: true,
+			data: user,
+			message_code: "GET_BOOKING_BY_EMAIL_SUCCESS",
+			message: "Booking fetched successfully",
+		};
+	};
+
+	private getOfflineTicketsIssuedController = async (): Promise<IResponse> => {
+		const user = await this.getOfflineTicketsIssuedService();
+		return {
+			success: true,
+			data: user,
+			message_code: "GET_OFFLINE_TICKETS_ISSUED_SUCCESS",
+			message: "Offline tickets issued fetched successfully",
+		};
+	};
+
+	private getTotalRegistrationsController = async (): Promise<IResponse> => {
+		const user = await this.getTotalRegistrationsServsice();
+		return {
+			success: true,
+			data: user,
+			message_code: "GET_TOTAL_REGISTRATIONS_SUCCESS",
+			message: "Total registrations fetched successfully",
+		};
+	};
+
+	private getTotalTicketsSoldController = async (): Promise<IResponse> => {
+		const user = await this.getTotalTicketsSoldHelper();
+		return {
+			success: true,
+			data: user,
+			message_code: "GET_TOTAL_TICKETS_ISSUED_SUCCESS",
+			message: "Total tickets issued fetched successfully",
+		};
+	};
+
+	private deleteUserController = async (id: string): Promise<IResponse> => {
+		await this.deleteUserService(id);
+		return {
+			success: true,
+			message_code: "DELETE_SUCCESS",
+			message: "User deleted successfully",
+			data: {},
 		};
 	};
 }

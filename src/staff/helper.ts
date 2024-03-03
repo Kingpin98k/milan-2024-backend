@@ -73,6 +73,30 @@ export default class StaffHelper extends StaffDB {
 		return user;
 	};
 
+	protected getUserIdByEmailHelper = async (email: string) => {
+		const user = await this.getUserIdByEmail(email);
+		if (!user) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "User not found",
+				message_code: "USER_NOT_FOUND",
+			});
+		}
+		return user;
+	};
+
+	protected getBookingByEmailHelper = async (email: string): Promise<any> => {
+		const user = await this.getBookingByEmail(email);
+		if (!user) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "Booking not found",
+				message_code: "NO_SUCCESSFUL_BOOKING_FOUND",
+			});
+		}
+		return user;
+	};
+
 	protected verifyHelper = async (id: string): Promise<IStaffResObject> => {
 		// console.log(id);
 		const user = await this.checkIsExistingStaffById(id);
@@ -191,5 +215,45 @@ export default class StaffHelper extends StaffDB {
 		}
 
 		return user;
+	};
+	protected getOfflineTicketsIssuedHelper = async (): Promise<any> => {
+		const res = await this.getOfflineTicketsIssued();
+		if (!res) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "No tickets found",
+				message_code: "NO_TICKETS_FOUND",
+			});
+		}
+		return res;
+	};
+
+	protected getTotalRegistrationsHelper = async (): Promise<any> => {
+		const res = await this.getTotalRegistrations();
+		if (!res) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "No registrations found",
+				message_code: "NO_REGISTRATIONS_FOUND",
+			});
+		}
+		return res;
+	};
+
+	protected getTotalTicketsSoldHelper = async (): Promise<any> => {
+		const res = await this.getTotalTicketsSold();
+		if (!res) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "No tickets found",
+				message_code: "NO_TICKETS_FOUND",
+			});
+		}
+		return res;
+	};
+
+	protected deleteUserHelper = async (id: string): Promise<void> => {
+		await this.deleteUser(id);
+		return;
 	};
 }

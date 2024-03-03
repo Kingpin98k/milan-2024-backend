@@ -72,15 +72,22 @@ export default class UsersAuthDB {
 		id: string,
 		reqObj: IUserAuthSignupReqObj
 	): Promise<IUserAuthResObject> => {
-		const { name, email, reg_number, is_srm_ktr, phone_number, updated_at } =
-			reqObj;
+		const {
+			name,
+			email,
+			reg_number,
+			is_srm_ktr,
+			phone_number,
+			updated_at,
+			gender,
+		} = reqObj;
 
 		const query = `
     UPDATE users
     SET
       name = $1,
       email = $2,
-      password = $3,
+			gender = $3,
       reg_number = $4,
       is_srm_ktr = $5,
       phone_number = $6,
@@ -92,6 +99,7 @@ export default class UsersAuthDB {
 		const values = [
 			name,
 			email,
+			gender,
 			reg_number,
 			is_srm_ktr,
 			phone_number,

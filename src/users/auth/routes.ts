@@ -13,11 +13,7 @@ router.get(
 	"/google/callback",
 	passport.authenticate("google", {
 		successRedirect: `${process.env.CLIENT_URL}/auth` as string,
-<<<<<<< HEAD
 		failureRedirect: `${process.env.CLIENT_URL}/loginFailed` as string,
-=======
-		failureRedirect: "/login/failed",
->>>>>>> e4b43e6e0f7e2a72cfdb829f382e817059ec3a24
 	})
 );
 
@@ -37,11 +33,7 @@ router.get("/logout", (req, res) => {
 	});
 	res.status(200).json({
 		success: true,
-<<<<<<< HEAD
 		message: "Logged out successfully",
-=======
-		message: "User logged out",
->>>>>>> e4b43e6e0f7e2a72cfdb829f382e817059ec3a24
 		message_code: "LOGGED_OUT",
 	});
 });
