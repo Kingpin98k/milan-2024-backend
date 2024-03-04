@@ -11,7 +11,6 @@ export default class EventsHelpers extends EventsDb {
 	public getAllEventsHelper = async (): Promise<IEvent[]> => {
 		// logger('getAllEventsHelpers1', LogTypes.LOGS);
 		const events = await this.fetchAllEvents();
-		console.log(events);
 		if (!events) {
 			throw new ErrorHandler({
 				status_code: 404,
@@ -259,32 +258,23 @@ export default class EventsHelpers extends EventsDb {
 		new_cap: number
 	): Promise<IEvent> => {
 		// logger('updateMaxCapHelpers1', LogTypes.LOGS);
-		const event = await this.fetchEventByCode(event_code);
-		if (!event) {
-			throw new ErrorHandler({
-				status_code: 404,
-				message: "Event not found",
-				message_code: "EVENT_NOT_FOUND_UMCH",
-			});
+		
+	
+	
+		const eventData ={
+			event_code: event_code,
+			max_cap: new_cap,
+			updated_at: new Date()
 		}
-		if (event.reg_count > new_cap) {
+		const updatedevent = await this.updateMaxCap(eventData);
+		if (!updatedevent) {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "New cap is less than current registrations",
 				message_code: "NEW_CAP_LESS_THAN_REG_COUNT",
 			});
 		}
-		event.max_cap = new_cap;
-		const updated_at = new Date();
-		event.updated_at = updated_at;
-		const updatedevent = await this.updateMaxCap(event);
-		if (!updatedevent) {
-			throw new ErrorHandler({
-				status_code: 500,
-				message: "Event not updated",
-				message_code: "EVENT_NOT_UPDATED",
-			});
-		}
+
 		return updatedevent;
 	};
 

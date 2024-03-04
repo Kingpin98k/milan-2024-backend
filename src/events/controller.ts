@@ -270,10 +270,9 @@ export default class EventsController extends EventsServices {
 		// logger("updateMaxCapController1", LogTypes.LOGS);
 		const event_code = req.params.code;
 		const new_cap = parseInt(req.params.new_cap);
-		const event = await this.updateMaxCapService(event_code, new_cap);
+		await this.updateMaxCapService(event_code, new_cap);
 		return {
 			success: true,
-			data: event,
 			message_code: "UPDATE_MAX_CAP_SUCCESS",
 			message: "Max cap updated successfully",
 		};
