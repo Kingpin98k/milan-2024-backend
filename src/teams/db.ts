@@ -74,19 +74,35 @@ export default class TeamsDB {
 		return result.rows[0] as any;
 	};
 
-	protected deleteTeam = async (team_code: string) => {
+	protected deleteTeam = async (team_code: string, client?: Client) => {
 		const query = `DELETE FROM teams WHERE team_code = $1`;
-		const result = await db.query(query, [team_code]);
+
+		let result;
+		if (client) {
+			result = await client.query(query, [team_code]);
+		} else {
+			result = await db.query(query, [team_code]);
+		}
 		if (result instanceof Error) throw result;
 	};
 
-	protected deleteTeamMembers = async (team_code: string) => {
+	protected deleteTeamMembers = async (team_code: string, client?: Client) => {
 		const query = `DELETE FROM team_members WHERE team_code = $1`;
-		const result = await db.query(query, [team_code]);
+		let result;
+		if (client) {
+			result = await client.query(query, [team_code]);
+		} else {
+			result = await db.query(query, [team_code]);
+		}
+
 		if (result instanceof Error) throw result;
 	};
 
-	protected leaveTeam = async (team_code: string, user_id: string) => {
+	protected leaveTeam = async (
+		team_code: string,
+		user_id: string,
+		client?: Client
+	) => {
 		const query = `
 		DO $$
 		BEGIN
@@ -106,7 +122,13 @@ export default class TeamsDB {
 		END $$;
 		
 		`;
-		const result = await db.query(query);
+
+		let result;
+		if (client) {
+			result = await client.query(query);
+		} else {
+			result = await db.query(query);
+		}
 		if (result instanceof Error) {
 			if (result.message === "TEAM_DOES_NOT_EXIST") {
 				throw new ErrorHandler({

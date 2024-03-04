@@ -11,12 +11,28 @@ const { protectStaff, adminAccess, viewerAndAdminAccess } =
 
 router.get("/current", protectStaff, execute);
 router.get("/", protectStaff, viewerAndAdminAccess, execute);
+router.get(
+	"/getOfflineTicketsIssued",
+	protectStaff,
+	viewerAndAdminAccess,
+	execute
+);
+router.get(
+	"/getTotalRegistrations",
+	protectStaff,
+	viewerAndAdminAccess,
+	execute
+);
+router.get("/getTotalTicketsSold", protectStaff, viewerAndAdminAccess, execute);
+router.post("/getUserIdByEmail", protectStaff, adminAccess, execute);
+router.post("/getBookingByEmail", protectStaff, viewerAndAdminAccess, execute);
 router.post("/register", execute);
 router.post("/forgotpassword", protectStaff, execute);
 router.post("/login", execute);
 router.post("/verify", protectStaff, execute);
 router.post("/deny", protectStaff, execute);
-router.delete("/:staffId", protectStaff, param("staffId").escape(), execute);
 router.get("/logout", execute);
+router.delete("/deleteUser/:userId", protectStaff, adminAccess, execute);
+router.delete("/:staffId", protectStaff, param("staffId").escape(), execute);
 
 export default router;

@@ -7,6 +7,7 @@ export type IUserAuthSignupReqObj = {
 	id: string;
 	name: string;
 	email: string;
+	gender: string;
 	reg_number: string;
 	is_srm_ktr: boolean;
 	profile_pic: string;
@@ -21,6 +22,7 @@ export type IUserAuthResObject = {
 	name: string;
 	email: string;
 	reg_number: string;
+	gender: string;
 	is_srm_ktr: boolean;
 	profile_pic: string;
 	college_name: string;

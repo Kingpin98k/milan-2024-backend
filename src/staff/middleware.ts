@@ -5,19 +5,19 @@ import { errorHandler } from "../utils/ress.error";
 // import logger, { LogTypes } from "../utils/logger";
 
 export default class IStaffValidation {
-  public static validateEmailAndPhone = (
-    email: string,
-    phone_number: number
-  ) => {
-    if (!email || !phone_number) {
-      throw new ErrorHandler({
-        status_code: 400,
-        message: "Both Email and PhoneNumber Number is required.",
-        message_code: "EMAIL_OR_PHONE_NUMBER_REQUIRED",
-      });
-    }
-    const email_patern = /^[a-zA-Z0-9._%+-]+@srmist\.edu\.in$/;
-    const phone_pattern = /^[0-9]{10}$/;
+	public static validateEmailAndPhone = (
+		email: string,
+		phone_number: number
+	) => {
+		if (!email || !phone_number) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Both Email and PhoneNumber Number is required.",
+				message_code: "EMAIL_OR_PHONE_NUMBER_REQUIRED",
+			});
+		}
+		const email_pattern = /^[a-zA-Z0-9._%+-]+@srmist\.edu\.in$/;
+		const phone_pattern = /^[0-9]{10}$/;
 
     if (!phone_pattern.test(phone_number.toString())) {
       throw new ErrorHandler({
@@ -27,25 +27,25 @@ export default class IStaffValidation {
       });
     }
 
-    if (!email_patern.test(email)) {
-      throw new ErrorHandler({
-        status_code: 400,
-        message: "Invalid Email format. Only SRM emails are allowed !",
-        message_code: "INVALID_EMAIL_FORMAT",
-      });
-    }
-  };
-  private jwtVerifyPromisified = (token: string, secret: string) => {
-    return new Promise((resolve, reject) => {
-      jwt.verify(token, secret, {}, (err, payload) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(payload);
-        }
-      });
-    });
-  };
+		if (!email_pattern.test(email)) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Invalid Email format. Only SRM emails are allowed !",
+				message_code: "INVALID_EMAIL_FORMAT",
+			});
+		}
+	};
+	private jwtVerifyPromisified = (token: string, secret: string) => {
+		return new Promise((resolve, reject) => {
+			jwt.verify(token, secret, {}, (err, payload) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(payload);
+				}
+			});
+		});
+	};
 
   public protectStaff = async (
     req: Request,

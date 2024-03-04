@@ -5,7 +5,7 @@ const router = Router();
 
 const { execute } = new TeamsController();
 
-router.get("/getAllTeam/:userId", execute);
+router.get("/getAllTeams/:userId", execute);
 router.post("/create", execute);
 router.post("/join", execute);
 router.patch("/updateName", execute);

@@ -75,20 +75,20 @@ export default class BookingsDB {
 		FROM emails
 		WHERE email = $1;
 	  `;
-	  
-	  const res = await db.query(query, [email]);
-	  
-	  if (res instanceof Error) {
-		throw res;
-	  }
-	  
-	  // Check if there are any rows returned
-	  const result:any = res.rows[0];
-	  
-	  // If there are no rows, return null
-	  const count = result ? result.count : null;
-	  
-	  return count as unknown as any;
+
+		const res = await db.query(query, [email]);
+
+		if (res instanceof Error) {
+			throw res;
+		}
+
+		// Check if there are any rows returned
+		const result: any = res.rows[0];
+
+		// If there are no rows, return null
+		const count = result ? result.count : null;
+
+		return count as unknown as any;
 	};
 	protected UserEmail = async (user_id: string): Promise<any> => {
 		const query = `SELECT email FROM users WHERE id = $1;`;
