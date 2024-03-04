@@ -16,7 +16,7 @@ export default class IStaffValidation {
 				message_code: "EMAIL_OR_PHONE_NUMBER_REQUIRED",
 			});
 		}
-		const email_patern = /^[a-zA-Z0-9._%+-]+@srmist\.edu\.in$/;
+		const email_pattern = /^[a-zA-Z0-9._%+-]+@srmist\.edu\.in$/;
 		const phone_pattern = /^[0-9]{10}$/;
 
 		if (!phone_pattern.test(phone_number.toString())) {
@@ -27,7 +27,7 @@ export default class IStaffValidation {
 			});
 		}
 
-		if (!email_patern.test(email)) {
+		if (!email_pattern.test(email)) {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Invalid Email format. Only SRM emails are allowed !",

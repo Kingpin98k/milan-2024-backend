@@ -5,5 +5,5 @@ export enum TeamRoutes {
 	DELETE_TEAM = "deleteTeam",
 	LEAVE = "leave",
 	DELETE_MEMBER = "deleteMember",
-	GET_TEAMS = "getAllTeam",
+	GET_TEAMS = "getAllTeams",
 }

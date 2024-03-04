@@ -170,15 +170,15 @@ export default class TeamsHelper extends TeamsDB {
 	protected deleteTeamHelper = async (reqObj: any): Promise<void> => {
 		await this.checkIfCaptain(reqObj.team_code, reqObj.user_id);
 
-		await db.transaction(async () => {
-			await this.deleteTeamMembers(reqObj.team_code);
-			await this.deleteTeam(reqObj.team_code);
+		await db.transaction(async (client: Client) => {
+			await this.deleteTeamMembers(reqObj.team_code, client);
+			await this.deleteTeam(reqObj.team_code, client);
 		});
 	};
 
 	protected leaveTeamHelper = async (reqObj: any): Promise<void> => {
-		await db.transaction(async () => {
-			await this.leaveTeam(reqObj.team_code, reqObj.user_id);
+		await db.transaction(async (client: Client) => {
+			await this.leaveTeam(reqObj.team_code, reqObj.user_id, client);
 		});
 	};
 
