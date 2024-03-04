@@ -11,6 +11,7 @@ export default class EventsHelpers extends EventsDb {
 	public getAllEventsHelper = async (): Promise<IEvent[]> => {
 		// logger('getAllEventsHelpers1', LogTypes.LOGS);
 		const events = await this.fetchAllEvents();
+		console.log(events);
 		if (!events) {
 			throw new ErrorHandler({
 				status_code: 404,
@@ -287,42 +288,5 @@ export default class EventsHelpers extends EventsDb {
 		return updatedevent;
 	};
 
-	public activateEventHelper = async (
-		event_code: string,
-		op: string
-	): Promise<IEvent> => {
-		// logger('activateEventHelpers1', LogTypes.LOGS);
-		const event = await this.fetchEventByCode(event_code);
-		if (!event) {
-			throw new ErrorHandler({
-				status_code: 404,
-				message: "Event not found",
-				message_code: "EVENT_NOT_FOUND_AEH",
-			});
-		}
-		if (op === "activate") {
-			event.is_active = true;
-		} else if (op === "deactivate") {
-			event.is_active = false;
-		}
-		const updated_at = new Date();
-		event.updated_at = updated_at;
-		const updatedevent = await this.updateActive(event);
-		if (!updatedevent) {
-			if (op === "activate") {
-				throw new ErrorHandler({
-					status_code: 500,
-					message: "Event not activated",
-					message_code: "EVENT_ACTIVATION_FAILED",
-				});
-			} else {
-				throw new ErrorHandler({
-					status_code: 500,
-					message: "Event not deactivated",
-					message_code: "EVENT_DEACTIVATION_FAILED",
-				});
-			}
-		}
-		return updatedevent;
-	};
+	
 }

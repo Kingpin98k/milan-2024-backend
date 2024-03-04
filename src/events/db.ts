@@ -5,28 +5,15 @@ import ErrorHandler from "../utils/errors.handler";
 import { Client } from "pg";
 
 export default class EventsDb {
-	fetchAllEvents = async (): Promise<IEvent[]> => {
+	fetchAllEvents = async (): Promise<any> => {
 		// logger('fetchAllEvents1', LogTypes.LOGS);
 		const query = "SELECT * FROM events;";
 		let res = await db.query(query);
 		if (res instanceof Error) {
 			throw res;
 		}
-		return res.rows.map((row: any) => ({
-			id: row.id,
-			event_code: row.event_code,
-			name: row.name,
-			is_group_event: row.is_group_event,
-			event_scope: row.event_scope,
-			club_name: row.club_name,
-			max_group_size: row.max_group_size,
-			reg_count: row.reg_count,
-			mode: row.mode,
-			max_cap: row.max_cap,
-			is_active: row.is_active,
-			created_at: row.created_at,
-			updated_at: row.updated_at,
-		})) as IEvent[];
+		
+		return res.rows;
 	};
 
 	createEvent = async (
@@ -270,19 +257,24 @@ export default class EventsDb {
 		return res.rows[0] as unknown as IEvent;
 	};
 
-	updateActive = async (eventData: Partial<IEvent>): Promise<IEvent> => {
-		// logger("updateActive11", LogTypes.LOGS);
-		const query = `UPDATE events SET is_active = $1, updated_at = $2 WHERE event_code = $3 RETURNING *;`;
-		const values = [
-			eventData.is_active,
-			eventData.updated_at,
-			eventData.event_code,
-		];
+
+	activateEvent = async (eventCode:string): Promise<any> => {
+		const query = `UPDATE events SET is_active = true WHERE event_code = $1 RETURNING *`;
+		const values = [eventCode];
 		const res = await db.query(query, values);
 		if (res instanceof Error) {
 			throw res;
 		}
-		return res.rows[0] as unknown as IEvent;
+		return res.rows[0];
+	};
+	deactivateEvent = async (eventCode:string): Promise<any> => {
+		const query = `UPDATE events SET is_active = false WHERE event_code = $1 RETURNING *;`;
+		const values = [eventCode];
+		const res = await db.query(query, values);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows[0];
 	};
 
 	deleteTeam = async (team_code: string): Promise<any> => {
