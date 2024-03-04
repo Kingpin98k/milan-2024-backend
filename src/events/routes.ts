@@ -5,8 +5,6 @@ import IUserAuthValidation from '../users/auth/middleware';
 
 const router = Router();
 
-console.log('Executing events/routes.ts');
-
 const { execute } = new EventsController();
 const { protect } = new IUserAuthValidation();
 
