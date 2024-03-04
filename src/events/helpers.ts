@@ -1,6 +1,6 @@
 import EventsDb from "./db";
 import db from "../config/pg.config";
-import { IEvent, IEventUser } from "./interface";
+import { IEvent, IEventUser, IUser } from "./interface";
 // import logger, { LogTypes } from '../utils/logger';
 import { v4 } from "uuid";
 import ErrorHandler from "./../utils/errors.handler";
@@ -258,9 +258,6 @@ export default class EventsHelpers extends EventsDb {
 		new_cap: number
 	): Promise<IEvent> => {
 		// logger('updateMaxCapHelpers1', LogTypes.LOGS);
-		
-	
-	
 		const eventData ={
 			event_code: event_code,
 			max_cap: new_cap,
@@ -274,9 +271,21 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "NEW_CAP_LESS_THAN_REG_COUNT",
 			});
 		}
-
 		return updatedevent;
 	};
 
+	public getUserDetailByCodeHelper = async (
+		event_code: string
+	): Promise<IUser[]> => {
+		const users = await this.fetchUserDetailByCode(event_code);
+		if (!users) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "fetchUserDetailByCode failed",
+				message_code: "FETCH_USER_DETAIL_BY_CODE_FAILED",
+			});
+		}
+		return users;
+	}
 	
 }

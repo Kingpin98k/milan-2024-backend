@@ -291,4 +291,14 @@ export default class EventsDb {
     }
     return res.rows[0];
   };
+
+  fetchUserDetailByCode = async (event_code: string): Promise<IUser[]> => {
+    const query = `SELECT * FROM users WHERE event_code = $1;`;
+    const values = [event_code];
+    const res = await db.query(query, values);
+    if (res instanceof Error) {
+      throw res;
+    }
+    return res.rows as unknown as IUser[];
+  }
 }

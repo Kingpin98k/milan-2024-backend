@@ -1,5 +1,5 @@
 import EventsHelpers from "./helpers";
-import { IEvent, IEventUser, IResponse } from "./interface";
+import { IEvent, IEventUser, IResponse, IUser } from "./interface";
 // import logger, { LogTypes } from '../utils/logger';
 import ErrorHandler from "../utils/errors.handler";
 import { response } from "express";
@@ -162,6 +162,18 @@ export class EventsServices extends EventsHelpers {
       });
     }
     return event;
+  }
+  
+  public async getUserDetailByCodeService(event_code: string): Promise<IUser[]> {
+    const users = await this.getUserDetailByCodeHelper(event_code);
+    if (users.length === 0) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: "No users found for this event",
+        message_code: "NO_USER_FOUND_FOR_EVENT",
+      });
+    }
+    return users;
   }
 
   public async activateEventService(
