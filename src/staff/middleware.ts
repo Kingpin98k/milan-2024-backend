@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import ErrorHandler from "../utils/errors.handler";
 import { errorHandler } from "../utils/ress.error";
+import logger, { LogTypes } from "../utils/logger";
 // import logger, { LogTypes } from "../utils/logger";
 
 export default class IStaffValidation {
@@ -106,7 +107,7 @@ export default class IStaffValidation {
 	) => {
 		try {
 			const user = req.body?.current_user;
-			if (!user && user.role !== "admin") {
+			if (!user || user.role !== "admin") {
 				throw new ErrorHandler({
 					status_code: 403,
 					message: "You are not authorized to perform this action",
@@ -125,7 +126,7 @@ export default class IStaffValidation {
 	) => {
 		try {
 			const user = req.body?.current_user;
-			if (!user && user.role !== "admin" && user.role !== "viewer") {
+			if (!user || (user.role !== "admin" && user.role !== "viewer")) {
 				throw new ErrorHandler({
 					status_code: 403,
 					message: "You are not authorized to perform this action",
