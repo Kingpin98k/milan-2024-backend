@@ -1,36 +1,26 @@
-import db from './../config/pg.config';
-import { IEvent, IEventUser, IUser } from './interface';
-import logger, { LogTypes } from '../utils/logger';
-import ErrorHandler from '../utils/errors.handler';
-import { Client } from 'pg';
+import db from "./../config/pg.config";
+import { IEvent, IEventUser, IUser } from "./interface";
+import logger, { LogTypes } from "../utils/logger";
+import ErrorHandler from "../utils/errors.handler";
+import { Client } from "pg";
 
 export default class EventsDb {
-  fetchAllEvents = async (): Promise<IEvent[]> => {
-    logger('fetchAllEvents1', LogTypes.LOGS);
-    const query = 'SELECT * FROM events;';
+  fetchAllEvents = async (): Promise<any> => {
+    // logger('fetchAllEvents1', LogTypes.LOGS);
+    const query = "SELECT * FROM events;";
     let res = await db.query(query);
     if (res instanceof Error) {
       throw res;
     }
-    return res.rows.map((row: any) => ({
-      id: row.id,
-      event_code: row.event_code,
-      name: row.name,
-      is_group_event: row.is_group_event,
-      event_scope: row.event_scope,
-      club_name: row.club_name,
-      max_group_size: row.max_group_size,
-      reg_count: row.reg_count,
-      mode: row.mode,
-      max_cap: row.max_cap,
-      is_active: row.is_active,
-      created_at: row.created_at,
-      updated_at: row.updated_at,
-    })) as IEvent[];
+
+    return res.rows;
   };
 
-  createEvent = async (eventData: Partial<IEvent>, client?: Client): Promise<IEvent> => {
-    logger('createEvent1', LogTypes.LOGS);
+  createEvent = async (
+    eventData: Partial<IEvent>,
+    client?: Client
+  ): Promise<IEvent> => {
+    // logger("createEvent1", LogTypes.LOGS);
     const query = `INSERT INTO events (id, event_code, name, is_group_event, event_scope, club_name, max_group_size, reg_count, mode, max_cap, is_active, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;`;
     const values = [
       eventData.id,
@@ -62,8 +52,8 @@ export default class EventsDb {
   };
 
   fetchEventByCode = async (event_code: string): Promise<IEvent> => {
-    logger('fetchEvent1', LogTypes.LOGS);
-    const query = 'SELECT * FROM events WHERE event_code = $1;';
+    // logger("fetchEvent1", LogTypes.LOGS);
+    const query = "SELECT * FROM events WHERE event_code = $1;";
     const values = [event_code];
     const res = await db.query(query, values);
     if (res instanceof Error) {
@@ -72,24 +62,23 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
- fetchEventByUser = async (user_id: string): Promise<IEvent[]> => {
-   const query = `SELECT event_code
+  fetchEventByUser = async (user_id: string): Promise<IEvent[]> => {
+    const query = `SELECT event_code
    FROM event_users
    WHERE user_id = $1;
-    `
+    `;
     const values = [user_id];
     const res = await db.query(query, values);
     if (res instanceof Error) {
       throw res;
     }
-    
-   return res.rows.map((row: any) => (row.event_code)) as IEvent[];
 
- }
+    return res.rows.map((row: any) => row.event_code) as IEvent[];
+  };
 
   fetchEventByClub = async (club_name: string): Promise<IEvent[]> => {
-    logger('fetchEventByClub1', LogTypes.LOGS);
-    const query = 'SELECT * FROM events WHERE club_name = $1;';
+    // logger("fetchEventByClub1", LogTypes.LOGS);
+    const query = "SELECT * FROM events WHERE club_name = $1;";
     const values = [club_name];
     const res = await db.query(query, values);
     if (res instanceof Error) {
@@ -113,8 +102,8 @@ export default class EventsDb {
   };
 
   deleteEvent = async (event_code: string): Promise<IEvent> => {
-    logger('deleteEvent1', LogTypes.LOGS);
-    const query = 'DELETE FROM events WHERE event_code = $1 RETURNING *;';
+    // logger("deleteEvent1", LogTypes.LOGS);
+    const query = "DELETE FROM events WHERE event_code = $1 RETURNING *;";
     const values = [event_code];
     const res = await db.query(query, values);
     if (res instanceof Error) {
@@ -123,8 +112,12 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
-  increaseCount = async (eventData: Partial<IEventUser>, updated_at: Date, client?: Client): Promise<IEvent> => {
-    logger('IncrementCount1', LogTypes.LOGS);
+  increaseCount = async (
+    eventData: Partial<IEventUser>,
+    updated_at: Date,
+    client?: Client
+  ): Promise<IEvent> => {
+    // logger("IncrementCount1", LogTypes.LOGS);
     const query = `UPDATE events SET reg_count = reg_count + 1, updated_at = $1 WHERE event_code = $2 RETURNING *;`;
     const values = [updated_at, eventData.event_code];
     let res;
@@ -140,8 +133,11 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
-  decreaseCount = async (eventData: Partial<IEventUser>, updated_at: Date): Promise<IEvent> => {
-    logger('DecrementCount1', LogTypes.LOGS);
+  decreaseCount = async (
+    eventData: Partial<IEventUser>,
+    updated_at: Date
+  ): Promise<IEvent> => {
+    // logger("DecrementCount1", LogTypes.LOGS);
     const query = `UPDATE events SET reg_count = reg_count - 1, updated_at = $1 WHERE event_code = $2 RETURNING *;`;
     const values = [updated_at, eventData.event_code];
     const res = await db.query(query, values);
@@ -151,9 +147,9 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
-  fetchAllUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
-    logger('fetchAllUsersByCode1', LogTypes.LOGS);
-    const query = 'SELECT * FROM event_users WHERE event_code = $1;';
+  fetchEventUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
+    // logger("fetchAllUsersByCode1", LogTypes.LOGS);
+    const query = "SELECT * FROM event_users WHERE event_code = $1;";
     const values = [event_code];
     const res = await db.query(query, values);
     if (res instanceof Error) {
@@ -170,9 +166,11 @@ export default class EventsDb {
     })) as IEventUser[];
   };
 
-  fetchUserFromUsersTable = async (user_id: string | undefined): Promise<IUser> => {
-    logger('fetchUserFromUsersTable1', LogTypes.LOGS);
-    const query = 'SELECT * FROM users WHERE id = $1;';
+  fetchUserFromUsersTable = async (
+    user_id: string | undefined
+  ): Promise<IUser> => {
+    // logger("fetchUserFromUsersTable1", LogTypes.LOGS);
+    const query = "SELECT * FROM users WHERE id = $1;";
     const values = [user_id];
     const res = await db.query(query, values);
     if (res instanceof Error) {
@@ -181,8 +179,10 @@ export default class EventsDb {
     return res.rows[0] as unknown as IUser;
   };
 
-  getUserByDetails = async (userData: Partial<IEventUser>): Promise<IEventUser | null> => {
-    logger('getUserByDetails1', LogTypes.LOGS);
+  getUserByDetails = async (
+    userData: Partial<IEventUser>
+  ): Promise<IEventUser | null> => {
+    // logger("getUserByDetails1", LogTypes.LOGS);
     const query = `SELECT * FROM event_users WHERE user_id = $1 AND event_code = $2 AND user_name = $3;`;
     const values = [userData.user_id, userData.event_code, userData.user_name];
     const res = await db.query(query, values);
@@ -192,8 +192,11 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEventUser;
   };
 
-  createUser = async (userData: Partial<IEventUser>, client: Client): Promise<IEventUser> => {
-    logger('createUser1', LogTypes.LOGS);
+  createUser = async (
+    userData: Partial<IEventUser>,
+    client: Client
+  ): Promise<IEventUser> => {
+    // logger("createUser1", LogTypes.LOGS);
     const query = `INSERT INTO event_users (id, user_id, event_id, event_code, user_name, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`;
     const values = [
       userData.id,
@@ -217,8 +220,9 @@ export default class EventsDb {
   };
 
   deleteUser = async (userData: Partial<IEventUser>): Promise<IEventUser> => {
-    logger('deleteUser1', LogTypes.LOGS);
-    const query = 'DELETE FROM event_users WHERE event_code = $1 AND user_id = $2 AND event_id = $3 RETURNING *;';
+    // logger("deleteUser1", LogTypes.LOGS);
+    const query =
+      "DELETE FROM event_users WHERE event_code = $1 AND user_id = $2 AND event_id = $3 RETURNING *;";
     const values = [userData.event_code, userData.user_id, userData.event_id];
     const res = await db.query(query, values);
     if (res instanceof Error) {
@@ -227,9 +231,9 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEventUser;
   };
 
-  deleteEventUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
-    logger('deleteEventUsersByCode1', LogTypes.LOGS);
-    const query = 'DELETE FROM event_users WHERE event_code = $1 RETURNING *;';
+  deleteAllUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
+    // logger("deleteAllUsersByCode1", LogTypes.LOGS);
+    const query = "DELETE FROM event_users WHERE event_code = $1 RETURNING *;";
     const values = [event_code];
     const res = await db.query(query, values);
     if (res instanceof Error) {
@@ -239,9 +243,18 @@ export default class EventsDb {
   };
 
   updateMaxCap = async (eventData: Partial<IEvent>): Promise<IEvent> => {
-    logger('updateMaxCap1', LogTypes.LOGS);
-    const query = `UPDATE events SET max_cap = $1, updated_at = $2 WHERE event_code = $3 RETURNING *;`;
-    const values = [eventData.max_cap, eventData.updated_at, eventData.event_code];
+    // logger("updateMaxCap1", LogTypes.LOGS);
+    const query = `UPDATE events 
+						SET max_cap = $1, 
+							updated_at = $2 
+						WHERE event_code = $3 
+							AND $1 > (SELECT reg_count FROM events WHERE event_code = $3)
+						RETURNING *;`;
+    const values = [
+      eventData.max_cap,
+      eventData.updated_at,
+      eventData.event_code,
+    ];
     const res = await db.query(query, values);
     if (res instanceof Error) {
       throw res;
@@ -249,20 +262,28 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
-  updateActive = async (eventData: Partial<IEvent>): Promise<IEvent> => {
-    logger('updateActive11', LogTypes.LOGS);
-    const query = `UPDATE events SET is_active = $1, updated_at = $2 WHERE event_code = $3 RETURNING *;`;
-    const values = [eventData.is_active, eventData.updated_at, eventData.event_code];
+  activateEvent = async (eventCode: string): Promise<any> => {
+    const query = `UPDATE events SET is_active = true WHERE event_code = $1 RETURNING *`;
+    const values = [eventCode];
     const res = await db.query(query, values);
     if (res instanceof Error) {
       throw res;
     }
-    return res.rows[0] as unknown as IEvent;
+    return res.rows[0];
+  };
+  deactivateEvent = async (eventCode: string): Promise<any> => {
+    const query = `UPDATE events SET is_active = false WHERE event_code = $1 RETURNING *;`;
+    const values = [eventCode];
+    const res = await db.query(query, values);
+    if (res instanceof Error) {
+      throw res;
+    }
+    return res.rows[0];
   };
 
   deleteTeam = async (team_code: string): Promise<any> => {
-    logger('deleteTeam1', LogTypes.LOGS);
-    const query = 'DELETE FROM teams WHERE team_code = $1 RETURNING *;';
+    // logger("deleteTeam1", LogTypes.LOGS);
+    const query = "DELETE FROM teams WHERE team_code = $1 RETURNING *;";
     const values = [team_code];
     const res = await db.query(query, values);
     if (res instanceof Error) {

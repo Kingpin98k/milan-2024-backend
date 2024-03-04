@@ -10,7 +10,7 @@ import {
 	ITeamResObject,
 	ITeamUpdateNameReqObject,
 } from "./interface";
-import logger, { LogTypes } from "../utils/logger";
+// import logger, { LogTypes } from "../utils/logger";
 import { Client } from "pg";
 
 export default class TeamsHelper extends TeamsDB {
@@ -28,7 +28,7 @@ export default class TeamsHelper extends TeamsDB {
 
 	public createTeamHelper = async (reqObj: any): Promise<any> => {
 		try {
-			logger("Been here 0", LogTypes.LOGS);
+			// logger("Been here 0", LogTypes.LOGS);
 
 			await this.checkUserAndEventExistance(
 				reqObj.user_id,
@@ -36,10 +36,10 @@ export default class TeamsHelper extends TeamsDB {
 				reqObj.team_name
 			);
 
-			logger("Been here 1", LogTypes.LOGS);
+			// logger("Been here 1", LogTypes.LOGS);
 
 			const result = await db.transaction(async (client: Client) => {
-				logger("Been here 2", LogTypes.LOGS);
+				// logger("Been here 2", LogTypes.LOGS);
 
 				const { user_id, ...teamCreateTestObj } = reqObj;
 				const newReqObj = {
@@ -50,7 +50,7 @@ export default class TeamsHelper extends TeamsDB {
 					updated_at: new Date(),
 				};
 
-				logger(newReqObj, LogTypes.LOGS);
+				// logger(newReqObj, LogTypes.LOGS);
 
 				const team: ITeamResObject = await this.createTeam(newReqObj, client);
 				if (!team) {
@@ -81,7 +81,7 @@ export default class TeamsHelper extends TeamsDB {
 					});
 				}
 
-				logger("Been here 3", LogTypes.LOGS);
+				// logger("Been here 3", LogTypes.LOGS);
 				return {
 					teamDetails: {
 						team_code: team.team_code,
@@ -170,15 +170,15 @@ export default class TeamsHelper extends TeamsDB {
 	protected deleteTeamHelper = async (reqObj: any): Promise<void> => {
 		await this.checkIfCaptain(reqObj.team_code, reqObj.user_id);
 
-		await db.transaction(async () => {
-			await this.deleteTeamMembers(reqObj.team_code);
-			await this.deleteTeam(reqObj.team_code);
+		await db.transaction(async (client: Client) => {
+			await this.deleteTeamMembers(reqObj.team_code, client);
+			await this.deleteTeam(reqObj.team_code, client);
 		});
 	};
 
 	protected leaveTeamHelper = async (reqObj: any): Promise<void> => {
-		await db.transaction(async () => {
-			await this.leaveTeam(reqObj.team_code, reqObj.user_id);
+		await db.transaction(async (client: Client) => {
+			await this.leaveTeam(reqObj.team_code, reqObj.user_id, client);
 		});
 	};
 

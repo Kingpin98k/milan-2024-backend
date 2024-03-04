@@ -36,6 +36,10 @@ module.exports = {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
+      gender:{
+        type: Sequelize.DataTypes.TEXT,
+        allowNull: false,
+      },
       reg_number: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,

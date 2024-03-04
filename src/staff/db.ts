@@ -22,13 +22,81 @@ export default class StaffDB {
 	};
 
 	protected getStaff = async (id: string): Promise<IStaffResObject> => {
-		const query = `SELECT name, email, role FROM staffs WHERE id = $1`;
+		const query = `SELECT * FROM staffs WHERE id = $1`;
 		const res = await db.query(query, [id]);
 		if (res instanceof Error) {
 			throw res;
 		} else {
 			return res.rows[0] as unknown as IStaffResObject;
 		}
+	};
+
+	protected getUserIdByEmail = async (
+		email: string
+	): Promise<IStaffResObject> => {
+		const query = `SELECT id FROM users WHERE email = $1 AND is_deleted = false LIMIT 1`;
+		const res = await db.query(query, [email]);
+		if (res instanceof Error) {
+			throw res;
+		} else {
+			return res.rows[0] as unknown as IStaffResObject;
+		}
+	};
+
+	protected getBookingByEmail = async (email: string): Promise<any> => {
+		const query = `SELECT * 
+		FROM bookings 
+		WHERE user_id = (SELECT id FROM users WHERE email = $1) 
+		AND payment_status = 'success' 
+		AND ticket_status = 'success' 
+		LIMIT 1;
+		`;
+		const res = await db.query(query, [email]);
+		if (res instanceof Error) {
+			throw res;
+		} else {
+			return res.rows[0] as unknown as any;
+		}
+	};
+
+	protected getOfflineTicketsIssued = async (): Promise<any> => {
+		const query = `SELECT 
+    json_build_object(
+        '1_count', COUNT(DISTINCT CASE WHEN ticket_type = '1' THEN user_id END),
+        '2_count', COUNT(DISTINCT CASE WHEN ticket_type = '2' THEN user_id END),
+        '3_count', COUNT(DISTINCT CASE WHEN ticket_type = '3' THEN user_id END)
+    ) AS ticket_counts
+		FROM bookings
+		WHERE 
+				ticket_status = 'success' 
+				AND offline_ticket_issued = true 
+				AND payment_status = 'success';
+`;
+
+		const res = await db.query(query);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows[0] as unknown as any;
+	};
+
+	protected getTotalTicketsSold = async (): Promise<any> => {
+		const query = `SELECT 
+    json_build_object(
+        '1_count', COUNT(DISTINCT CASE WHEN ticket_type = '1' THEN user_id END),
+        '2_count', COUNT(DISTINCT CASE WHEN ticket_type = '2' THEN user_id END),
+        '3_count', COUNT(DISTINCT CASE WHEN ticket_type = '3' THEN user_id END)
+    ) AS ticket_counts
+		FROM bookings
+		WHERE 
+				ticket_status = 'success' 
+				AND payment_status = 'success';`;
+
+		const res = await db.query(query);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows[0] as unknown as any;
 	};
 
 	protected changeStaffPassword = async (
@@ -41,6 +109,23 @@ export default class StaffDB {
 		} else {
 			return res.rows[0] as unknown as IStaffResObject;
 		}
+	};
+
+	protected deleteUser = async (id: string): Promise<void> => {
+		const query = `UPDATE users SET is_deleted=true WHERE id = $1`;
+		const res = await db.query(query, [id]);
+		if (res instanceof Error) {
+			throw res;
+		}
+	};
+
+	protected getTotalRegistrations = async (): Promise<any> => {
+		const query = `SELECT COUNT(*) FROM users WHERE is_deleted = false;`;
+		const res = await db.query(query);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows[0] as unknown as any;
 	};
 
 	protected registerStaff = async (

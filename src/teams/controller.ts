@@ -21,6 +21,7 @@ export default class TeamsController extends TeamsServices {
 			let statusCode = 200;
 			if (method === "GET" && routeName === TeamRoutes.GET_TEAMS) {
 				const user_id = req.params.userId;
+				logger(user_id, LogTypes.LOGS);
 				const reqObj = { user_id };
 				response = await this.getAllUserTeamsController(reqObj);
 			} else if (method === "POST" && routeName === TeamRoutes.CREATE) {

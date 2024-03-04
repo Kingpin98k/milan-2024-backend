@@ -3,7 +3,7 @@ export enum bookingRoutes {
 	GETLIVECOUNT = "/livecount",
 	FETCHBOOKING = "/find",
 	UPDATETICKETISUED = "/updateticketissued",
-	RESENDEMAIL = "/resendemail"
+	RESENDEMAIL = "/resendemail",
 }
 
 export enum TicketStatus {
