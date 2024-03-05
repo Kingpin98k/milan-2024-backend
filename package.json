@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  
-    "build":"tsc -w",
+    "build": "tsc -w",
     "start:build": "tsc -w",
     "start:run": "nodemon build/src/index.js",
     "start": "concurrently npm:start:*"
-    
   },
   "repository": {
     "type": "git",
@@ -43,6 +41,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
+    "google-auth-library": "^9.6.3",
     "helmet": "^7.1.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",

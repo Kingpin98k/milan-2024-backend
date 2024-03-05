@@ -1,6 +1,6 @@
 export enum UsersAuthRoutes {
 	LOGIN = "login",
 	LOGOUT = "logout",
-	REGISTER = "register",
+	SIGNUP = "register",
 	CURRENT = "current",
 }
