@@ -3,15 +3,22 @@ export type IUserAuthLoginReqObj = {
 	password: string;
 };
 
+export type IResponse<T = any> = {
+	success: boolean;
+	message?: string;
+	data?: T | null;
+	message_code?: string;
+};
+
 export type IUserAuthSignupReqObj = {
 	id: string;
 	name: string;
 	email: string;
-	gender: string;
+	password: string;
 	reg_number: string;
+	college: string;
 	is_srm_ktr: boolean;
-	profile_pic: string;
-	college_name: string;
+	gender: string;
 	phone_number: number;
 	updated_at: Date;
 	created_at: Date;
@@ -22,13 +29,11 @@ export type IUserAuthResObject = {
 	name: string;
 	email: string;
 	reg_number: string;
-	gender: string;
 	is_srm_ktr: boolean;
-	profile_pic: string;
-	college_name: string;
+	gender: string;
 	phone_number: number;
+	college: string;
 	is_ticket_issued: boolean;
-	is_in_team: boolean;
 	is_deleted: boolean;
 	updated_at: Date;
 	created_at: Date;
@@ -38,6 +43,11 @@ export type IResponse<T = any> = {
 	message?: string;
 	data?: T | null;
 	message_code?: string;
+};
+
+export type IAuthResponse = {
+	user: IResponse; //error
+	token?: string;
 };
 
 export type AuthObj = {

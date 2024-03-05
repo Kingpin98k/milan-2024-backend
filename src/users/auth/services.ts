@@ -19,15 +19,28 @@ export default class UsersAuthService extends UsersAuthHelper {
 		this.jwtHelper = new JWTUtils();
 	}
 
+	protected loginService = async (email: string): Promise<any> => {
+		const user = await this.getUserByEmailHelper(email);
+
+		const token = await this.jwtHelper.generateTokens(user);
+
+		const response: AuthObj = {
+			user,
+			token: token.access_token,
+		};
+
+		return response;
+	};
+
 	protected signupService = async (
 		reqObj: IUserAuthSignupReqObj
 	): Promise<any> => {
 		const user: IUserAuthResObject = await this.signupUserHelper(reqObj);
-		// const token = await this.jwtHelper.generateTokens(user);
+		const token = await this.jwtHelper.generateTokens(user);
 
 		const response: AuthObj = {
 			user,
-			// token: token.access_token,
+			token: token.access_token,
 		};
 
 		return response;
@@ -57,25 +70,9 @@ export default class UsersAuthService extends UsersAuthHelper {
 	};
 
 	protected getUserService = async (
-		email: string
+		user_id: string
 	): Promise<IUserAuthResObject> => {
-		const user = await this.getUserByEmailHelper(email);
-
-		if (!user) {
-			throw new ErrorHandler({
-				status_code: 404,
-				message: "User not found",
-				message_code: "USER_NOT_FOUND",
-			});
-		}
-
-		return user;
-	};
-
-	public getUserByIdService = async (
-		id: string
-	): Promise<IUserAuthResObject> => {
-		const user = await this.getUser(id);
+		const user = await this.getUserHelper(user_id);
 
 		if (!user) {
 			throw new ErrorHandler({
