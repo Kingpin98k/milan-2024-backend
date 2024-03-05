@@ -14,15 +14,15 @@ export default class IUserAuthValidation {
 			});
 		}
 
-		// const email_pattern = /^[a-zA-Z]{2}[0-9]{4}@srmist.edu.in$/;
+		const email_pattern = /^[a-zA-Z0-9]+@srmist.edu.in$/;
 
-		// if (!email_pattern.test(email)) {
-		// 	throw new ErrorHandler({
-		// 		status_code: 400,
-		// 		message: "Invalid KTR Student email format.",
-		// 		message_code: "INVALID_KTR_STUDENT_EMAIL_FORMAT",
-		// 	});
-		// }
+		if (!email_pattern.test(email)) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Invalid KTR Student email format.",
+				message_code: "INVALID_KTR_STUDENT_EMAIL_FORMAT",
+			});
+		}
 
 		const phone_pattern = /^[0-9]{10}$/;
 
