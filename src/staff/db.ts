@@ -62,9 +62,9 @@ export default class StaffDB {
 	protected getOfflineTicketsIssued = async (): Promise<any> => {
 		const query = `SELECT 
     json_build_object(
-        '1_count', COUNT(DISTINCT CASE WHEN ticket_type = '1' THEN user_id END),
-        '2_count', COUNT(DISTINCT CASE WHEN ticket_type = '2' THEN user_id END),
-        '3_count', COUNT(DISTINCT CASE WHEN ticket_type = '3' THEN user_id END)
+        'ticket_1', COUNT(DISTINCT CASE WHEN ticket_type = '1' THEN user_id END),
+        'ticket_2', COUNT(DISTINCT CASE WHEN ticket_type = '2' THEN user_id END),
+        'ticket_3', COUNT(DISTINCT CASE WHEN ticket_type = '3' THEN user_id END)
     ) AS ticket_counts
 		FROM bookings
 		WHERE 
@@ -83,9 +83,9 @@ export default class StaffDB {
 	protected getTotalTicketsSold = async (): Promise<any> => {
 		const query = `SELECT 
     json_build_object(
-        '1_count', COUNT(DISTINCT CASE WHEN ticket_type = '1' THEN user_id END),
-        '2_count', COUNT(DISTINCT CASE WHEN ticket_type = '2' THEN user_id END),
-        '3_count', COUNT(DISTINCT CASE WHEN ticket_type = '3' THEN user_id END)
+        'ticket_1', COUNT(DISTINCT CASE WHEN ticket_type = '1' THEN user_id END),
+        'ticket_2', COUNT(DISTINCT CASE WHEN ticket_type = '2' THEN user_id END),
+        'ticket_3', COUNT(DISTINCT CASE WHEN ticket_type = '3' THEN user_id END)
     ) AS ticket_counts
 		FROM bookings
 		WHERE 
