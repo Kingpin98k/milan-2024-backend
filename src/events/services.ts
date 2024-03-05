@@ -128,11 +128,11 @@ export class EventsServices extends EventsHelpers {
     // });
   }
 
-  public async getAllUsersByCodeService(
+  public async getEventUsersByCodeService(
     event_code: string
   ): Promise<IEventUser[]> {
     // logger('getAllUsersByCodeService1', LogTypes.LOGS);
-    const users = await this.getAllUsersByCodeHelper(event_code);
+    const users = await this.getEventUsersByCodeHelper(event_code);
     if (!users) {
       throw new ErrorHandler({
         status_code: 404,

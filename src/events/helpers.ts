@@ -231,11 +231,11 @@ export default class EventsHelpers extends EventsDb {
 		return events;
 	};
 
-	public getAllUsersByCodeHelper = async (
+	public getEventUsersByCodeHelper = async (
 		event_code: string
 	): Promise<IEventUser[]> => {
 		// logger('getAllUsersByCodeHelpers1', LogTypes.LOGS);
-		const users = await this.fetchAllUsersByCode(event_code);
+		const users = await this.fetchEventUsersByCode(event_code);
 		if (!users) {
 			throw new ErrorHandler({
 				status_code: 404,

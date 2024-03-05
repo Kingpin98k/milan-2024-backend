@@ -147,7 +147,7 @@ export default class EventsDb {
     return res.rows[0] as unknown as IEvent;
   };
 
-  fetchAllUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
+  fetchEventUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
     // logger("fetchAllUsersByCode1", LogTypes.LOGS);
     const query = "SELECT * FROM event_users WHERE event_code = $1;";
     const values = [event_code];

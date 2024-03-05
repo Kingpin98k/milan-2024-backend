@@ -68,9 +68,9 @@ export default class EventsController extends EventsServices {
 				response = await this.getEventByClubController(req, res);
 			} else if (
 				method === RequestMethods.GET &&
-				routeName === EventRoutes.GET_ALL_USERS_BY_CODE
+				routeName === EventRoutes.GET_EVENT_USERS_BY_CODE
 			) {
-				response = await this.getAllUsersByCodeController(req, res);
+				response = await this.getEventUsersByCodeController(req, res);
 			} else if (
 				method === RequestMethods.GET &&
 				routeName === EventRoutes.GET_COUNT_BY_CODE
@@ -227,7 +227,7 @@ export default class EventsController extends EventsServices {
 		};
 	};
 
-	private getAllUsersByCodeController = async (
+	private getEventUsersByCodeController = async (
 		req: Request,
 		res: Response
 	): Promise<IResponse> => {
@@ -240,7 +240,7 @@ export default class EventsController extends EventsServices {
 				message_code: "EVENT_CODE_MISSING",
 			});
 		}
-		const users = await this.getAllUsersByCodeService(event_code);
+		const users = await this.getEventUsersByCodeService(event_code);
 		return {
 			success: true,
 			data: users,
