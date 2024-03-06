@@ -1,9 +1,10 @@
 export enum TeamRoutes {
-	CREATE = "create",
-	JOIN = "join",
-	UPDATE_NAME = "updateName",
+	CREATE = "createTeam",
+	JOIN = "joinTeam",
+	UPDATE_NAME = "updateTeamName",
 	DELETE_TEAM = "deleteTeam",
-	LEAVE = "leave",
-	DELETE_MEMBER = "deleteMember",
+	LEAVE = "leaveTeam",
+	DELETE_MEMBER = "deleteTeamMember",
 	GET_TEAMS = "getAllTeams",
+	GET_USER_TEAM_FOR_EVENT = "getUserTeamForEvent",
 }

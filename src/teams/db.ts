@@ -3,6 +3,7 @@ import {
 	ITeamMemberAddReqObject,
 	ITeamResObject,
 	ITeamUpdateNameReqObject,
+	IUserTeamForEventReqObject,
 } from "./interface";
 import db from "../config/pg.config";
 import ErrorHandler from "../utils/errors.handler";
@@ -146,6 +147,32 @@ export default class TeamsDB {
 				throw result;
 			}
 		}
+	};
+
+	protected getUserTeamForEvent = async (
+		reqObj: IUserTeamForEventReqObject
+	) => {
+		const query = `SELECT
+    t.team_name,
+    tm.team_id,
+    tm.is_captain,
+    json_agg(json_build_object(
+        'name', u.name,
+        'id', u.id,
+        'email', u.email,
+        'gender', u.gender,
+        'isCaptain', tm.is_captain
+    )) AS members
+		FROM team_members tm
+		JOIN teams t ON tm.team_id = t.id
+		JOIN users u ON tm.user_id = u.id
+		WHERE tm.user_id = $1 
+		AND t.event_id = (SELECT event_id FROM teams WHERE event_code = $2) 
+		GROUP BY t.team_name, tm.team_id, tm.is_captain
+		LIMIT 1;`;
+		const result = await db.query(query, [reqObj.user_id, reqObj.event_code]);
+		if (result instanceof Error) throw result;
+		return result.rows[0];
 	};
 
 	protected checkUserAndEventExistance = async (

@@ -63,10 +63,14 @@ export default class EventsDb {
 	};
 
 	fetchEventByUser = async (user_id: string): Promise<IEvent[]> => {
-		const query = `SELECT event_code
-   FROM event_users
-   WHERE user_id = $1;
-    `;
+		const query = `SELECT json_agg(json_build_object(
+			'event_code', e.event_code,
+			'event_name', e.name,
+			'is_group_event', e.is_group_event
+			)) AS events
+			FROM event_users eu
+			JOIN events e ON eu.event_code = e.event_code
+			WHERE eu.user_id = $1;`;
 		const values = [user_id];
 		const res = await db.query(query, values);
 		if (res instanceof Error) {
