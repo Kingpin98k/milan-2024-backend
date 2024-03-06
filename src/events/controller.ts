@@ -301,7 +301,7 @@ export default class EventsController extends EventsServices {
 		return {
 			success: true,
 			data: users,
-			message_code: "GET_USER_DETAIL_SUCCESS",
+			message_code: "GET_USER_DETAIL_BY_EVENT_CODE_SUCCESS",
 			message: "User fetched successfully",
 		};
 	}
