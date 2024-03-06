@@ -218,11 +218,11 @@ export default class TeamsDB {
 					status_code: 400,
 					message_code: "EVENT_NOT_GROUP_EVENT",
 				});
-			} else if (res.message === "NOT_SRM_STUDENT") {
+			} else if (res.message === "EVENT_NOT_FOR_KTR_STUDENTS") {
 				throw new ErrorHandler({
-					message: "User is not an SRM student",
+					message: "Event is not for KTR students",
 					status_code: 400,
-					message_code: "USER_NOT_SRM_STUDENT",
+					message_code: "EVENT_NOT_FOR_KTR_STUDENTS",
 				});
 			} else if (res.message === "SELECT_ANOTHER_NAME") {
 				throw new ErrorHandler({
