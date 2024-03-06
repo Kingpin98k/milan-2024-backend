@@ -4,7 +4,7 @@ import { IResponse } from "../events/interface";
 import { TeamRoutes } from "./enums";
 import TeamsServices from "./services";
 import logger, { LogTypes } from "../utils/logger";
-import { ITeamDeleteReqObject } from "./interface";
+import { ITeamDeleteReqObject, IUserTeamForEventReqObject } from "./interface";
 
 export default class TeamsController extends TeamsServices {
 	public execute = async (req: Request, res: Response): Promise<void> => {
@@ -24,22 +24,40 @@ export default class TeamsController extends TeamsServices {
 				logger(user_id, LogTypes.LOGS);
 				const reqObj = { user_id };
 				response = await this.getAllUserTeamsController(reqObj);
+			} else if (
+				method === "GET" &&
+				routeName === TeamRoutes.GET_USER_TEAM_FOR_EVENT
+			) {
+				const reqObj = {
+					event_code: req.params.eventCode,
+					user_id: req.body.current_user.id,
+				};
+				response = await this.getUserTeamForEventController(reqObj);
 			} else if (method === "POST" && routeName === TeamRoutes.CREATE) {
-				response = await this.createTeamController(req.body);
+				response = await this.createTeamController({
+					...req.body,
+					user_id: req.body.current_user.id,
+				});
 			} else if (method === "POST" && routeName === TeamRoutes.JOIN) {
-				response = await this.joinTeamController(req.body);
+				const reqObj = {
+					team_code: req.body.team_code,
+					user_id: req.body.current_user.id,
+				};
+				response = await this.joinTeamController(reqObj);
 			} else if (method === "PATCH" && routeName === TeamRoutes.UPDATE_NAME) {
-				response = await this.updateNameController(req.body);
+				const reqObj = { ...req.body, user_id: req.body.current_user.id };
+				response = await this.updateNameController(reqObj);
 			} else if (method === "DELETE" && routeName === TeamRoutes.DELETE_TEAM) {
 				const team_code = req.params.teamCode;
-				const user_id = req.body.user_id;
+				const user_id = req.body.current_user.user_id;
 				const reqObj: ITeamDeleteReqObject = { team_code, user_id };
 				response = await this.deleteTeamController(reqObj);
-				statusCode = 204;
 			} else if (method === "POST" && routeName === TeamRoutes.LEAVE) {
-				response = await this.leaveController(req.body);
+				const reqObj = { ...req.body, user_id: req.body.current_user.id };
+				response = await this.leaveController(reqObj);
 			} else if (method === "POST" && routeName === TeamRoutes.DELETE_MEMBER) {
-				response = await this.deleteTeamMemberController(req.body);
+				const reqObj = { ...req.body, captain_id: req.body.current_user.id };
+				response = await this.deleteTeamMemberController(reqObj);
 			}
 			res.status(statusCode).send(response);
 		} catch (error) {
@@ -119,6 +137,18 @@ export default class TeamsController extends TeamsServices {
 	): Promise<IResponse> => {
 		const res = await this.getAllUserTeamsService(reqObj);
 
+		return {
+			success: true,
+			data: res,
+			message_code: "USER_TEAMS_FETCHED",
+			message: "User teams fetched successfully",
+		};
+	};
+
+	private getUserTeamForEventController = async (
+		reqObj: IUserTeamForEventReqObject
+	): Promise<IResponse> => {
+		const res = await this.getUserTeamForEventHelper(reqObj);
 		return {
 			success: true,
 			data: res,

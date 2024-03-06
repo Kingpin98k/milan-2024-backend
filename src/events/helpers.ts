@@ -138,7 +138,7 @@ export default class EventsHelpers extends EventsDb {
 		} else {
 			if (
 				event.event_scope === "non-srm" &&
-				!user_existing_in_user_table.is_srm_ktr
+				user_existing_in_user_table.is_srm_ktr
 			) {
 				throw new ErrorHandler({
 					status_code: 400,

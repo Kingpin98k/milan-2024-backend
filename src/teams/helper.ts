@@ -9,6 +9,7 @@ import {
 	ITeamMemberAddReqObject,
 	ITeamResObject,
 	ITeamUpdateNameReqObject,
+	IUserTeamForEventReqObject,
 } from "./interface";
 // import logger, { LogTypes } from "../utils/logger";
 import { Client } from "pg";
@@ -107,6 +108,21 @@ export default class TeamsHelper extends TeamsDB {
 		} catch (err) {
 			throw err;
 		}
+	};
+
+	protected getUserTeamForEventHelper = async (
+		reqObj: IUserTeamForEventReqObject
+	): Promise<any> => {
+		const result = await this.getUserTeamForEvent(reqObj);
+
+		if (!result) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error fetching user teams",
+				message_code: "ERROR_FETCHING_USER_TEAMS",
+			});
+		}
+		return result;
 	};
 
 	protected joinTeamHelper = async (reqObj: ITeamJoinReqObject) => {

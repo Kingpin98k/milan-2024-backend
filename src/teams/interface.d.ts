@@ -51,6 +51,11 @@ export type ITeamLeaveReqObject = {
 	user_id: string;
 };
 
+export type IUserTeamForEventReqObject = {
+	user_id: string;
+	event_code: string;
+};
+
 export type ITeamDeleteMemberReqObject = {
 	captain_id: string;
 	member_id: string;
