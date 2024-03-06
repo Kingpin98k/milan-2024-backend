@@ -76,8 +76,7 @@ export default class EventsDb {
 		if (res instanceof Error) {
 			throw res;
 		}
-
-		return res.rows.map((row: any) => row.event_code) as IEvent[];
+		return res.rows[0];
 	};
 
 	fetchEventByClub = async (club_name: string): Promise<IEvent[]> => {
