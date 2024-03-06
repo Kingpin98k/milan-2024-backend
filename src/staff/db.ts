@@ -34,7 +34,7 @@ export default class StaffDB {
 	protected getUserIdByEmail = async (
 		email: string
 	): Promise<IStaffResObject> => {
-		const query = `SELECT id FROM users WHERE email = $1 AND is_deleted = false LIMIT 1`;
+		const query = `SELECT * FROM users WHERE email = $1 AND is_deleted = false LIMIT 1`;
 		const res = await db.query(query, [email]);
 		if (res instanceof Error) {
 			throw res;

@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { errorHandler } from "../../utils/ress.error";
 import { Request, Response, NextFunction } from "express";
 import ErrorHandler from "../../utils/errors.handler";
@@ -9,7 +9,6 @@ export default class IUserAuthValidation {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Phone Number is required.",
-				// message: "Email or Phone Number is required.",
 				message_code: "EMAIL_OR_PHONE_NUMBER_REQUIRED",
 			});
 		}
@@ -39,7 +38,23 @@ export default class IUserAuthValidation {
 		return new Promise((resolve, reject) => {
 			jwt.verify(token, secret, {}, (err, payload) => {
 				if (err) {
-					reject(err);
+					if (err instanceof TokenExpiredError) {
+						reject(
+							new ErrorHandler({
+								status_code: 401,
+								message: "Token expired. Please log in again.",
+								message_code: "TOKEN_EXPIRED",
+							})
+						);
+					} else {
+						reject(
+							new ErrorHandler({
+								status_code: 401,
+								message: "Invalid token. Please log in again.",
+								message_code: "INVALID_TOKEN",
+							})
+						);
+					}
 				} else {
 					resolve(payload);
 				}
@@ -50,14 +65,7 @@ export default class IUserAuthValidation {
 	public protect = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			let token;
-			// 1. Getting the token & Checking if it is there with the header??
-			if (
-				req.headers.authorization &&
-				req.headers.authorization.startsWith("Bearer")
-			) {
-				token = req.headers.authorization.split(" ")[1];
-			} else if (req.cookies.token) {
-				// To check for the jwt in cookie
+		   if(req.cookies) {
 				token = req.cookies.token;
 			} else {
 				throw new ErrorHandler({
@@ -67,23 +75,7 @@ export default class IUserAuthValidation {
 				});
 			}
 
-			let JWT_SECRET = process.env.JWT_SECRET;
-
-			// fs.readFile(
-			// 	path.resolve(__dirname, "../../../keys/jwtRS256.key"),
-			// 	"utf-8",
-			// 	(err, data) => {
-			// 		if (err) {
-			// 			throw new ErrorHandler({
-			// 				status_code: 400,
-			// 				message: "Something went wrong while generating cookie",
-			// 				message_code: "SOMETHING_WENT_WRONG",
-			// 			});
-			// 		} else {
-			// 			JWT_SECRET = data;
-			// 		}
-			// 	}
-			// );
+			const JWT_SECRET = process.env.JWT_SECRET;
 
 			if (!JWT_SECRET)
 				throw new ErrorHandler({
@@ -92,7 +84,6 @@ export default class IUserAuthValidation {
 					message_code: "SOMETHING_WENT_WRONG",
 				});
 
-			// 2. Verification of Token
 			const payload = await this.jwtVerifyPromisified(token, JWT_SECRET);
 
 			if (!payload) {
@@ -113,9 +104,3 @@ export default class IUserAuthValidation {
 		}
 	};
 }
-
-// 1.soft delete
-// 2.is ktr-student
-// 3.regex
-// 4.Error Discord
-// 5.gender

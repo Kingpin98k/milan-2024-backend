@@ -71,7 +71,7 @@ export default class BookingsDB {
 	};
 	protected getEmailCount = async (email: string): Promise<number | null> => {
 		const query = `
-		SELECT count
+		SELECT email_count
 		FROM emails
 		WHERE email = $1;
 	  `;
