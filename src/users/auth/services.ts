@@ -22,7 +22,11 @@ export default class UsersAuthService extends UsersAuthHelper {
 	protected loginService = async (email: string): Promise<any> => {
 		const user = await this.getUserByEmailHelper(email);
 
-		const token = await this.jwtHelper.generateTokens(user);
+		const token = await this.jwtHelper.generateTokens({
+			email: user.email,
+			id: user.id,
+			name: user.name,
+		});
 
 		const response: AuthObj = {
 			user,
@@ -36,7 +40,11 @@ export default class UsersAuthService extends UsersAuthHelper {
 		reqObj: IUserAuthSignupReqObj
 	): Promise<any> => {
 		const user: IUserAuthResObject = await this.signupUserHelper(reqObj);
-		const token = await this.jwtHelper.generateTokens(user);
+		const token = await this.jwtHelper.generateTokens({
+			email: user.email,
+			id: user.id,
+			name: user.name,
+		});
 
 		const response: AuthObj = {
 			user,
