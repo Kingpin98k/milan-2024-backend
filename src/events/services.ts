@@ -1,5 +1,5 @@
 import EventsHelpers from "./helpers";
-import { IEvent, IEventUser, IResponse } from "./interface";
+import { IEvent, IEventUser, IResponse, IUser } from "./interface";
 // import logger, { LogTypes } from '../utils/logger';
 import ErrorHandler from "../utils/errors.handler";
 import { response } from "express";
@@ -145,21 +145,33 @@ export class EventsServices extends EventsHelpers {
 		// });
 	}
 
-	public async updateMaxCapService(
-		event_code: string,
-		new_cap: number
-	): Promise<IEvent> {
-		// logger('updateMaxCapService1', LogTypes.LOGS);
-		const event = await this.updateMaxCapHelper(event_code, new_cap);
-		if (!event) {
-			throw new ErrorHandler({
-				status_code: 500,
-				message: "Max cap not updated",
-				message_code: "MAX_CAP_NOT_UPDATED",
-			});
-		}
-		return event;
-	}
+  public async updateMaxCapService(
+    event_code: string,
+    new_cap: number
+  ): Promise<IEvent> {
+    // logger('updateMaxCapService1', LogTypes.LOGS);
+    const event = await this.updateMaxCapHelper(event_code, new_cap);
+    if (!event) {
+      throw new ErrorHandler({
+        status_code: 500,
+        message: "Max cap not updated",
+        message_code: "MAX_CAP_NOT_UPDATED",
+      });
+    }
+    return event;
+  }
+  
+  public async getUserDetailByCodeService(event_code: string): Promise<IUser[]> {
+    const users = await this.getUserDetailByCodeHelper(event_code);
+    if (users.length === 0) {
+      throw new ErrorHandler({
+        status_code: 404,
+        message: "No users found for this event",
+        message_code: "NO_USER_FOUND_FOR_EVENT",
+      });
+    }
+    return users;
+  }
 
 	public async activateEventService(
 		event_code: string,

@@ -1,10 +1,12 @@
 import EventsDb from "./db";
 import db from "../config/pg.config";
-import { IEvent, IEventUser } from "./interface";
+import { IEvent, IEventUser, IUser } from "./interface";
 // import logger, { LogTypes } from '../utils/logger';
 import { v4 } from "uuid";
 import ErrorHandler from "./../utils/errors.handler";
 import { Client } from "pg";
+import logger, { LogTypes } from "../utils/logger";
+
 
 export default class EventsHelpers extends EventsDb {
 	public getAllEventsHelper = async (): Promise<IEvent[]> => {
@@ -293,7 +295,39 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "NEW_CAP_LESS_THAN_REG_COUNT",
 			});
 		}
-
 		return updatedevent;
 	};
+
+	// public getUserDetailByCodeHelper = async (
+	// 	event_code: string
+	// ): Promise<IUser[]> => {
+	// 	const users = await this.fetchUserDetailByCode(event_code);
+	// 	if (!users) {
+	// 		throw new ErrorHandler({
+	// 			status_code: 404,
+	// 			message: "fetchUserDetailByCode failed",
+	// 			message_code: "FETCH_USER_DETAIL_BY_CODE_FAILED",
+	// 		});
+	// 	}
+	// 	return users;
+	// }
+
+	public getUserDetailByCodeHelper = async (
+		event_code: string
+	): Promise<IUser[]> => {
+		logger('getUserDetailByCodeHelper1', LogTypes.LOGS);
+		const eventUsers = await this.fetchEventUsersByCode(event_code);
+			
+		if (!eventUsers || eventUsers.length === 0) {
+			throw new ErrorHandler({
+					status_code: 404,
+					message: "No event users found",
+					message_code: "NO_USER_FOUND_FOR_EVENT",
+				});
+			}
+		const userIds = eventUsers.map(user => user.user_id);
+	
+		const users: IUser[] = await Promise.all(userIds.map(userId => this.fetchUserFromUsersTable(userId)));
+		return users;
+	}
 }
