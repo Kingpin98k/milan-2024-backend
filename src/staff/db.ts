@@ -48,14 +48,14 @@ export default class StaffDB {
 		FROM bookings 
 		WHERE user_id = (SELECT id FROM users WHERE email = $1) 
 		AND payment_status = 'success' 
-		AND ticket_status = 'success' 
-		LIMIT 1;
+		AND ticket_status = 'success';
+		
 		`;
 		const res = await db.query(query, [email]);
 		if (res instanceof Error) {
 			throw res;
 		} else {
-			return res.rows[0] as unknown as any;
+			return res.rows as unknown as any;
 		}
 	};
 
@@ -112,7 +112,7 @@ export default class StaffDB {
 	};
 
 	protected deleteUser = async (id: string): Promise<void> => {
-		const query = `UPDATE users SET is_deleted=true WHERE id = $1`;
+		const query = `delete from users WHERE is_ticket_issued = false AND is_registration_ticket_issued = false AND id = $1`;
 		const res = await db.query(query, [id]);
 		if (res instanceof Error) {
 			throw res;
