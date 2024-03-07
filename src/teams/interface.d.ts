@@ -1,12 +1,8 @@
 export type ITeamCreateReqObject = {
-	id: string;
 	team_name: string;
 	user_id: string;
 	event_code: string;
-	team_code: string;
-	event_id: string;
-	created_at: Date;
-	updated_at: Date;
+	user_count?: number;
 };
 
 export type ITeamResObject = {
@@ -22,9 +18,9 @@ export type ITeamResObject = {
 export type ITeamMemberAddReqObject = {
 	id: string;
 	user_id: string;
-	is_captain: boolean;
+	is_captain?: boolean;
 	team_id: string;
-	event_id: string;
+	event_code: string;
 	team_code: string;
 	created_at: Date;
 	updated_at: Date;

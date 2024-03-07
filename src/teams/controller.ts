@@ -35,7 +35,8 @@ export default class TeamsController extends TeamsServices {
 				response = await this.getUserTeamForEventController(reqObj);
 			} else if (method === "POST" && routeName === TeamRoutes.CREATE) {
 				response = await this.createTeamController({
-					...req.body,
+					team_name: req.body.team_name,
+					event_code: req.body.event_code,
 					user_id: req.body.current_user.id,
 				});
 			} else if (method === "POST" && routeName === TeamRoutes.JOIN) {
