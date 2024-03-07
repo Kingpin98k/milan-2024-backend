@@ -33,6 +33,6 @@ router.post("/verify", protectStaff, execute);
 router.post("/deny", protectStaff, execute);
 router.get("/logout", execute);
 router.delete("/deleteUser/:userId", protectStaff, adminAccess, execute);
-router.delete("/:staffId", protectStaff, param("staffId").escape(), execute);
+router.delete("/deleteStaff/:staffId", protectStaff, param("staffId").escape(), execute);
 
 export default router;

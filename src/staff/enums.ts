@@ -3,7 +3,7 @@ export enum StaffRoutes {
 	LOGIN = "login",
 	VERIFY = "verify",
 	DENY = "deny",
-	DELETE = "delete",
+	DELETE = "deleteStaff",
 	FORGOT_PASSWORD = "forgotpassword",
 	LOGOUT = "logout",
 	GET_STAFFS = "",

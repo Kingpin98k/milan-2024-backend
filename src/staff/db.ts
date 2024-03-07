@@ -184,13 +184,24 @@ export default class StaffDB {
 		}
 	};
 
-	protected deleteStaff = async (id: string): Promise<void> => {
-		const query = `DELETE FROM staffs WHERE id = $1`;
-		const res = await db.query(query, [id]);
-		if (res instanceof Error) {
-			throw res;
-		} else {
-			return;
-		}
+	protected deleteStaff = async (id: string): Promise<any> => {
+		const query = `
+        WITH deleted AS (
+            DELETE FROM staffs WHERE id = $1 RETURNING *
+        )
+        SELECT CASE
+            WHEN EXISTS (SELECT 1 FROM deleted) THEN 'USER_DELETED'
+            ELSE 'USER_NOT_FOUND'
+        END as result;
+    `;
+
+    const res = await db.query(query, [id]);
+
+    if (res instanceof Error) {
+        throw res;
+    } else {
+        return res.rows[0] as unknown as any; // Accessing the result by its column alias 'result'
+    }
+	
 	};
 }
