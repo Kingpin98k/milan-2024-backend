@@ -24,7 +24,7 @@ router.get(
 	execute
 );
 router.get("/getTotalTicketsSold", protectStaff, viewerAndAdminAccess, execute);
-router.post("/getUserIdByEmail", protectStaff, adminAccess, execute);
+router.post("/getUserIdByEmail", protectStaff, viewerAndAdminAccess, execute);
 router.post("/getBookingByEmail", protectStaff, viewerAndAdminAccess, execute);
 router.post("/register", execute);
 router.post("/forgotpassword", protectStaff, execute);
