@@ -44,8 +44,8 @@ export default class EventsController extends EventsServices {
 				routeName === EventRoutes.EVENT_CODE
 			) {
 				response = await this.getEventController(req, res);
-			}else if (
-				method === RequestMethods.GET && 
+			} else if (
+				method === RequestMethods.GET &&
 				routeName === EventRoutes.GET_USER_DETAIL_BY_EVENT_CODE
 			) {
 				response = await this.getUserDetailByEventCodeController(req, res);
@@ -185,7 +185,7 @@ export default class EventsController extends EventsServices {
 		res: Response
 	): Promise<IResponse> => {
 		// logger("registerController1", LogTypes.LOGS);
-		const {event_code} = req.body;
+		const { event_code } = req.body;
 		const { id, name } = req.body.current_user;
 		const data = { event_code, user_id: id, user_name: name };
 		const event = await this.registerService(data);
@@ -295,7 +295,8 @@ export default class EventsController extends EventsServices {
 	};
 	private getUserDetailByEventCodeController = async (
 		req: Request,
-		res: Response): Promise<IResponse> => {
+		res: Response
+	): Promise<IResponse> => {
 		logger("getUserDetailByEventCodeController1", LogTypes.LOGS);
 		const event_code = req.params.code;
 		const users = await this.getUserDetailByCodeService(event_code);
@@ -305,5 +306,5 @@ export default class EventsController extends EventsServices {
 			message_code: "GET_USER_DETAIL_BY_EVENT_CODE_SUCCESS",
 			message: "User fetched successfully",
 		};
-	}
+	};
 }
