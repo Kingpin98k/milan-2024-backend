@@ -1,5 +1,6 @@
 import {
 	ITeamCreateReqObject,
+	ITeamJoinReqObject,
 	ITeamMemberAddReqObject,
 	ITeamResObject,
 	ITeamUpdateNameReqObject,
@@ -44,14 +45,14 @@ export default class TeamsDB {
 	};
 
 	protected joinTeam = async (
-		reqObj: ITeamMemberAddReqObject, // Assuming ITeamMemberAddReqObject is the structure of your reqObj
+		reqObj: any, // Assuming ITeamMemberAddReqObject is the structure of your reqObj
 		is_captain: boolean = false,
 		client?: Client
 	) => {
 		reqObj.is_captain = is_captain;
 		const query = `
         INSERT INTO team_members (id, user_id, team_id, is_captain, event_id, team_code, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, (SELECT id FROM events WHERE event_code = $5), $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *;
     `;
 		const values = [
@@ -59,7 +60,7 @@ export default class TeamsDB {
 			reqObj.user_id,
 			reqObj.team_id,
 			reqObj.is_captain,
-			reqObj.event_code,
+			reqObj.event_id,
 			reqObj.team_code,
 			reqObj.created_at,
 			reqObj.updated_at,
@@ -181,28 +182,37 @@ export default class TeamsDB {
 		}
 	};
 
-	protected getUserTeamForEvent = async (
-		reqObj: IUserTeamForEventReqObject
-	) => {
+	protected getUserTeamData = async (reqObj: any) => {
 		const query = `SELECT
     t.team_name,
-		t.team_code,
-    tm.is_captain,
-    json_agg(json_build_object(
-        'name', u.name,
-        'id', u.id,
-        'email', u.email,
-        'gender', u.gender,
-        'isCaptain', tm.is_captain
-    )) AS members
-		FROM team_members tm
-		JOIN teams t ON tm.team_id = t.id
-		JOIN users u ON tm.user_id = u.id
-		WHERE tm.user_id = $1 
-		AND t.event_id = (SELECT event_id FROM teams WHERE event_code = $2) 
-		GROUP BY t.team_name, t.team_code, tm.team_id, tm.is_captain
-		LIMIT 1;`;
+    t.team_code,
+    tm.is_captain
+		FROM
+				team_members tm
+		JOIN
+				teams t ON tm.team_id = t.id
+		WHERE
+				tm.event_id = (SELECT id FROM events WHERE event_code = $2)
+				AND tm.user_id = $1;`;
+
 		const result = await db.query(query, [reqObj.user_id, reqObj.event_code]);
+		if (result instanceof Error) throw result;
+
+		return result.rows[0];
+	};
+
+	protected getTeamMembers = async (reqObj: IUserTeamForEventReqObject) => {
+		const query = `SELECT json_agg(json_build_object(
+			'name', u.name,
+			'id', u.id,
+			'email', u.email,
+			'gender', u.gender,
+			'isCaptain', tm.is_captain
+			)) AS members
+			FROM team_members tm
+			JOIN users u ON tm.user_id = u.id
+			WHERE tm.event_id = (SELECT id FROM events WHERE event_code = $1);`;
+		const result = await db.query(query, [reqObj.event_code]);
 		if (result instanceof Error) throw result;
 
 		return result.rows[0] || null;
@@ -249,7 +259,7 @@ export default class TeamsDB {
 		// 				END IF;
 
 		// 			IF EXISTS (
-		// 				SELECT 1 FROM teams WHERE event_code = eventCode AND team_name = teamName
+		// 				SELECT 1 FROM teams WHERE team_name = teamName
 		// 			)
 		// 			THEN
 		// 				RAISE EXCEPTION 'SELECT_ANOTHER_NAME';

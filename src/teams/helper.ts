@@ -14,6 +14,7 @@ import {
 } from "./interface";
 // import logger, { LogTypes } from "../utils/logger";
 import { Client } from "pg";
+import logger, { LogTypes } from "../utils/logger";
 
 export default class TeamsHelper extends TeamsDB {
 	// private eventsService: EventsServices;
@@ -37,7 +38,6 @@ export default class TeamsHelper extends TeamsDB {
 				reqObj.event_code,
 				reqObj.team_name
 			);
-
 			// logger("Been here 1", LogTypes.LOGS);
 
 			const result = await db.transaction(async (client: Client) => {
@@ -114,9 +114,16 @@ export default class TeamsHelper extends TeamsDB {
 	protected getUserTeamForEventHelper = async (
 		reqObj: IUserTeamForEventReqObject
 	): Promise<any> => {
-		const result = await this.getUserTeamForEvent(reqObj);
+		const user_data = await this.getUserTeamData(reqObj);
 
-		if (result !== null && !result) {
+		const members: any = await this.getTeamMembers(reqObj);
+
+		const response = {
+			...user_data,
+			members: members.members,
+		};
+
+		if (!response) {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Error fetching user teams",
@@ -124,7 +131,7 @@ export default class TeamsHelper extends TeamsDB {
 			});
 		}
 
-		return result;
+		return response;
 	};
 
 	protected joinTeamHelper = async (reqObj: ITeamJoinReqObject) => {
@@ -141,7 +148,7 @@ export default class TeamsHelper extends TeamsDB {
 		const newReqObj = {
 			...reqObj,
 			id: v4(),
-			event_code: Eteam.event_code,
+			event_id: Eteam.event_id,
 			team_id: Eteam.team_id,
 			created_at: new Date(),
 			updated_at: new Date(),

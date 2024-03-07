@@ -98,6 +98,7 @@ export default class UsersAuthController extends UsersAuthService {
 				success: true,
 				message: "Logged In Successfully!",
 				data: data,
+				message_code: "LOGIN_SUCCESS",
 			},
 			token: data.token,
 		};
@@ -113,6 +114,7 @@ export default class UsersAuthController extends UsersAuthService {
 				success: true,
 				message: "Signed Up Successfully!",
 				data: data,
+				message_code: "REGISTER_SUCCESS",
 			},
 			token: data.token,
 		};
