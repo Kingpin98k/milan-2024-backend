@@ -44,6 +44,11 @@ export default class EventsController extends EventsServices {
 				routeName === EventRoutes.EVENT_CODE
 			) {
 				response = await this.getEventController(req, res);
+			}else if (
+				method === RequestMethods.GET && 
+				routeName === EventRoutes.GET_USER_DETAIL_BY_EVENT_CODE
+			) {
+				response = await this.getUserDetailByEventCodeController(req, res);
 			} else if (
 				method === RequestMethods.DELETE &&
 				route === EventRoutes.UNREGISTER
@@ -288,4 +293,17 @@ export default class EventsController extends EventsServices {
 		const op = req.params.op;
 		return await this.activateEventService(event_code, op);
 	};
+	private getUserDetailByEventCodeController = async (
+		req: Request,
+		res: Response): Promise<IResponse> => {
+		logger("getUserDetailByEventCodeController1", LogTypes.LOGS);
+		const event_code = req.params.code;
+		const users = await this.getUserDetailByCodeService(event_code);
+		return {
+			success: true,
+			data: users,
+			message_code: "GET_USER_DETAIL_BY_EVENT_CODE_SUCCESS",
+			message: "User fetched successfully",
+		};
+	}
 }

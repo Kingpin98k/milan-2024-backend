@@ -151,7 +151,7 @@ export default class EventsDb {
 	};
 
 	fetchEventUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
-		// logger("fetchAllUsersByCode1", LogTypes.LOGS);
+		logger("fetchAllUsersByCode1", LogTypes.LOGS);
 		const query = "SELECT * FROM event_users WHERE event_code = $1;";
 		const values = [event_code];
 		const res = await db.query(query, values);
@@ -267,6 +267,7 @@ export default class EventsDb {
 	};
 
 	activateEvent = async (eventCode: string): Promise<any> => {
+		logger("activateEventDB", LogTypes.LOGS);
 		const query = `UPDATE events SET is_active = true WHERE event_code = $1 RETURNING *`;
 		const values = [eventCode];
 		const res = await db.query(query, values);
@@ -276,6 +277,7 @@ export default class EventsDb {
 		return res.rows[0];
 	};
 	deactivateEvent = async (eventCode: string): Promise<any> => {
+		logger("DEactivateEventDB", LogTypes.LOGS);
 		const query = `UPDATE events SET is_active = false WHERE event_code = $1 RETURNING *;`;
 		const values = [eventCode];
 		const res = await db.query(query, values);
@@ -285,14 +287,36 @@ export default class EventsDb {
 		return res.rows[0];
 	};
 
-	deleteTeam = async (team_code: string): Promise<any> => {
-		// logger("deleteTeam1", LogTypes.LOGS);
-		const query = "DELETE FROM teams WHERE team_code = $1 RETURNING *;";
-		const values = [team_code];
-		const res = await db.query(query, values);
-		if (res instanceof Error) {
-			throw res;
-		}
-		return res.rows[0];
-	};
+  deleteTeam = async (team_code: string): Promise<any> => {
+    // logger("deleteTeam1", LogTypes.LOGS);
+    const query = "DELETE FROM teams WHERE team_code = $1 RETURNING *;";
+    const values = [team_code];
+    const res = await db.query(query, values);
+    if (res instanceof Error) {
+      throw res;
+    }
+    return res.rows[0];
+  };
+
+//   fetchUserDetailByCode = async (event_code: string): Promise<IUser[]> => {
+//     const query = `SELECT * FROM users WHERE event_code = $1;`;
+//     const values = [event_code];
+//     const res = await db.query(query, values);
+//     if (res instanceof Error) {
+//       throw res;
+//     }
+//     return res.rows as unknown as IUser[];
+//   }
+
+fetchUserById = async (userId: string): Promise<IUser> => {
+    const query = `SELECT * FROM users WHERE id = $1;`;
+    const values = [userId];
+
+        const res = await db.query(query, values);
+        if (res instanceof Error || !res.rows || res.rows.length === 0) {
+            throw res;
+        }
+        return res.rows[0] as unknown as IUser;
+    }
 }
+
