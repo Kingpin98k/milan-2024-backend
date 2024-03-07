@@ -47,7 +47,8 @@ export default class TeamsController extends TeamsServices {
 				response = await this.joinTeamController(reqObj);
 			} else if (method === "PATCH" && routeName === TeamRoutes.UPDATE_NAME) {
 				const reqObj = {
-					teqam_code: req.body.team_code,
+					team_name: req.body.team_name,
+					team_code: req.body.team_code,
 					user_id: req.body.current_user.id,
 				};
 				response = await this.updateNameController(reqObj);
@@ -71,8 +72,6 @@ export default class TeamsController extends TeamsServices {
 
 	private createTeamController = async (reqObj: any): Promise<IResponse> => {
 		const res = await this.createTeamService(reqObj);
-
-		logger(res, LogTypes.LOGS);
 
 		return {
 			success: true,
