@@ -116,6 +116,10 @@ export default class TeamsHelper extends TeamsDB {
 	): Promise<any> => {
 		const user_data = await this.getUserTeamData(reqObj);
 
+		if (!user_data || user_data.length === 0) {
+			return null;
+		}
+
 		const members: any = await this.getTeamMembers(reqObj);
 
 		const response = {
