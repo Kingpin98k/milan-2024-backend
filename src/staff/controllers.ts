@@ -176,7 +176,6 @@ export default class StaffController extends StaffService {
 			success: true,
 			message_code: "DELETE_SUCCESS",
 			message: "User deleted successfully",
-			data: {},
 		};
 	};
 

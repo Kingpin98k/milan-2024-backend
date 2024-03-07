@@ -21,7 +21,7 @@ export default class BookingsHelper extends BookingsDB {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "User not found, Send them to tech team!!",
-				message_code: "USER_NOT_FOUND_IN_CREATE_BOOKING",
+				message_code: "USER_NOT_FOUND",
 				is_loggable: true,
 				user: reqObj.user_id,
 			});

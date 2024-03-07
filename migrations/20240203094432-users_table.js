@@ -40,6 +40,11 @@ module.exports = {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
+      is_registration_ticket_issued: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
       reg_number: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,

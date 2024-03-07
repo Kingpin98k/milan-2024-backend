@@ -1,18 +1,18 @@
 import { Router } from "express";
 import EventsController from "./controller";
-import eventMiddleware from "./middleware";
+import IUserAuthValidation from "../users/auth/middleware";
 
 const router = Router();
 
 // console.log('Executing events/routes.ts');
 
 const { execute } = new EventsController();
-const {protectEvents} = new eventMiddleware();
+const { protect } = new IUserAuthValidation();
 
 router.get("/", execute);
 router.get("/:code", execute);
-router.post("/register",protectEvents, execute);
-router.delete("/unregister",protectEvents, execute);
+router.post("/register", protect, execute);
+router.delete("/unregister", protect, execute);
 router.delete("/:code", execute);
 router.post("/event", execute);
 router.get("/getEventByClub/:club", execute);

@@ -34,7 +34,7 @@ export default class StaffDB {
 	protected getUserIdByEmail = async (
 		email: string
 	): Promise<IStaffResObject> => {
-		const query = `SELECT id FROM users WHERE email = $1 AND is_deleted = false LIMIT 1`;
+		const query = `SELECT * FROM users WHERE email = $1 AND is_deleted = false LIMIT 1`;
 		const res = await db.query(query, [email]);
 		if (res instanceof Error) {
 			throw res;
@@ -184,13 +184,24 @@ export default class StaffDB {
 		}
 	};
 
-	protected deleteStaff = async (id: string): Promise<void> => {
-		const query = `DELETE FROM staffs WHERE id = $1`;
-		const res = await db.query(query, [id]);
-		if (res instanceof Error) {
-			throw res;
-		} else {
-			return;
-		}
+	protected deleteStaff = async (id: string): Promise<any> => {
+		const query = `
+        WITH deleted AS (
+            DELETE FROM staffs WHERE id = $1 RETURNING *
+        )
+        SELECT CASE
+            WHEN EXISTS (SELECT 1 FROM deleted) THEN 'USER_DELETED'
+            ELSE 'USER_NOT_FOUND'
+        END as result;
+    `;
+
+    const res = await db.query(query, [id]);
+
+    if (res instanceof Error) {
+        throw res;
+    } else {
+        return res.rows[0] as unknown as any; // Accessing the result by its column alias 'result'
+    }
+	
 	};
 }

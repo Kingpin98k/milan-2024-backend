@@ -3,39 +3,72 @@ import {
 	ITeamMemberAddReqObject,
 	ITeamResObject,
 	ITeamUpdateNameReqObject,
+	IUserTeamForEventReqObject,
 } from "./interface";
 import db from "../config/pg.config";
 import ErrorHandler from "../utils/errors.handler";
 import { Client } from "pg";
+import logger, { LogTypes } from "../utils/logger";
 
 export default class TeamsDB {
 	protected createTeam = async (
-		reqObj: ITeamCreateReqObject,
+		reqObj: any,
 		client?: Client
 	): Promise<ITeamResObject> => {
-		const query = db.format("INSERT INTO teams ? RETURNING *", reqObj);
+		const query = `
+				INSERT INTO teams (id, team_name, user_count, event_id, team_code, event_code, created_at, updated_at)
+        VALUES ($1, $2, $3, (SELECT id FROM events WHERE event_code = $4), $5, $6, $7, $8)
+        RETURNING *;
+    `;
+		const values = [
+			reqObj.id,
+			reqObj.team_name,
+			reqObj.user_count || 1,
+			reqObj.event_code,
+			reqObj.team_code,
+			reqObj.event_code,
+			reqObj.created_at,
+			reqObj.updated_at,
+		];
+
 		let result;
 		if (client) {
-			result = await client.query(query);
+			result = await client.query(query, values);
 		} else {
-			result = await db.query(query);
+			result = await db.query(query, values);
 		}
+
 		if (result instanceof Error) throw result;
+
 		return result.rows[0] as unknown as ITeamResObject;
 	};
 
 	protected joinTeam = async (
-		reqObj: any,
+		reqObj: ITeamMemberAddReqObject, // Assuming ITeamMemberAddReqObject is the structure of your reqObj
 		is_captain: boolean = false,
 		client?: Client
 	) => {
 		reqObj.is_captain = is_captain;
-		const query = db.format("INSERT INTO team_members ? RETURNING *", reqObj);
+		const query = `
+        INSERT INTO team_members (id, user_id, team_id, is_captain, event_id, team_code, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, (SELECT id FROM events WHERE event_code = $5), $6, $7, $8)
+        RETURNING *;
+    `;
+		const values = [
+			reqObj.id,
+			reqObj.user_id,
+			reqObj.team_id,
+			reqObj.is_captain,
+			reqObj.event_code,
+			reqObj.team_code,
+			reqObj.created_at,
+			reqObj.updated_at,
+		];
 		let result;
 		if (client) {
-			result = await client.query(query);
+			result = await client.query(query, values);
 		} else {
-			result = await db.query(query);
+			result = await db.query(query, values);
 		}
 		if (result instanceof Error) throw result;
 		return result.rows[0];
@@ -146,6 +179,33 @@ export default class TeamsDB {
 				throw result;
 			}
 		}
+	};
+
+	protected getUserTeamForEvent = async (
+		reqObj: IUserTeamForEventReqObject
+	) => {
+		const query = `SELECT
+    t.team_name,
+		t.team_code,
+    tm.is_captain,
+    json_agg(json_build_object(
+        'name', u.name,
+        'id', u.id,
+        'email', u.email,
+        'gender', u.gender,
+        'isCaptain', tm.is_captain
+    )) AS members
+		FROM team_members tm
+		JOIN teams t ON tm.team_id = t.id
+		JOIN users u ON tm.user_id = u.id
+		WHERE tm.user_id = $1 
+		AND t.event_id = (SELECT event_id FROM teams WHERE event_code = $2) 
+		GROUP BY t.team_name, t.team_code, tm.team_id, tm.is_captain
+		LIMIT 1;`;
+		const result = await db.query(query, [reqObj.user_id, reqObj.event_code]);
+		if (result instanceof Error) throw result;
+
+		return result.rows[0] || null;
 	};
 
 	protected checkUserAndEventExistance = async (

@@ -63,17 +63,20 @@ export default class EventsDb {
 	};
 
 	fetchEventByUser = async (user_id: string): Promise<IEvent[]> => {
-		const query = `SELECT event_code
-   FROM event_users
-   WHERE user_id = $1;
-    `;
+		const query = `SELECT json_agg(json_build_object(
+			'event_code', e.event_code,
+			'event_name', e.name,
+			'is_group_event', e.is_group_event
+			)) AS events
+			FROM event_users eu
+			JOIN events e ON eu.event_code = e.event_code
+			WHERE eu.user_id = $1;`;
 		const values = [user_id];
 		const res = await db.query(query, values);
 		if (res instanceof Error) {
 			throw res;
 		}
-
-		return res.rows.map((row: any) => row.event_code) as IEvent[];
+		return res.rows[0];
 	};
 
 	fetchEventByClub = async (club_name: string): Promise<IEvent[]> => {
@@ -148,7 +151,7 @@ export default class EventsDb {
 	};
 
 	fetchEventUsersByCode = async (event_code: string): Promise<IEventUser[]> => {
-		// logger("fetchAllUsersByCode1", LogTypes.LOGS);
+		logger("fetchAllUsersByCode1", LogTypes.LOGS);
 		const query = "SELECT * FROM event_users WHERE event_code = $1;";
 		const values = [event_code];
 		const res = await db.query(query, values);
@@ -295,13 +298,25 @@ export default class EventsDb {
     return res.rows[0];
   };
 
-  fetchUserDetailByCode = async (event_code: string): Promise<IUser[]> => {
-    const query = `SELECT * FROM users WHERE event_code = $1;`;
-    const values = [event_code];
-    const res = await db.query(query, values);
-    if (res instanceof Error) {
-      throw res;
+//   fetchUserDetailByCode = async (event_code: string): Promise<IUser[]> => {
+//     const query = `SELECT * FROM users WHERE event_code = $1;`;
+//     const values = [event_code];
+//     const res = await db.query(query, values);
+//     if (res instanceof Error) {
+//       throw res;
+//     }
+//     return res.rows as unknown as IUser[];
+//   }
+
+fetchUserById = async (userId: string): Promise<IUser> => {
+    const query = `SELECT * FROM users WHERE id = $1;`;
+    const values = [userId];
+
+        const res = await db.query(query, values);
+        if (res instanceof Error || !res.rows || res.rows.length === 0) {
+            throw res;
+        }
+        return res.rows[0] as unknown as IUser;
     }
-    return res.rows as unknown as IUser[];
-  }
 }
+

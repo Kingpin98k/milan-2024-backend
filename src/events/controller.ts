@@ -31,9 +31,9 @@ export default class EventsController extends EventsServices {
 				response = await this.getAllEventsController(req, res);
 			} else if (
 				method === RequestMethods.GET &&
-				route === EventRoutes.GET_EVENT_CODE_BY_USER
+				route === EventRoutes.GET_EVENT_BY_USER
 			) {
-				response = await this.getEventCodeByUserController(req, res);
+				response = await this.getEventByUserController(req, res);
 			} else if (
 				method === RequestMethods.POST &&
 				route === EventRoutes.EVENT
@@ -104,13 +104,13 @@ export default class EventsController extends EventsServices {
 		}
 	};
 
-	private getEventCodeByUserController = async (
+	private getEventByUserController = async (
 		req: Request,
 		res: Response
 	): Promise<IResponse> => {
 		// logger("getEventCodeByUserController", LogTypes.LOGS);
 		const user_id = req.params.user_id as string;
-		const events = await this.getEventCodeByUserService(user_id);
+		const events = await this.getEventByUserService(user_id);
 		// logger(events, LogTypes.LOGS);
 		return {
 			success: true,
@@ -185,7 +185,7 @@ export default class EventsController extends EventsServices {
 		res: Response
 	): Promise<IResponse> => {
 		// logger("registerController1", LogTypes.LOGS);
-		const event_code = req.body;
+		const {event_code} = req.body;
 		const { id, name } = req.body.current_user;
 		const data = { event_code, user_id: id, user_name: name };
 		const event = await this.registerService(data);
@@ -296,7 +296,7 @@ export default class EventsController extends EventsServices {
 	private getUserDetailByEventCodeController = async (
 		req: Request,
 		res: Response): Promise<IResponse> => {
-		// logger("getUserDetailByEventCodeController1", LogTypes.LOGS);
+		logger("getUserDetailByEventCodeController1", LogTypes.LOGS);
 		const event_code = req.params.code;
 		const users = await this.getUserDetailByCodeService(event_code);
 		return {

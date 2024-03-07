@@ -5,6 +5,8 @@ import { IEvent, IEventUser, IUser } from "./interface";
 import { v4 } from "uuid";
 import ErrorHandler from "./../utils/errors.handler";
 import { Client } from "pg";
+import logger, { LogTypes } from "../utils/logger";
+
 
 export default class EventsHelpers extends EventsDb {
 	public getAllEventsHelper = async (): Promise<IEvent[]> => {
@@ -111,13 +113,13 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "USER_NOT_FOUND",
 			});
 		}
-		if (!user_existing_in_user_table.is_ticket_issued) {
-			throw new ErrorHandler({
-				status_code: 400,
-				message: "Ticket not issued for this user",
-				message_code: "TICKET_NOT_ISSUED",
-			});
-		}
+		// if (!user_existing_in_user_table.is_ticket_issued) {
+		// 	throw new ErrorHandler({
+		// 		status_code: 400,
+		// 		message: "Ticket not issued for this user",
+		// 		message_code: "TICKET_NOT_ISSUED",
+		// 	});
+		// }
 
 		const existinguser = await this.getUserByDetails(userData);
 		if (existinguser) {
@@ -138,7 +140,7 @@ export default class EventsHelpers extends EventsDb {
 		} else {
 			if (
 				event.event_scope === "non-srm" &&
-				!user_existing_in_user_table.is_srm_ktr
+				user_existing_in_user_table.is_srm_ktr
 			) {
 				throw new ErrorHandler({
 					status_code: 400,
@@ -296,18 +298,36 @@ export default class EventsHelpers extends EventsDb {
 		return updatedevent;
 	};
 
+	// public getUserDetailByCodeHelper = async (
+	// 	event_code: string
+	// ): Promise<IUser[]> => {
+	// 	const users = await this.fetchUserDetailByCode(event_code);
+	// 	if (!users) {
+	// 		throw new ErrorHandler({
+	// 			status_code: 404,
+	// 			message: "fetchUserDetailByCode failed",
+	// 			message_code: "FETCH_USER_DETAIL_BY_CODE_FAILED",
+	// 		});
+	// 	}
+	// 	return users;
+	// }
+
 	public getUserDetailByCodeHelper = async (
 		event_code: string
 	): Promise<IUser[]> => {
-		const users = await this.fetchUserDetailByCode(event_code);
-		if (!users) {
+		logger('getUserDetailByCodeHelper1', LogTypes.LOGS);
+		const eventUsers = await this.fetchEventUsersByCode(event_code);
+			
+		if (!eventUsers || eventUsers.length === 0) {
 			throw new ErrorHandler({
-				status_code: 404,
-				message: "fetchUserDetailByCode failed",
-				message_code: "FETCH_USER_DETAIL_BY_CODE_FAILED",
-			});
-		}
+					status_code: 404,
+					message: "No event users found",
+					message_code: "NO_USER_FOUND_FOR_EVENT",
+				});
+			}
+		const userIds = eventUsers.map(user => user.user_id);
+	
+		const users: IUser[] = await Promise.all(userIds.map(userId => this.fetchUserFromUsersTable(userId)));
 		return users;
 	}
-	
 }

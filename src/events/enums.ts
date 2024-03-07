@@ -11,4 +11,5 @@ export enum EventRoutes {
   ACTIVATE_EVENT = 'activateEvent',
   GET_EVENT_CODE_BY_USER = 'getEvent',
   GET_USER_DETAIL_BY_EVENT_CODE = 'getUserDetailByEventCode',
+  GET_EVENT_BY_USER = 'getEventByUser',
 }
