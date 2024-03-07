@@ -4,7 +4,6 @@ import { IEvent, IEventUser, IUser } from "./interface";
 // import logger, { LogTypes } from '../utils/logger';
 import { v4 } from "uuid";
 import ErrorHandler from "./../utils/errors.handler";
-import { transform } from "typescript";
 import { Client } from "pg";
 
 export default class EventsHelpers extends EventsDb {
@@ -112,13 +111,14 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "USER_NOT_FOUND",
 			});
 		}
-		// if (!user_existing_in_user_table.is_ticket_issued) {
-		// 	throw new ErrorHandler({
-		// 		status_code: 400,
-		// 		message: "Ticket not issued for this user",
-		// 		message_code: "TICKET_NOT_ISSUED",
-		// 	});
-		// }
+		if (!user_existing_in_user_table.is_ticket_issued) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Ticket not issued for this user",
+				message_code: "TICKET_NOT_ISSUED",
+			});
+		}
+
 		const existinguser = await this.getUserByDetails(userData);
 		if (existinguser) {
 			throw new ErrorHandler({
@@ -127,6 +127,27 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "USER_ALREADY_REGISTERED",
 			});
 		}
+
+		const event = await this.fetchEventByCode(userData.event_code || "");
+		if (!event) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "Event not found",
+				message_code: "EVENT_NOT_FOUND",
+			});
+		} else {
+			if (
+				event.event_scope === "non-srm" &&
+				!user_existing_in_user_table.is_srm_ktr
+			) {
+				throw new ErrorHandler({
+					status_code: 400,
+					message: "Event is not for SRM KTR students !",
+					message_code: "EVENT_SCOPE_MISMATCH",
+				});
+			}
+		}
+
 		const user = await db.transaction(async (client: Client) => {
 			const updated_at = new Date();
 			const event = await this.increaseCount(userData, updated_at, client);
@@ -134,7 +155,7 @@ export default class EventsHelpers extends EventsDb {
 				throw new ErrorHandler({
 					status_code: 404,
 					message: "Event not found",
-					message_code: "REGISTRATION_FAILED_EVENT_NF",
+					message_code: "EVENT_NOT_FOUND",
 				});
 			}
 			if (event.is_active === false) {
@@ -157,7 +178,7 @@ export default class EventsHelpers extends EventsDb {
 				throw new ErrorHandler({
 					status_code: 404,
 					message: "user creation failed",
-					message_code: "REGISTRATION_FAILED_USER_NC",
+					message_code: "EVENT_REGISTRATION_FAILED",
 				});
 			}
 			return user;
@@ -258,11 +279,12 @@ export default class EventsHelpers extends EventsDb {
 		new_cap: number
 	): Promise<IEvent> => {
 		// logger('updateMaxCapHelpers1', LogTypes.LOGS);
-		const eventData ={
+
+		const eventData = {
 			event_code: event_code,
 			max_cap: new_cap,
-			updated_at: new Date()
-		}
+			updated_at: new Date(),
+		};
 		const updatedevent = await this.updateMaxCap(eventData);
 		if (!updatedevent) {
 			throw new ErrorHandler({

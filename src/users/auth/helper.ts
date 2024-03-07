@@ -21,6 +21,21 @@ export default class UsersAuthHelper extends UsersAuthDB {
 		return user;
 	};
 
+	protected comparePasswordHelper = async (
+		user: any,
+		password: string
+	): Promise<void> => {
+		const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+		if (!isPasswordMatch) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Invalid Credentials",
+				message_code: "INVALID_CREDENTIALS",
+			});
+		}
+	};
+
 	protected signupUserHelper = async (
 		reqObj: IUserAuthSignupReqObj
 	): Promise<IUserAuthResObject> => {
@@ -34,6 +49,7 @@ export default class UsersAuthHelper extends UsersAuthDB {
 			if (isExistingUser.is_deleted) {
 				const user = await this.reviveUser(isExistingUser.id, {
 					...reqObj,
+					password: await bcrypt.hash(reqObj.password, 12),
 					created_at: new Date(),
 					updated_at: new Date(),
 				});

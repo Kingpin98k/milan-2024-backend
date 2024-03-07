@@ -77,9 +77,9 @@ export default class UsersAuthDB {
 			email,
 			reg_number,
 			is_srm_ktr,
+			gender,
 			phone_number,
 			updated_at,
-			gender,
 		} = reqObj;
 
 		const query = `
@@ -87,9 +87,9 @@ export default class UsersAuthDB {
     SET
       name = $1,
       email = $2,
-			gender = $3,
-      reg_number = $4,
-      is_srm_ktr = $5,
+      reg_number = $3,
+      is_srm_ktr = $4,
+      gender = $5,
       phone_number = $6,
       updated_at = $7,
       is_deleted = false
@@ -99,9 +99,9 @@ export default class UsersAuthDB {
 		const values = [
 			name,
 			email,
-			gender,
 			reg_number,
 			is_srm_ktr,
+			gender,
 			phone_number,
 			updated_at,
 			id,
@@ -136,5 +136,11 @@ export default class UsersAuthDB {
 		const query = `UPDATE users SET is_deleted = true WHERE id = $1`;
 
 		await db.query(query, [user_id]);
+	};
+}
+
+export class ExtendedUserServiceDb extends UsersAuthDB {
+	getUser_Email = async (email: string): Promise<IUserAuthResObject> => {
+		return await this.getUserByEmail(email);
 	};
 }

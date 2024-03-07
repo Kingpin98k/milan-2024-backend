@@ -185,8 +185,10 @@ export default class EventsController extends EventsServices {
 		res: Response
 	): Promise<IResponse> => {
 		// logger("registerController1", LogTypes.LOGS);
-		const userData: Partial<IEventUser> = req.body;
-		const event = await this.registerService(userData);
+		const event_code = req.body;
+		const { id, name } = req.body.current_user;
+		const data = { event_code, user_id: id, user_name: name };
+		const event = await this.registerService(data);
 		return {
 			success: true,
 			data: event,
@@ -290,7 +292,6 @@ export default class EventsController extends EventsServices {
 		const event_code = req.params.code;
 		const op = req.params.op;
 		return await this.activateEventService(event_code, op);
-	
 	};
 	private getUserDetailByEventCodeController = async (
 		req: Request,
