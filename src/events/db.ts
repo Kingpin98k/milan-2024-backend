@@ -76,7 +76,6 @@ export default class EventsDb {
 		if (res instanceof Error) {
 			throw res;
 		}
-
 		return res.rows[0];
 	};
 

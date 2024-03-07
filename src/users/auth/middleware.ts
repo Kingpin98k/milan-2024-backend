@@ -2,6 +2,7 @@ import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { errorHandler } from "../../utils/ress.error";
 import { Request, Response, NextFunction } from "express";
 import ErrorHandler from "../../utils/errors.handler";
+import logger, { LogTypes } from "../../utils/logger";
 
 export default class IUserAuthValidation {
 	public static validatePhoneNumber = (email: string, phone_number: number) => {
@@ -65,7 +66,7 @@ export default class IUserAuthValidation {
 	public protect = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			let token;
-		   if(req.cookies) {
+			if (req.cookies) {
 				token = req.cookies.token;
 			} else {
 				throw new ErrorHandler({
@@ -74,7 +75,6 @@ export default class IUserAuthValidation {
 					message_code: "NOT_LOGGED_IN",
 				});
 			}
-
 			const JWT_SECRET = process.env.JWT_SECRET;
 
 			if (!JWT_SECRET)

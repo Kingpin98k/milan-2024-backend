@@ -4,6 +4,7 @@ import UsersAuthService from "../users/auth/services";
 import TeamsDB from "./db";
 import db from "../config/pg.config";
 import ErrorHandler from "../utils/errors.handler";
+import uniqid from "uniqid";
 import {
 	ITeamJoinReqObject,
 	ITeamMemberAddReqObject,
@@ -46,7 +47,7 @@ export default class TeamsHelper extends TeamsDB {
 				const newReqObj = {
 					...teamCreateTestObj,
 					id: v4(),
-					team_code: v4(),
+					team_code: uniqid(),
 					created_at: new Date(),
 					updated_at: new Date(),
 				};
@@ -67,7 +68,7 @@ export default class TeamsHelper extends TeamsDB {
 					user_id: reqObj.user_id,
 					is_captain: true,
 					team_id: team.id,
-					event_id: reqObj.event_id,
+					event_code: reqObj.event_code,
 					team_code: team.team_code,
 					created_at: new Date(),
 					updated_at: new Date(),
@@ -115,13 +116,14 @@ export default class TeamsHelper extends TeamsDB {
 	): Promise<any> => {
 		const result = await this.getUserTeamForEvent(reqObj);
 
-		if (!result) {
+		if (result !== null && !result) {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Error fetching user teams",
 				message_code: "ERROR_FETCHING_USER_TEAMS",
 			});
 		}
+
 		return result;
 	};
 
@@ -139,7 +141,7 @@ export default class TeamsHelper extends TeamsDB {
 		const newReqObj = {
 			...reqObj,
 			id: v4(),
-			event_id: Eteam.event_id,
+			event_code: Eteam.event_code,
 			team_id: Eteam.team_id,
 			created_at: new Date(),
 			updated_at: new Date(),
