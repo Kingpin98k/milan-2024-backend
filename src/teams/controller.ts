@@ -46,11 +46,14 @@ export default class TeamsController extends TeamsServices {
 				};
 				response = await this.joinTeamController(reqObj);
 			} else if (method === "PATCH" && routeName === TeamRoutes.UPDATE_NAME) {
-				const reqObj = { ...req.body, user_id: req.body.current_user.id };
+				const reqObj = {
+					teqam_code: req.body.team_code,
+					user_id: req.body.current_user.id,
+				};
 				response = await this.updateNameController(reqObj);
 			} else if (method === "DELETE" && routeName === TeamRoutes.DELETE_TEAM) {
 				const team_code = req.params.teamCode;
-				const user_id = req.body.current_user.user_id;
+				const user_id = req.body.current_user.id;
 				const reqObj: ITeamDeleteReqObject = { team_code, user_id };
 				response = await this.deleteTeamController(reqObj);
 			} else if (method === "POST" && routeName === TeamRoutes.LEAVE) {

@@ -208,6 +208,7 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "USER_NOT_REGISTERED",
 			});
 		}
+
 		const user = await db.transaction(async () => {
 			const updated_at = new Date();
 			const event = await this.decreaseCount(userData, updated_at);

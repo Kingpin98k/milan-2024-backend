@@ -266,6 +266,16 @@ export default class EventsDb {
 		return res.rows[0] as unknown as IEvent;
 	};
 
+	protected isUserInTeam = async (user_id: string, event_code: string) => {
+		const query = `SELECT id FROM team_members WHERE user_id = $1 AND event_id = (SELECT event_id FROM events WHERE event_code = $2);`;
+		const values = [user_id, event_code];
+		const res = await db.query(query, values);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows[0];
+	};
+
 	activateEvent = async (eventCode: string): Promise<any> => {
 		logger("activateEventDB", LogTypes.LOGS);
 		const query = `UPDATE events SET is_active = true WHERE event_code = $1 RETURNING *`;
