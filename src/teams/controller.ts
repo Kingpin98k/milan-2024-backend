@@ -11,6 +11,8 @@ export default class TeamsController extends TeamsServices {
 		try {
 			const method = req.method;
 			const routeName = req.route.path.split("/")[1];
+			// logger('routeName: ', LogTypes.LOGS);
+			// logger(routeName, LogTypes.LOGS);
 
 			let response: IResponse = {
 				success: false,
