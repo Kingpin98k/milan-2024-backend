@@ -152,7 +152,7 @@ export default class TeamsHelper extends TeamsDB {
 		const newReqObj = {
 			...reqObj,
 			id: v4(),
-			event_id: Eteam.event_id,
+			event_code: Eteam.event_code,
 			team_id: Eteam.team_id,
 			created_at: new Date(),
 			updated_at: new Date(),
