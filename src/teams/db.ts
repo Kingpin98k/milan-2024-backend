@@ -51,8 +51,6 @@ export default class TeamsDB {
 		is_captain: boolean = false,
 		client?: Client
 	) => {
-		console.log(reqObj);
-
 		reqObj.is_captain = is_captain;
 		const query = `
         INSERT INTO team_members (id, user_id, team_id, is_captain, event_id, team_code, created_at, updated_at)
@@ -95,6 +93,12 @@ export default class TeamsDB {
 					status_code: 400,
 					message_code: "USER_ALREADY_IN_TEAM",
 				});
+			} else if (result.message === "MAX_GROUP_SIZE_REACHED") {
+				throw new ErrorHandler({
+					message: "Max group size reached",
+					status_code: 400,
+					message_code: "MAX_GROUP_SIZE_REACHED",
+				});
 			} else {
 				throw result;
 			}
@@ -122,6 +126,30 @@ export default class TeamsDB {
 			result = await db.query(query, [team_code]);
 		}
 		if (result instanceof Error) throw result;
+	};
+
+	protected increaseUserCount = async (team_id: string, client?: Client) => {
+		const query = `UPDATE teams SET user_count = user_count + 1 WHERE team_code = $1 RETURNING *`;
+		let result;
+		if (client) {
+			result = await client.query(query, [team_id]);
+		} else {
+			result = await db.query(query, [team_id]);
+		}
+		if (result instanceof Error) throw result;
+		return result.rows[0];
+	};
+
+	protected decreaseUserCount = async (team_code: string, client?: Client) => {
+		const query = `UPDATE teams SET user_count = user_count - 1 WHERE team_code = $1 RETURNING *`;
+		let result;
+		if (client) {
+			result = await client.query(query, [team_code]);
+		} else {
+			result = await db.query(query, [team_code]);
+		}
+		if (result instanceof Error) throw result;
+		return result.rows[0];
 	};
 
 	protected deleteTeamMembers = async (team_code: string, client?: Client) => {
