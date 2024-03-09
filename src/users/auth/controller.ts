@@ -52,6 +52,12 @@ export default class UsersAuthController extends UsersAuthService {
 					response.message_code = "LOGGED_OUT";
 					response.message = "Logged Out Successfully";
 				}
+			} else if (
+				method === RequestMethods.GET &&
+				routeName === UsersAuthRoutes.GET_USER_BY_ID
+			) {
+				const user_id = req.params.userId;
+				response = await this.getUserController(user_id);
 			} else if (routeName === UsersAuthRoutes.SIGNUP) {
 				if (method === RequestMethods.POST) {
 					const reqObj: IUserAuthSignupReqObj = { ...req.body, id: v4() };
@@ -97,9 +103,8 @@ export default class UsersAuthController extends UsersAuthService {
 			user: {
 				success: true,
 				message: "Logged In Successfully!",
-				message_code:"LOGIN_SUCCESS",
+				message_code: "LOGIN_SUCCESS",
 				data: data,
-				
 			},
 			token: data.token,
 		};
@@ -114,9 +119,8 @@ export default class UsersAuthController extends UsersAuthService {
 			user: {
 				success: true,
 				message: "Signed Up Successfully!",
-				message_code:"REGISTER_SUCCESS",
+				message_code: "REGISTER_SUCCESS",
 				data: data,
-			
 			},
 			token: data.token,
 		};
@@ -127,14 +131,13 @@ export default class UsersAuthController extends UsersAuthService {
 		return;
 	};
 
-	private getUserController = async (user_id: string): Promise<IResponse> => {
-		const user: IUserAuthResObject = await this.getUserService(user_id);
+	private getUserController = async (user_id: string): Promise<any> => {
+		const user = await this.getUserService(user_id);
 		return {
 			success: true,
 			message: "User fetched successfully",
-			data: {
-				user: user,
-			},
+			message_code: "FETCH_USER_SUCCESS",
+			data: user,
 		};
 	};
 }

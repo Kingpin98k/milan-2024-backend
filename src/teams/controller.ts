@@ -33,6 +33,13 @@ export default class TeamsController extends TeamsServices {
 					user_id: req.body.current_user.id,
 				};
 				response = await this.getUserTeamForEventController(reqObj);
+			} else if (
+				method === "GET" &&
+				routeName === TeamRoutes.GET_TEAM_MEMBERS
+			) {
+				const team_id = req.params.teamId;
+				const reqObj = { team_id };
+				response = await this.getAllTeamMembersController(reqObj);
 			} else if (method === "POST" && routeName === TeamRoutes.CREATE) {
 				response = await this.createTeamController({
 					team_name: req.body.team_name,
@@ -157,6 +164,19 @@ export default class TeamsController extends TeamsServices {
 			data: res,
 			message_code: "USER_TEAMS_FETCHED",
 			message: "User teams fetched successfully",
+		};
+	};
+
+	private getAllTeamMembersController = async (
+		reqObj: any
+	): Promise<IResponse> => {
+		const res = await this.getAllTeamMembersService(reqObj);
+
+		return {
+			success: true,
+			data: res,
+			message_code: "TEAM_MEMBERS_FETCHED",
+			message: "Team members fetched successfully",
 		};
 	};
 }

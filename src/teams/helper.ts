@@ -259,4 +259,17 @@ export default class TeamsHelper extends TeamsDB {
 		}
 		return result;
 	};
+
+	protected getAllTeamMembersHelper = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllTeamMembers(reqObj.team_code);
+
+		if (!result) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error fetching team members",
+				message_code: "ERROR_FETCHING_TEAM_MEMBERS",
+			});
+		}
+		return result;
+	};
 }
