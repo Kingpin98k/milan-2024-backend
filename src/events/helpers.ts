@@ -7,7 +7,6 @@ import ErrorHandler from "./../utils/errors.handler";
 import { Client } from "pg";
 import logger, { LogTypes } from "../utils/logger";
 
-
 export default class EventsHelpers extends EventsDb {
 	public getAllEventsHelper = async (): Promise<IEvent[]> => {
 		// logger('getAllEventsHelpers1', LogTypes.LOGS);
@@ -209,6 +208,20 @@ export default class EventsHelpers extends EventsDb {
 			});
 		}
 
+		const isUserInTeam = await this.isUserInTeam(
+			userData.user_id || "",
+			userData.event_code || ""
+		);
+
+		if (isUserInTeam) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message:
+					"User is in a team realted to the event, so cannot unregister !",
+				message_code: "USER_IN_TEAM",
+			});
+		}
+
 		const user = await db.transaction(async () => {
 			const updated_at = new Date();
 			const event = await this.decreaseCount(userData, updated_at);
@@ -316,19 +329,21 @@ export default class EventsHelpers extends EventsDb {
 	public getUserDetailByCodeHelper = async (
 		event_code: string
 	): Promise<IUser[]> => {
-		logger('getUserDetailByCodeHelper1', LogTypes.LOGS);
+		logger("getUserDetailByCodeHelper1", LogTypes.LOGS);
 		const eventUsers = await this.fetchEventUsersByCode(event_code);
-			
+
 		if (!eventUsers || eventUsers.length === 0) {
 			throw new ErrorHandler({
-					status_code: 404,
-					message: "No event users found",
-					message_code: "NO_USER_FOUND_FOR_EVENT",
-				});
-			}
-		const userIds = eventUsers.map(user => user.user_id);
-	
-		const users: IUser[] = await Promise.all(userIds.map(userId => this.fetchUserFromUsersTable(userId)));
+				status_code: 404,
+				message: "No event users found",
+				message_code: "NO_USER_FOUND_FOR_EVENT",
+			});
+		}
+		const userIds = eventUsers.map((user) => user.user_id);
+
+		const users: IUser[] = await Promise.all(
+			userIds.map((userId) => this.fetchUserFromUsersTable(userId))
+		);
 		return users;
-	}
+	};
 }
