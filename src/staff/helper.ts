@@ -73,6 +73,20 @@ export default class StaffHelper extends StaffDB {
 		return user;
 	};
 
+	protected getUserByUserIDHelper = async (id: string) => {
+		logger('GetUserByUserIDHelper', LogTypes.LOGS);
+		const user = await this.getUserByUserID(id);
+		logger(user, LogTypes.LOGS);
+		if (!user) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "User not found",
+				message_code: "USER_NOT_FOUND",
+			});
+		}
+		return user;
+	};
+
 	protected getUserIdByEmailHelper = async (email: string) => {
 		const user = await this.getUserIdByEmail(email);
 		if (!user) {

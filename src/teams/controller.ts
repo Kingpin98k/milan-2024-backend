@@ -26,7 +26,16 @@ export default class TeamsController extends TeamsServices {
 				logger(user_id, LogTypes.LOGS);
 				const reqObj = { user_id };
 				response = await this.getAllUserTeamsController(reqObj);
-			} else if (
+			}
+			// else if(
+			// 	method === "GET" &&
+			// 	routeName === TeamRoutes.GET_ALL_TEAMS_OF_EVENT
+			// ){
+			// 	const event_code = req.params.eventCode;
+			// 	const reqObj = { event_code };
+			// 	response = await this.getAllTeamsOfEventController(reqObj);
+			// } 
+			else if (
 				method === "GET" &&
 				routeName === TeamRoutes.GET_USER_TEAM_FOR_EVENT
 			) {
@@ -161,4 +170,8 @@ export default class TeamsController extends TeamsServices {
 			message: "User teams fetched successfully",
 		};
 	};
+
+	// private getAllTeamsOfEventController = async (
+	// 	reqOIbj
+	// )
 }

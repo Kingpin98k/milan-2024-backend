@@ -7,6 +7,8 @@ import {
 } from "./interface";
 import db from "../config/pg.config";
 import logger, { LogTypes } from "../utils/logger";
+import { IUpdateTicketReqObj } from "../users/bookings/interface";
+import { IUser } from "../events/interface";
 
 export default class StaffDB {
 	protected getStaffs = async (
@@ -28,6 +30,18 @@ export default class StaffDB {
 			throw res;
 		} else {
 			return res.rows[0] as unknown as IStaffResObject;
+		}
+	};
+
+	protected getUserByUserID = async (id: string): Promise<IUser> => {
+		logger('getUserByUserIDdb', LogTypes.LOGS);
+		const query = `SELECT * FROM users WHERE id = $1`;
+		const res = await db.query(query, [id]);
+		logger(res, LogTypes.LOGS);
+		if (res instanceof Error) {
+			throw res;
+		} else {
+			return res.rows[0] as unknown as IUser;
 		}
 	};
 

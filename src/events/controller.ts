@@ -123,7 +123,7 @@ export default class EventsController extends EventsServices {
 		req: Request,
 		res: Response
 	): Promise<IResponse> => {
-		// logger("getAllEventsController1", LogTypes.LOGS);
+		logger("getAllEventsController1", LogTypes.LOGS);
 		const events = await this.getAllEventsService();
 		// logger(events, LogTypes.LOGS);
 		return {
@@ -299,6 +299,13 @@ export default class EventsController extends EventsServices {
 	): Promise<IResponse> => {
 		logger("getUserDetailByEventCodeController1", LogTypes.LOGS);
 		const event_code = req.params.code;
+		if (!event_code) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "event code is required",
+				message_code: "EVENT_CODE_MISSING",
+			});
+		}
 		const users = await this.getUserDetailByCodeService(event_code);
 		return {
 			success: true,

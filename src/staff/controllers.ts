@@ -52,6 +52,9 @@ export default class StaffController extends StaffService {
 				routeName === StaffRoutes.GET_TOTAL_TICKETS_SOLD
 			) {
 				response = await this.getTotalTicketsSoldController();
+			}else if(method === "GET" && routeName === StaffRoutes.GET_USER_BY_USER_ID){
+				const id = req.params.userId;
+				response = await this.getUserByUserIDController(id);
 			} else if (
 				method === "POST" &&
 				routeName === StaffRoutes.FORGOT_PASSWORD
@@ -225,6 +228,19 @@ export default class StaffController extends StaffService {
 		};
 	};
 
+	private getUserByUserIDController =  async (
+		id: string
+	): Promise<IResponse> => {
+		logger('getUserByUserIDController', LogTypes.LOGS);
+		const user = await this.getUserByUserIDService(id);
+		return{
+			success: true,
+			message_code: "GET_USER_BY_USER_ID_SUCCESS",
+			message: "User fetched successfully",
+			data: user,
+		};
+	};
+
 	private getOfflineTicketsIssuedController = async (): Promise<IResponse> => {
 		const user = await this.getOfflineTicketsIssuedService();
 		return {
@@ -264,4 +280,5 @@ export default class StaffController extends StaffService {
 			data: {},
 		};
 	};
+
 }

@@ -7,4 +7,5 @@ export enum TeamRoutes {
 	DELETE_MEMBER = "deleteTeamMember",
 	GET_TEAMS = "getAllTeams",
 	GET_USER_TEAM_FOR_EVENT = "getUserTeamForEvent",
+	GET_ALL_TEAMS_OF_EVENT = "getAllTeamsOfEvent"
 }
