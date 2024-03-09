@@ -26,16 +26,14 @@ export default class TeamsController extends TeamsServices {
 				logger(user_id, LogTypes.LOGS);
 				const reqObj = { user_id };
 				response = await this.getAllUserTeamsController(reqObj);
-			}
-			// else if(
-			// 	method === "GET" &&
-			// 	routeName === TeamRoutes.GET_ALL_TEAMS_OF_EVENT
-			// ){
-			// 	const event_code = req.params.eventCode;
-			// 	const reqObj = { event_code };
-			// 	response = await this.getAllTeamsOfEventController(reqObj);
-			// } 
-			else if (
+			} else if(
+				method === "GET" &&
+				routeName === TeamRoutes.GET_ALL_TEAMS_OF_EVENT
+			){
+				const event_code = req.params.eventCode;
+				const reqObj = { event_code };
+				response = await this.getAllTeamsOfEventController(reqObj);
+			} else if (
 				method === "GET" &&
 				routeName === TeamRoutes.GET_USER_TEAM_FOR_EVENT
 			) {
@@ -44,6 +42,13 @@ export default class TeamsController extends TeamsServices {
 					user_id: req.body.current_user.id,
 				};
 				response = await this.getUserTeamForEventController(reqObj);
+			} else if (
+				method === "GET" &&
+				routeName === TeamRoutes.GET_TEAM_MEMBERS
+			) {
+				const team_id = req.params.teamId;
+				const reqObj = { team_id };
+				response = await this.getAllTeamMembersController(reqObj);
 			} else if (method === "POST" && routeName === TeamRoutes.CREATE) {
 				response = await this.createTeamController({
 					team_name: req.body.team_name,
@@ -171,7 +176,28 @@ export default class TeamsController extends TeamsServices {
 		};
 	};
 
-	// private getAllTeamsOfEventController = async (
-	// 	reqOIbj
-	// )
+	private getAllTeamMembersController = async (
+		reqObj: any
+	): Promise<IResponse> => {
+		const res = await this.getAllTeamMembersService(reqObj);
+
+		return {
+			success: true,
+			data: res,
+			message_code: "TEAM_MEMBERS_FETCHED",
+			message: "Team members fetched successfully",
+		};
+	};
+
+	private getAllTeamsOfEventController = async (
+		reqOIbj: any
+ 	): Promise<IResponse> => {
+		const res = await this.getAllTeamsOfEventService(reqOIbj);
+		return {
+			success: true,
+			data: res,
+			message_code: "TEAMS_FETCHED",
+			message: "Teams fetched successfully",
+		};
+	};
 }

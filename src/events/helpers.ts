@@ -7,7 +7,6 @@ import ErrorHandler from "./../utils/errors.handler";
 import { Client } from "pg";
 import logger, { LogTypes } from "../utils/logger";
 
-
 export default class EventsHelpers extends EventsDb {
 	public getAllEventsHelper = async (): Promise<IEvent[]> => {
 		// logger('getAllEventsHelpers1', LogTypes.LOGS);
@@ -209,6 +208,20 @@ export default class EventsHelpers extends EventsDb {
 			});
 		}
 
+		const isUserInTeam = await this.isUserInTeam(
+			userData.user_id || "",
+			userData.event_code || ""
+		);
+
+		if (isUserInTeam) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message:
+					"User is in a team realted to the event, so cannot unregister !",
+				message_code: "USER_IN_TEAM",
+			});
+		}
+
 		const user = await db.transaction(async () => {
 			const updated_at = new Date();
 			const event = await this.decreaseCount(userData, updated_at);
@@ -282,7 +295,6 @@ export default class EventsHelpers extends EventsDb {
 	): Promise<IUser[]> => {
 		logger('getUserDetailByCodeHelper1', LogTypes.LOGS);
 		const eventUsers = await this.fetchEventUsersByCode(event_code);
-		logger('🍀🍀🍀🍀🍀🍀', LogTypes.LOGS);
 		logger(eventUsers, LogTypes.LOGS);
 		if (!eventUsers) {
 			throw new ErrorHandler({
@@ -325,19 +337,4 @@ export default class EventsHelpers extends EventsDb {
 		}
 		return updatedevent;
 	};
-
-	// public getUserDetailByCodeHelper = async (
-	// 	event_code: string
-	// ): Promise<IUser[]> => {
-	// 	const users = await this.fetchUserDetailByCode(event_code);
-	// 	if (!users) {
-	// 		throw new ErrorHandler({
-	// 			status_code: 404,
-	// 			message: "fetchUserDetailByCode failed",
-	// 			message_code: "FETCH_USER_DETAIL_BY_CODE_FAILED",
-	// 		});
-	// 	}
-	// 	return users;
-	// }
-
 }

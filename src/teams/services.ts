@@ -64,4 +64,16 @@ export default class TeamsServices extends TeamsHelper {
 
 		return result;
 	};
+
+	protected getAllTeamMembersService = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllTeamMembersHelper(reqObj);
+
+		return result;
+	};
+
+	protected getAllTeamsOfEventService = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllTeamsOfEventHelper(reqObj);
+
+		return result;
+	}
 }

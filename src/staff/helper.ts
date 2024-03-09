@@ -203,27 +203,24 @@ export default class StaffHelper extends StaffDB {
 	};
 
 	protected deleteHelper = async (id: string): Promise<void> => {
-	
-
 		const response = await this.deleteStaff(id);
-		if(!response){
+		if (!response) {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "User not deleted",
 				message_code: "USER_NOT_DELETED",
 			});
 		}
-		if(response && response?.result === "USER_DELETED"){
+		if (response && response?.result === "USER_DELETED") {
 			return;
 		}
-		if(response && response?.result === "USER_NOT_FOUND"){
+		if (response && response?.result === "USER_NOT_FOUND") {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "User not Found",
 				message_code: "USER_NOT_FOUND",
 			});
 		}
-	
 	};
 
 	protected getStaffHelper = async (id: string): Promise<IStaffResObject> => {

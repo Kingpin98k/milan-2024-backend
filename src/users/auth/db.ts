@@ -17,35 +17,7 @@ export default class UsersAuthDB {
 	};
 
 	protected getUser = async (id: string): Promise<IUserAuthResObject> => {
-		const query = `SELECT 
-		u.*, 
-		CASE 
-			WHEN b.ticket_status = 'success' 
-				THEN json_build_object(
-					'payment_id', b.payment_id, 
-					'ticket_id', b.ticket_id, 
-					'payment_status', b.payment_status, 
-					'ticket_status', b.ticket_status, 
-					'offline_ticket_issued', b.offline_ticket_issued
-				)
-			ELSE 
-				json_build_object(
-					'payment_id', NULL, 
-					'ticket_id', NULL, 
-					'payment_status', NULL, 
-					'ticket_status', NULL, 
-					'offline_ticket_issued', NULL
-				)
-					END AS booking_info
-					FROM 
-							users u
-					LEFT JOIN 
-							bookings b ON u.id = b.user_id AND b.ticket_status = 'success'
-					WHERE 
-							u.id = $1 AND 
-							u.is_deleted = false
-					LIMIT 1;
-	`;
+		const query = `SELECT * FROM users WHERE	id = $1 AND is_deleted = false LIMIT 1;`;
 
 		const res = await db.query(query, [id]);
 

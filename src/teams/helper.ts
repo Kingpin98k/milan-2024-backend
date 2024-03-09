@@ -158,7 +158,29 @@ export default class TeamsHelper extends TeamsDB {
 			updated_at: new Date(),
 		};
 
-		const result = await this.joinTeam(newReqObj);
+		const result = await db.transaction(async (client: Client) => {
+			const updated = await this.increaseUserCount(reqObj.team_code, client);
+
+			if (!updated) {
+				throw new ErrorHandler({
+					status_code: 400,
+					message: "Error joining team",
+					message_code: "ERROR_JOINING_TEAM",
+				});
+			}
+
+			const res = await this.joinTeam(newReqObj, false, client);
+
+			if (!res) {
+				throw new ErrorHandler({
+					status_code: 400,
+					message: "Error joining team",
+					message_code: "ERROR_JOINING_TEAM",
+				});
+			}
+
+			return res;
+		});
 
 		if (!result) {
 			throw new ErrorHandler({
@@ -207,6 +229,7 @@ export default class TeamsHelper extends TeamsDB {
 
 	protected leaveTeamHelper = async (reqObj: any): Promise<void> => {
 		await db.transaction(async (client: Client) => {
+			await this.decreaseUserCount(reqObj.team_code, client);
 			await this.leaveTeam(reqObj.team_code, reqObj.user_id, client);
 		});
 	};
@@ -236,4 +259,38 @@ export default class TeamsHelper extends TeamsDB {
 		}
 		return result;
 	};
-}
+
+	protected getAllTeamMembersHelper = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllTeamMembers(reqObj.team_code);
+
+		if (!result) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error fetching team members",
+				message_code: "ERROR_FETCHING_TEAM_MEMBERS",
+			});
+		}
+		return result;
+	};
+
+	protected getAllTeamsOfEventHelper = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllTeamsOfEvent(reqObj.event_code);
+		if(!result) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error fetching teams of event",
+				message_code: "ERROR_FETCHING_TEAMS_OF_EVENT",
+			});
+		}
+
+		if(result.length === 0){
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "No teams found for the event",
+				message_code: "NO_TEAMS_FOUND_FOR_EVENT",
+			});
+		}
+
+		return result;
+	};
+};
