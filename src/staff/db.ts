@@ -195,13 +195,12 @@ export default class StaffDB {
         END as result;
     `;
 
-    const res = await db.query(query, [id]);
+		const res = await db.query(query, [id]);
 
-    if (res instanceof Error) {
-        throw res;
-    } else {
-        return res.rows[0] as unknown as any; // Accessing the result by its column alias 'result'
-    }
-	
+		if (res instanceof Error) {
+			throw res;
+		} else {
+			return res.rows[0] as unknown as any; // Accessing the result by its column alias 'result'
+		}
 	};
 }

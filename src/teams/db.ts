@@ -386,6 +386,27 @@ export default class TeamsDB {
 		}
 	};
 
+	protected getAllTeamMembers = async (team_id: string) => {
+		const query = `SELECT
+    tm.user_id,
+    tm.is_captain,
+    u.name,
+    u.email,
+    u.phone_number,
+    u.college,
+    u.gender
+		FROM
+				team_members tm
+		JOIN
+				users u ON tm.user_id = u.id
+		WHERE
+				tm.team_id = $1;
+`;
+		const result = await db.query(query, [team_id]);
+		if (result instanceof Error) throw result;
+		return result.rows[0];
+	};
+
 	protected checkIfCanChangeName = async (
 		team_code: string,
 		user_id: string,
@@ -445,7 +466,17 @@ export default class TeamsDB {
 	};
 
 	protected getAllUserTeams = async (user_id: string) => {
-		const query = `SELECT * FROM team_members WHERE user_id = $1`;
+		const query = `SELECT
+    tm.*,
+    t.team_name,
+    t.event_code
+		FROM
+				team_members tm
+		JOIN
+				teams t ON tm.team_code = t.team_code
+		WHERE
+				tm.user_id = $1;
+`;
 		const result = await db.query(query, [user_id]);
 		if (result instanceof Error) throw result;
 		return result.rows;
