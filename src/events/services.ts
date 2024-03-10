@@ -3,6 +3,7 @@ import { IEvent, IEventUser, IResponse, IUser } from "./interface";
 // import logger, { LogTypes } from '../utils/logger';
 import ErrorHandler from "../utils/errors.handler";
 import { response } from "express";
+import logger, { LogTypes } from "../utils/logger";
 
 export class EventsServices extends EventsHelpers {
 	public async getAllEventsService(): Promise<IEvent[]> {
@@ -162,6 +163,7 @@ export class EventsServices extends EventsHelpers {
   }
   
   public async getUserDetailByCodeService(event_code: string): Promise<IUser[]> {
+	logger('getUserDetailByCodeService1', LogTypes.LOGS);
     const users = await this.getUserDetailByCodeHelper(event_code);
     if (users.length === 0) {
       throw new ErrorHandler({

@@ -14,4 +14,5 @@ export enum StaffRoutes {
 	GET_TOTAL_REGISTRATIONS = "getTotalRegistrations",
 	GET_TOTAL_TICKETS_SOLD = "getTotalTicketsSold",
 	DELETE_USER = "deleteUser",
+	GET_USER_BY_USER_ID = "getUserByUserID",
 }

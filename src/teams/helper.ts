@@ -272,4 +272,25 @@ export default class TeamsHelper extends TeamsDB {
 		}
 		return result;
 	};
-}
+
+	protected getAllTeamsOfEventHelper = async (reqObj: any): Promise<any> => {
+		const result = await this.getAllTeamsOfEvent(reqObj.event_code);
+		if(!result) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error fetching teams of event",
+				message_code: "ERROR_FETCHING_TEAMS_OF_EVENT",
+			});
+		}
+
+		if(result.length === 0){
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "No teams found for the event",
+				message_code: "NO_TEAMS_FOUND_FOR_EVENT",
+			});
+		}
+
+		return result;
+	};
+};

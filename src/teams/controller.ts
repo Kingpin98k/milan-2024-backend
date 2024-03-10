@@ -11,6 +11,8 @@ export default class TeamsController extends TeamsServices {
 		try {
 			const method = req.method;
 			const routeName = req.route.path.split("/")[1];
+			// logger('routeName: ', LogTypes.LOGS);
+			// logger(routeName, LogTypes.LOGS);
 
 			let response: IResponse = {
 				success: false,
@@ -24,6 +26,13 @@ export default class TeamsController extends TeamsServices {
 				logger(user_id, LogTypes.LOGS);
 				const reqObj = { user_id };
 				response = await this.getAllUserTeamsController(reqObj);
+			} else if(
+				method === "GET" &&
+				routeName === TeamRoutes.GET_ALL_TEAMS_OF_EVENT
+			){
+				const event_code = req.params.eventCode;
+				const reqObj = { event_code };
+				response = await this.getAllTeamsOfEventController(reqObj);
 			} else if (
 				method === "GET" &&
 				routeName === TeamRoutes.GET_USER_TEAM_FOR_EVENT
@@ -177,6 +186,18 @@ export default class TeamsController extends TeamsServices {
 			data: res,
 			message_code: "TEAM_MEMBERS_FETCHED",
 			message: "Team members fetched successfully",
+		};
+	};
+
+	private getAllTeamsOfEventController = async (
+		reqOIbj: any
+ 	): Promise<IResponse> => {
+		const res = await this.getAllTeamsOfEventService(reqOIbj);
+		return {
+			success: true,
+			data: res,
+			message_code: "TEAMS_FETCHED",
+			message: "Teams fetched successfully",
 		};
 	};
 }

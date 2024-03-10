@@ -10,7 +10,7 @@ export type EventScope = 'srm' | 'non-srm' | 'both';
 export type Mode = 'online' | 'offline';
 
 export type IUserDetailsResObj = {
-  emial: string;
+  email: string;
   name: string;
   reg_number: string;
   college_name: string;
