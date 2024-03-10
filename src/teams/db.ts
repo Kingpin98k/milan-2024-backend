@@ -481,4 +481,18 @@ export default class TeamsDB {
 		if (result instanceof Error) throw result;
 		return result.rows;
 	};
+
+	protected getAllTeamsOfEvent = async (event_code: string) => {
+		const query = `SELECT * FROM teams WHERE event_code = $1`;
+		const result = await db.query(query, [event_code]);
+
+		if(result instanceof Error){
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "Error fetching teams of event",
+				message_code: "ERROR_FETCHING_TEAMS_OF_EVENT",
+			});
+		}
+		return result.rows;
+	}
 }

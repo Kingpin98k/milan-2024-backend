@@ -7,8 +7,10 @@ const router = Router();
 const { execute } = new TeamsController();
 const { protect } = new IUserAuthValidation();
 
+router.get("/getUserTeamForEvent/:eventCode/:id", execute);
 router.get("/getAllTeams/:userId", execute);
-router.get("/getUserTeamForEvent/:eventCode", protect, execute);
+// router.get("/getAllTeamForEvent/:eventCode", protect, execute);
+router.get("/getAllTeamsOfEvent/:eventCode", execute);
 router.get("/getAllTeamMembers/:teamId", protect, execute);
 router.post("/createTeam", protect, execute);
 router.post("/joinTeam", protect, execute);

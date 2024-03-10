@@ -258,7 +258,7 @@ export default class EventsHelpers extends EventsDb {
 				message_code: "EVENTS_NOT_FOUND_GEBCH",
 			});
 		}
-		if (!events.length) {
+		if (events.length === 0) {
 			throw new ErrorHandler({
 				status_code: 404,
 				message: "No events found for this club",
@@ -290,6 +290,32 @@ export default class EventsHelpers extends EventsDb {
 		return users;
 	};
 
+	public getUserDetailByCodeHelper = async (
+		event_code: string
+	): Promise<IUser[]> => {
+		logger('getUserDetailByCodeHelper1', LogTypes.LOGS);
+		const eventUsers = await this.fetchEventUsersByCode(event_code);
+		logger(eventUsers, LogTypes.LOGS);
+		if (!eventUsers) {
+			throw new ErrorHandler({
+					status_code: 404,
+					message: "No event users found",
+					message_code: "NO_USER_FOUND_FOR_EVENT",
+				});
+			}
+			if (!eventUsers.length) {
+				throw new ErrorHandler({
+					status_code: 404,
+					message: "No users found for this event",
+					message_code: "EVENT_HAS_NO_USERS",
+				});
+			}
+		const userIds = eventUsers.map(user => user.user_id);
+	
+		const users: IUser[] = await Promise.all(userIds.map(userId => this.fetchUserFromUsersTable(userId)));
+		return users;
+	}
+
 	public updateMaxCapHelper = async (
 		event_code: string,
 		new_cap: number
@@ -310,40 +336,5 @@ export default class EventsHelpers extends EventsDb {
 			});
 		}
 		return updatedevent;
-	};
-
-	// public getUserDetailByCodeHelper = async (
-	// 	event_code: string
-	// ): Promise<IUser[]> => {
-	// 	const users = await this.fetchUserDetailByCode(event_code);
-	// 	if (!users) {
-	// 		throw new ErrorHandler({
-	// 			status_code: 404,
-	// 			message: "fetchUserDetailByCode failed",
-	// 			message_code: "FETCH_USER_DETAIL_BY_CODE_FAILED",
-	// 		});
-	// 	}
-	// 	return users;
-	// }
-
-	public getUserDetailByCodeHelper = async (
-		event_code: string
-	): Promise<IUser[]> => {
-		logger("getUserDetailByCodeHelper1", LogTypes.LOGS);
-		const eventUsers = await this.fetchEventUsersByCode(event_code);
-
-		if (!eventUsers || eventUsers.length === 0) {
-			throw new ErrorHandler({
-				status_code: 404,
-				message: "No event users found",
-				message_code: "NO_USER_FOUND_FOR_EVENT",
-			});
-		}
-		const userIds = eventUsers.map((user) => user.user_id);
-
-		const users: IUser[] = await Promise.all(
-			userIds.map((userId) => this.fetchUserFromUsersTable(userId))
-		);
-		return users;
 	};
 }

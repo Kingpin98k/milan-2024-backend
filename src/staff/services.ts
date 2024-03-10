@@ -1,3 +1,4 @@
+import { IUser } from "../events/interface";
 import JWTUtils from "../utils/jwt.utils";
 import logger, { LogTypes } from "../utils/logger";
 import StaffHelper from "./helper";
@@ -83,6 +84,15 @@ export default class StaffService extends StaffHelper {
 			token: "",
 		};
 
+		return response;
+	};
+
+	protected getUserByUserIDService = async (
+		id: string
+	): Promise<IUser> => {
+		logger('GetUserByUserIDService', LogTypes.LOGS);
+		const response = await this.getUserByUserIDHelper(id);
+		logger(response, LogTypes.L);
 		return response;
 	};
 
