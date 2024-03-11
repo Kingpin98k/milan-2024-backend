@@ -1,8 +1,7 @@
-import bcrypt from "bcryptjs";
 import { IUserAuthResObject, IUserAuthSignupReqObj } from "./interface";
 import ErrorHandler from "../../utils/errors.handler";
 import UsersAuthDB from "./db";
-import logger, { LogTypes } from "../../utils/logger";
+import uniqid from "uniqid";
 
 export default class UsersAuthHelper extends UsersAuthDB {
 	protected getUserByEmailHelper = async (
@@ -21,21 +20,6 @@ export default class UsersAuthHelper extends UsersAuthDB {
 		return user;
 	};
 
-	protected comparePasswordHelper = async (
-		user: any,
-		password: string
-	): Promise<void> => {
-		const isPasswordMatch = await bcrypt.compare(password, user.password);
-
-		if (!isPasswordMatch) {
-			throw new ErrorHandler({
-				status_code: 400,
-				message: "Invalid Credentials",
-				message_code: "INVALID_CREDENTIALS",
-			});
-		}
-	};
-
 	protected signupUserHelper = async (
 		reqObj: IUserAuthSignupReqObj
 	): Promise<IUserAuthResObject> => {
@@ -47,9 +31,10 @@ export default class UsersAuthHelper extends UsersAuthDB {
 
 		if (isExistingUser) {
 			if (isExistingUser.is_deleted) {
+				const milan_id = uniqid("MILAN-");
 				const user = await this.reviveUser(isExistingUser.id, {
 					...reqObj,
-					password: await bcrypt.hash(reqObj.password, 12),
+					milan_id: milan_id,
 					created_at: new Date(),
 					updated_at: new Date(),
 				});
@@ -63,8 +48,10 @@ export default class UsersAuthHelper extends UsersAuthDB {
 			}
 		}
 
+		const milan_id = uniqid("MILAN-");
 		const user = await this.createUser({
 			...reqObj,
+			milan_id: milan_id,
 			created_at: new Date(),
 			updated_at: new Date(),
 		});

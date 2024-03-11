@@ -1,0 +1,25 @@
+config:
+  target: https://api.srmmilan.org/api/users
+  phases:
+    - duration: 60
+      arrivalRate: 100
+      rampTo: 300
+      name: Warm-up phase
+
+    - duration: 60
+      arrivalRate: 233
+      rampTo: 500
+      name: Warm-up phase extension
+
+    - duration: 240
+      arrivalRate: 80
+      rampTo: 413
+      name: Ramp-up phase
+  processor: "./dataGenerate.js"
+
+scenarios:
+  - flow:
+      - post:
+          url: "/register"
+          beforeRequest: "generateRandomBody"
+          json: "{{ data }}"

@@ -12,5 +12,6 @@ router.post("/login", execute);
 router.get("/logout", execute);
 router.post("/register", execute);
 router.get("/current", protect, execute);
+router.delete("/delete", protect, execute);
 
 export default router;
