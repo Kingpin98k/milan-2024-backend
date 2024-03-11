@@ -1,6 +1,4 @@
 import { v4 } from "uuid";
-import { EventsServices } from "../events/services";
-import UsersAuthService from "../users/auth/services";
 import TeamsDB from "./db";
 import db from "../config/pg.config";
 import ErrorHandler from "../utils/errors.handler";
@@ -14,7 +12,6 @@ import {
 } from "./interface";
 // import logger, { LogTypes } from "../utils/logger";
 import { Client } from "pg";
-import logger, { LogTypes } from "../utils/logger";
 
 export default class TeamsHelper extends TeamsDB {
 	// private eventsService: EventsServices;
