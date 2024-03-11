@@ -84,7 +84,17 @@ app.get("/health", (req: Request, res: Response) => {
 		entry_time: date,
 	});
 });
-
+app.use(
+	(err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
+		const { status_code, message, message_code } = err;
+		res.status(status_code || 500).json({
+			error: {
+				message: message || "Internal Server Error",
+				message_code: message_code || "INTERNAL_SERVER_ERROR",
+			},
+		});
+	}
+);
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
 	next(
 		new ErrorHandler({

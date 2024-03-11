@@ -10,6 +10,11 @@ module.exports = {
         type: Sequelize.DataTypes.UUID,
         defaultValue: Sequelize.DataTypes.UUIDV4,
       },
+      milan_id:{
+        type: Sequelize.DataTypes.TEXT,
+        allowNull: false,
+      },
+      
       name: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,

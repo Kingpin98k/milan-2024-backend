@@ -92,7 +92,7 @@ export default class StaffService extends StaffHelper {
 	): Promise<IUser> => {
 		logger('GetUserByUserIDService', LogTypes.LOGS);
 		const response = await this.getUserByUserIDHelper(id);
-		logger(response, LogTypes.L);
+		logger(response, LogTypes.LOGS);
 		return response;
 	};
 
