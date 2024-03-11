@@ -32,8 +32,8 @@ export default class BookingsController extends BookingsService {
 					const ticketId = req.query.ticketId as string;
 					const paymentStatus = req.query.paymentStatus as string;
 					const ticketStatus = req.query.ticketStatus as string;
-
-					if (!ticketType || !userId || !paymentStatus || !ticketStatus) {
+					const serialNumber = req.query.serialNumber as string;
+					if (!ticketType || !userId || !paymentStatus || !ticketStatus || !serialNumber) {
 						throw new ErrorHandler({
 							status_code: 400,
 							message: "Invalid Query Parameters",
@@ -48,7 +48,7 @@ export default class BookingsController extends BookingsService {
 						ticket_id: ticketId,
 						payment_status: paymentStatus,
 						ticket_status: ticketStatus,
-
+						serialNumber: serialNumber,
 						offline_ticket_issued: false,
 						created_at: new Date(),
 						updated_at: new Date(),
