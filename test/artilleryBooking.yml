@@ -1,0 +1,24 @@
+config:
+  target: https://api.srmmilan.org/api/bookings
+  phases:
+    - duration: 60
+      arrivalRate: 100
+      rampTo: 300
+      name: Warm-up phase
+
+    - duration: 60
+      arrivalRate: 233
+      rampTo: 500
+      name: Warm-up phase extension
+
+    - duration: 240
+      arrivalRate: 80
+      rampTo: 413
+      name: Ramp-up phase
+  processor: "./dataBookingsGenerate.js"
+
+scenarios:
+  - flow:
+      - get:
+          url: "/?ticketType={{data.ticketType}}&userId={{data.userId}}&paymentId={{data.paymentId}}&ticketId={{data.ticketId}}&paymentStatus={{data.paymentStatus}}&ticketStatus={{data.ticketStatus}}"
+          beforeRequest: "generateRandomBody"

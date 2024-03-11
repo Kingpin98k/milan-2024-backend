@@ -50,6 +50,7 @@ export default class UsersAuthDB {
 			reg_number,
 			is_srm_ktr,
 			gender,
+			milan_id,
 			phone_number,
 			updated_at,
 		} = reqObj;
@@ -64,8 +65,9 @@ export default class UsersAuthDB {
       gender = $5,
       phone_number = $6,
       updated_at = $7,
+			milan_id = $8,
       is_deleted = false
-      WHERE id = $8
+      WHERE id = $9
       RETURNING *`;
 
 		const values = [
@@ -76,6 +78,7 @@ export default class UsersAuthDB {
 			gender,
 			phone_number,
 			updated_at,
+			milan_id,
 			id,
 		];
 

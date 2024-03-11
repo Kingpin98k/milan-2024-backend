@@ -12,8 +12,6 @@ import bodyParser from "body-parser";
 import ErrorHandler from "./utils/errors.handler";
 import cookieSession from "cookie-session";
 import cookieParser from "cookie-parser";
-import passport from "passport";
-import "./users/auth/passport";
 const app: Application = express();
 const port = process.env.PORT || 5000;
 //Security
@@ -41,9 +39,6 @@ app.use(
 		maxAge: 24 * 60 * 60 * 1000, // 5 seconds
 	})
 );
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 //Middlewares
 app.use(cookieParser());
@@ -104,6 +99,18 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 		})
 	);
 });
+
+app.use(
+	(err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
+		const { status_code, message, message_code } = err;
+		res.status(status_code || 500).json({
+			error: {
+				message: message || "Internal Server Error",
+				message_code: message_code || "INTERNAL_SERVER_ERROR",
+			},
+		});
+	}
+);
 
 app.listen(process.env.PORT, () => {
 	logger(`Server is running on port ${port}`, LogTypes.LOGS);

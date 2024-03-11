@@ -19,6 +19,7 @@ export type IUserAuthSignupReqObj = {
 	college: string;
 	is_srm_ktr: boolean;
 	gender: string;
+	milan_id: string;
 	phone_number: number;
 	updated_at: Date;
 	created_at: Date;
@@ -33,6 +34,7 @@ export type IUserAuthResObject = {
 	gender: string;
 	phone_number: number;
 	college: string;
+	milna_id: string;
 	is_ticket_issued: boolean;
 	is_deleted: boolean;
 	updated_at: Date;
