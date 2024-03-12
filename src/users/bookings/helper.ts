@@ -116,7 +116,9 @@ export default class BookingsHelper extends BookingsDB {
 		const updatedBooking = await this.updateOfflineTicketIssued(
 			reqObj.user_id,
 			reqObj.ticket_id,
-			reqObj.payment_id
+			reqObj.payment_id,
+			reqObj.staff_id,
+			reqObj.staff_name
 		);
 
 		if (!updatedBooking) {

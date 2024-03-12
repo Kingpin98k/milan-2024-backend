@@ -8,7 +8,6 @@ import {
 	IStaffResObject,
 	StaffScope,
 } from "./interface";
-import logger, { LogTypes } from "../utils/logger";
 
 export default class StaffHelper extends StaffDB {
 	protected registerHelper = async (

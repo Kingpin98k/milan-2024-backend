@@ -393,7 +393,7 @@ export default class TeamsDB {
     u.name,
     u.email,
     u.phone_number,
-    u.college,
+    u.college_name,
     u.gender
 		FROM
 				team_members tm

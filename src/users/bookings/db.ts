@@ -116,10 +116,12 @@ export default class BookingsDB {
 	protected updateOfflineTicketIssued = async (
 		user_id: string,
 		ticket_id: string,
-		payment_id: string
+		payment_id: string,
+		staff_id: string,
+		staff_name: string
 	): Promise<ICreateBookingReqObj> => {
 		const query = `UPDATE bookings AS b
-    SET offline_ticket_issued = true, updated_at = current_timestamp
+    SET offline_ticket_issued = true, updated_at = current_timestamp, staff_id = $4, staff_name = $5
     FROM users AS u
     WHERE b.user_id = u.id
       AND b.ticket_id = $2
@@ -128,7 +130,13 @@ export default class BookingsDB {
     RETURNING b.*, u.name, u.reg_number, u.email 
     ;`;
 
-		const res = await db.query(query, [user_id, ticket_id, payment_id]);
+		const res = await db.query(query, [
+			user_id,
+			ticket_id,
+			payment_id,
+			staff_id,
+			staff_name,
+		]);
 		if (res instanceof Error) {
 			throw res;
 		}
