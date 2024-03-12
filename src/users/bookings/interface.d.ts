@@ -39,6 +39,8 @@ export type IUpdateTicketReqObj = {
 	user_id: string;
 	payment_id: string;
 	ticket_id: string;
+	staff_id: string;
+	staff_name: string;
 };
 
 export type IResendEmailReqObj = {

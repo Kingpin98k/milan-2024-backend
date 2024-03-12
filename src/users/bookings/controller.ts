@@ -67,11 +67,14 @@ export default class BookingsController extends BookingsService {
 				}
 			} else if (req.path === bookingRoutes.UPDATETICKETISUED) {
 				if (method === RequestMethods.PATCH) {
-					const { user_id, ticket_id, payment_id } = req.body;
+					const { user_id, ticket_id, payment_id, staff_id, staff_name } =
+						req.body;
 					const reqObj: IUpdateTicketReqObj = {
 						user_id: user_id?.toString() ?? "",
 						ticket_id: ticket_id,
 						payment_id: payment_id,
+						staff_id: staff_id,
+						staff_name: staff_name,
 					};
 					const updateResponse = await this.updateTicketIssued(reqObj);
 					response = updateResponse;

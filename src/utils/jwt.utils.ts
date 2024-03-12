@@ -10,13 +10,18 @@ export default class JWTUtils {
 	}
 
 	public generateTokens = async (
-		userData: any
+		userData: any,
+		expires_in?: string,
+		key?: string
 	): Promise<{
 		access_token: string;
 		refresh_token: string;
 	}> => {
+		if (key) {
+			this.PRIVATE_KEY = key;
+		}
 		const [access_token, refresh_token] = await Promise.all([
-			this.generateAccessToken(userData),
+			this.generateAccessToken(userData, expires_in),
 			this.generateRefreshToken(userData),
 		]);
 
@@ -26,7 +31,7 @@ export default class JWTUtils {
 		};
 	};
 
-	private generateAccessToken = async (userData: any) => {
+	private generateAccessToken = async (userData: any, expires_in?: string) => {
 		const access_token = jwt.sign(
 			{
 				token: "access_token",
@@ -34,7 +39,7 @@ export default class JWTUtils {
 			},
 			this.PRIVATE_KEY,
 			{
-				expiresIn: "15h",
+				expiresIn: expires_in ?? "15h",
 				// algorithm: "RS256",
 			}
 		);

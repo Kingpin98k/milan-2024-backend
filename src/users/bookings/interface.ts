@@ -40,15 +40,16 @@ export type IUpdateTicketReqObj = {
 	user_id: string;
 	payment_id: string;
 	ticket_id: string;
+	staff_id: string;
+	staff_name: string;
 };
-
 
 export type IResendEmailReqObj = {
 	user_id: string;
 	payment_id: string;
 	ticket_id: string;
-    email: string;
-}
+	email: string;
+};
 
 export type IBooking = {
 	id: string;
@@ -58,5 +59,5 @@ export type IResponse<T = any> = {
 	success: boolean;
 	message?: string;
 	data?: T | null;
-	message_code?: string;
+	message_code?: string;
 };
