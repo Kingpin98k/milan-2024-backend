@@ -258,7 +258,7 @@ export default class TeamsHelper extends TeamsDB {
 	};
 
 	protected getAllTeamMembersHelper = async (reqObj: any): Promise<any> => {
-		const result = await this.getAllTeamMembers(reqObj.team_code);
+		const result = await this.getAllTeamMembers(reqObj.team_id);
 
 		if (!result) {
 			throw new ErrorHandler({
