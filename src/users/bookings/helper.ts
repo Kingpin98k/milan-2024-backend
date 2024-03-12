@@ -33,7 +33,7 @@ export default class BookingsHelper extends BookingsDB {
 			email: UserEmail.email,
 			payment_id: reqObj.payment_id,
 			ticket_id: reqObj.ticket_id,
-			serialNumber: reqObj.serialNumber,
+			serial_number: reqObj.serial_number,
 			payment_status: reqObj.payment_status,
 			ticket_status: reqObj.ticket_status,
 			offline_ticket_issued: reqObj.offline_ticket_issued,
@@ -73,7 +73,7 @@ export default class BookingsHelper extends BookingsDB {
 			
 			## Email : ${UserEmail.email}
 			
-			### Serial: ${reqObj.serialNumber}
+			### Serial: ${reqObj.serial_number}
 
 			### Timestamp : 
 			${reqObj.created_at.toLocaleString()}

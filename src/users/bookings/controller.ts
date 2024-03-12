@@ -48,7 +48,7 @@ export default class BookingsController extends BookingsService {
 						ticket_id: ticketId,
 						payment_status: paymentStatus,
 						ticket_status: ticketStatus,
-						serialNumber: serialNumber,
+						serial_number: serialNumber,
 						offline_ticket_issued: false,
 						created_at: new Date(),
 						updated_at: new Date(),

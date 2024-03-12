@@ -29,7 +29,7 @@ export type ICreateBookingReqObj = {
 	payment_id: string;
 	ticket_id: string;
 	payment_status: string;
-	serialNumber: string;
+	serial_number: string;
 	ticket_status: string;
 	offline_ticket_issued: boolean;
 	updated_at: Date;

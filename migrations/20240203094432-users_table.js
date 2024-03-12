@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
-      
+
       name: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
@@ -38,6 +38,10 @@ module.exports = {
         allowNull: false,
       },
       college_name: {
+        type: Sequelize.DataTypes.TEXT,
+        allowNull: false,
+      },
+      ticket_type:{
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
