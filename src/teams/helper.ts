@@ -144,7 +144,7 @@ export default class TeamsHelper extends TeamsDB {
 		if (!user) {
 			throw new ErrorHandler({
 				status_code: 400,
-				message: "User does not exist in the event",
+				message: "Register for the event first",
 				message_code: "USER_DOES_NOT_EXIST_IN_EVENT",
 			});
 		}

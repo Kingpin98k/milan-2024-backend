@@ -18,6 +18,10 @@ module.exports = {
           key: 'id',
         },
       },
+      serial_number:{
+        type: Sequelize.DataTypes.TEXT,
+        allowNull: false,
+      },
       payment_id: {
         type: Sequelize.DataTypes.TEXT,
         allowNull: true,

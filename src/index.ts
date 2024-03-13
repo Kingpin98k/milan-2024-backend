@@ -23,7 +23,9 @@ app.use(
 			"http://localhost:5173",
 			"http://localhost:5174",
 			"https://srmmilan.org",
+			"https://www.srmmilan.org",
 			"https://admin.srmmilan.org",
+			"https://frontend-deploy.d21g3rd3fhuqgv.amplifyapp.com",
 			"https://deployed.dbtuyvk3p4wbw.amplifyapp.com",
 			"https://dev9501.d1rexfnjrhb8nq.amplifyapp.com",
 			"https://ankit-dev.dbtuyvk3p4wbw.amplifyapp.com",
@@ -79,7 +81,17 @@ app.get("/health", (req: Request, res: Response) => {
 		entry_time: date,
 	});
 });
-
+app.use(
+	(err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
+		const { status_code, message, message_code } = err;
+		res.status(status_code || 500).json({
+			error: {
+				message: message || "Internal Server Error",
+				message_code: message_code || "INTERNAL_SERVER_ERROR",
+			},
+		});
+	}
+);
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
 	next(
 		new ErrorHandler({

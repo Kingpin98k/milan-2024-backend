@@ -14,7 +14,12 @@ module.exports = {
         type: Sequelize.DataTypes.TEXT,
         allowNull: false,
       },
-      email_count: {
+      email_sent:{
+        type: Sequelize.DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      count: {
         type: Sequelize.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,

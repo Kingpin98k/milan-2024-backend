@@ -73,9 +73,7 @@ export default class StaffHelper extends StaffDB {
 	};
 
 	protected getUserByUserIDHelper = async (id: string) => {
-		logger('GetUserByUserIDHelper', LogTypes.LOGS);
 		const user = await this.getUserByUserID(id);
-		logger(user, LogTypes.LOGS);
 		if (!user) {
 			throw new ErrorHandler({
 				status_code: 404,
