@@ -156,7 +156,7 @@ export default class TeamsDB {
 		team_code: string,
 		user_id: string
 	) => {
-		const query = `SELECT id
+		const query = `SELECT *
 			FROM event_users eu
 			JOIN teams t ON eu.event_id = t.event_id AND eu.event_code = t.event_code
 			WHERE eu.user_id = $2
