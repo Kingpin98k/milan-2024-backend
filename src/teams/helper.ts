@@ -136,6 +136,19 @@ export default class TeamsHelper extends TeamsDB {
 	};
 
 	protected joinTeamHelper = async (reqObj: ITeamJoinReqObject) => {
+		const user = await this.checkIfExistInEvent(
+			reqObj.team_code,
+			reqObj.user_id
+		);
+
+		if (!user) {
+			throw new ErrorHandler({
+				status_code: 400,
+				message: "User does not exist in the event",
+				message_code: "USER_DOES_NOT_EXIST_IN_EVENT",
+			});
+		}
+
 		const Eteam = await this.checkIsExistingTeam(reqObj);
 
 		if (!Eteam) {
@@ -272,7 +285,7 @@ export default class TeamsHelper extends TeamsDB {
 
 	protected getAllTeamsOfEventHelper = async (reqObj: any): Promise<any> => {
 		const result = await this.getAllTeamsOfEvent(reqObj.event_code);
-		if(!result) {
+		if (!result) {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Error fetching teams of event",
@@ -280,7 +293,7 @@ export default class TeamsHelper extends TeamsDB {
 			});
 		}
 
-		if(result.length === 0){
+		if (result.length === 0) {
 			throw new ErrorHandler({
 				status_code: 404,
 				message: "No teams found for the event",
@@ -290,4 +303,4 @@ export default class TeamsHelper extends TeamsDB {
 
 		return result;
 	};
-};
+}
