@@ -4,6 +4,7 @@ export enum bookingRoutes {
 	FETCHBOOKING = "/find",
 	UPDATETICKETISUED = "/updateticketissued",
 	RESENDEMAIL = "/resendemail",
+	ONSPOTBOOKING = "/onSpotBooking",
 }
 
 export enum TicketStatus {
