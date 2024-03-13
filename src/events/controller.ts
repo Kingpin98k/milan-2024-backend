@@ -46,6 +46,13 @@ export default class EventsController extends EventsServices {
 				response = await this.getEventController(req, res);
 			} else if (
 				method === RequestMethods.GET &&
+				route === EventRoutes.GET_USERS_DETAILS_FOR_EVENT
+			) {
+				response = await this.fetchAllUsersDetailsForEventController(
+					req.params.eventCode
+				);
+			} else if (
+				method === RequestMethods.GET &&
 				routeName === EventRoutes.GET_USER_DETAIL_BY_EVENT_CODE
 			) {
 				response = await this.getUserDetailByEventCodeController(req, res);
@@ -312,6 +319,19 @@ export default class EventsController extends EventsServices {
 			data: users,
 			message_code: "GET_USER_DETAIL_BY_EVENT_CODE_SUCCESS",
 			message: "User fetched successfully",
+		};
+	};
+
+	private fetchAllUsersDetailsForEventController = async (
+		event_code: string
+	): Promise<IResponse> => {
+		// logger("fetchAllUsersDetailsForEventController1", LogTypes.LOGS);
+		const users = await this.fetchAllUsersDetailsForEventService(event_code);
+		return {
+			success: true,
+			data: users,
+			message_code: "GET_ALL_USERS_DETAIL_SUCCESS",
+			message: "Users fetched successfully",
 		};
 	};
 }

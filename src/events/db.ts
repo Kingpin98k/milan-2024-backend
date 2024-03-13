@@ -185,6 +185,22 @@ export default class EventsDb {
 		return res.rows[0] as unknown as IUser;
 	};
 
+	protected fetchAllUsersDetailsForEvent = async (
+		event_code: string
+	): Promise<IEventUser[]> => {
+		const query = `SELECT u.*
+			FROM event_users eu
+			JOIN users u ON eu.user_id = u.ID
+			WHERE eu.event_code = $1;
+		`;
+		const values = [event_code];
+		const res = await db.query(query, values);
+		if (res instanceof Error) {
+			throw res;
+		}
+		return res.rows as unknown as IEventUser[];
+	};
+
 	protected getUserByDetails = async (
 		userData: Partial<IEventUser>
 	): Promise<IEventUser | null> => {
