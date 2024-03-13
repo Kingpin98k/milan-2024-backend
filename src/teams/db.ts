@@ -152,6 +152,21 @@ export default class TeamsDB {
 		return result.rows[0];
 	};
 
+	protected checkIfExistInEvent = async (
+		team_code: string,
+		user_id: string
+	) => {
+		const query = `SELECT id
+			FROM event_users eu
+			JOIN teams t ON eu.event_id = t.event_id AND eu.event_code = t.event_code
+			WHERE eu.user_id = $2
+			AND t.team_code = $1;		
+		`;
+		const result = await db.query(query, [team_code, user_id]);
+		if (result instanceof Error) throw result;
+		return result.rows[0];
+	};
+
 	protected deleteTeamMembers = async (team_code: string, client?: Client) => {
 		const query = `DELETE FROM team_members WHERE team_code = $1`;
 		let result;
@@ -486,7 +501,7 @@ export default class TeamsDB {
 		const query = `SELECT * FROM teams WHERE event_code = $1`;
 		const result = await db.query(query, [event_code]);
 
-		if(result instanceof Error){
+		if (result instanceof Error) {
 			throw new ErrorHandler({
 				status_code: 400,
 				message: "Error fetching teams of event",
@@ -494,5 +509,5 @@ export default class TeamsDB {
 			});
 		}
 		return result.rows;
-	}
+	};
 }
