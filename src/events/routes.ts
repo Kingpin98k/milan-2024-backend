@@ -22,6 +22,7 @@ router.patch("/updateMaxCap/:code/:new_cap", execute);
 router.patch("/activateEvent/:code/:op", execute);
 router.get("/getEvent/:user_id", execute);
 router.get("/getUserDetailByEventCode/:code", execute);
+router.get("/getUsersDetailsForEvent/:eventCode", execute);
 
 // router.get('/event', protect, execute);
 // router.get('/event/:code', protect, execute);

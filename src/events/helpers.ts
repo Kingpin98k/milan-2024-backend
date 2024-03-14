@@ -293,28 +293,30 @@ export default class EventsHelpers extends EventsDb {
 	public getUserDetailByCodeHelper = async (
 		event_code: string
 	): Promise<IUser[]> => {
-		logger('getUserDetailByCodeHelper1', LogTypes.LOGS);
+		logger("getUserDetailByCodeHelper1", LogTypes.LOGS);
 		const eventUsers = await this.fetchEventUsersByCode(event_code);
 		logger(eventUsers, LogTypes.LOGS);
 		if (!eventUsers) {
 			throw new ErrorHandler({
-					status_code: 404,
-					message: "No event users found",
-					message_code: "NO_USER_FOUND_FOR_EVENT",
-				});
-			}
-			if (!eventUsers.length) {
-				throw new ErrorHandler({
-					status_code: 404,
-					message: "No users found for this event",
-					message_code: "EVENT_HAS_NO_USERS",
-				});
-			}
-		const userIds = eventUsers.map(user => user.user_id);
-	
-		const users: IUser[] = await Promise.all(userIds.map(userId => this.fetchUserFromUsersTable(userId)));
+				status_code: 404,
+				message: "No event users found",
+				message_code: "NO_USER_FOUND_FOR_EVENT",
+			});
+		}
+		if (!eventUsers.length) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "No users found for this event",
+				message_code: "EVENT_HAS_NO_USERS",
+			});
+		}
+		const userIds = eventUsers.map((user) => user.user_id);
+
+		const users: IUser[] = await Promise.all(
+			userIds.map((userId) => this.fetchUserFromUsersTable(userId))
+		);
 		return users;
-	}
+	};
 
 	public updateMaxCapHelper = async (
 		event_code: string,
@@ -336,5 +338,20 @@ export default class EventsHelpers extends EventsDb {
 			});
 		}
 		return updatedevent;
+	};
+
+	public fetchAllUsersDetailsForEventHelper = async (
+		event_code: string
+	): Promise<IEventUser[]> => {
+		// logger('fetchAllUsersDetailsForEventHelpers1', LogTypes.LOGS);
+		const users = await this.fetchAllUsersDetailsForEvent(event_code);
+		if (!users) {
+			throw new ErrorHandler({
+				status_code: 404,
+				message: "Users not found",
+				message_code: "USERS_NOT_FOUND",
+			});
+		}
+		return users;
 	};
 }
